@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	">
+	<bean id="OAUTH2_CLIENT_CONTEXT_FILTER" class="org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter" />
+	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.DefaultOAuth2ClientAuthenticationFilter">
+		<constructor-arg index="0" value="/sina/oauth2" />
+		<property name="resourceInterface" ref="sinaOAuth2ResourceInterface" />
+		<property name="userManagementService" ref="userManagementService" />
+		<property name="authenticationFailureHandler" ref="authenticationFailureHandler" />
+		<property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
+	</bean>
+	<bean id="authenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<property name="defaultFailureUrl" value="/auth/login.html" />
+		<property name="useForward" value="true" />
+	</bean>
+	<bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<property name="defaultTargetUrl" value="/" />
+	</bean>
+	<bean id="sinaOAuth2ResourceInterface" class="com.df.idm.authentication.oauth2.sina.SinaOAuth2ResourceInterface">
+		<constructor-arg index="0" ref="sinaOAuthResource" />
+		<constructor-arg index="1" ref="sinaOAuthClientContext" />
+	</bean>
+	<bean id="sinaOAuthClientContext" class="org.springframework.security.oauth2.client.DefaultOAuth2ClientContext"
+		scope="session">
+		<constructor-arg index="0" ref="accessTokenRequest" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="accessTokenRequest" class="org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest"
+		scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="sinaOAuthResource" class="org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails">
+		<property name="clientId" value="1318036310" />
+		<property name="clientSecret" value="1bd12cbd47c392ebf8e49fbe88782d1a" />
+		<property name="accessTokenUri" value="https://api.weibo.com/oauth2/access_token" />
+		<property name="userAuthorizationUri" value="https://api.weibo.com/oauth2/authorize" />
+		<property name="grantType" value="authorization_code" />
+		<property name="clientAuthenticationScheme" value="query" />
+		<property name="preEstablishedRedirectUri" value="http://www.longertec.com/m-console/sina/oauth2" />
+	</bean>
+</beans>

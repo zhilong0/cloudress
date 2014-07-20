@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="mongoCredentials" class="com.df.idm.morphia.MongoCredentialsFactoryBean">
+	</bean>
+	<bean id="mongoClientOptions" class="com.df.idm.morphia.MongoClientOptionsFactoryBean">
+		<property name="socketTimeout" value="10000" />
+		<property name="readSecondary" value="true" />
+	</bean>
+	<bean id="mongoClient" class="com.df.idm.morphia.MongoClientFactoryBean">
+		<property name="addresses">
+			<list>
+				<value>127.0.0.1:27017</value>
+			</list>
+		</property>
+		<property name="credentials" ref="mongoCredentials" />
+		<property name="mongoClientOptions" ref="mongoClientOptions" />
+	</bean>
+	<bean id="morphia" class="com.df.idm.morphia.MorphiaFactoryBean">
+		<property name="mapClasses">
+			<array value-type="java.lang.String">
+				<value>com.df.idm.model.User</value>
+				<value>com.df.idm.model.Role</value>
+				<value>com.df.idm.model.Permission</value>
+			</array>
+		</property>
+	</bean>
+	<bean id="idmDataStore" class="com.df.idm.morphia.DataStoreFactoryBean">
+		<property name="mongoClient" ref="mongoClient" />
+		<property name="morphia" ref="morphia" />
+		<property name="dbName" value="idm" />
+	</bean>
+	<bean id="asyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="100" />
+		<property name="queueCapacity" value="25" />
+	</bean>
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.163.com" />
+		<property name="port" value="25" />
+		<property name="username" value="delicacy_fusion" />
+		<property name="password" value="5223856xjp" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource" ref="validationMessageSource" />
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+	</bean>
+	<bean id="validationMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<array value-type="java.lang.String">
+				<value>classpath*:messages/idm_validation_messages</value>
+			</array>
+		</property>
+	</bean>
+</beans>

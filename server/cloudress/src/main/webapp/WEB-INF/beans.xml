@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd ">
+	<import resource="classpath:META-INF/idm-beans.xml" />
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+	<bean id="registrationMessageNotifier" class="com.df.idm.registration.message.DefaultRegistrationMessageNotifier">
+		<property name="emailContextProvider" ref="emailContextProvider" />
+		<property name="richMailSender" ref="richMailSender" />
+		<property name="taskExecutor" ref="asyncTaskExecutor" />
+		<property name="verifyUrlPrefix" value="/rs/users/email/verify" />
+	</bean>
+	<bean id="emailVerificationResultHandler" class="com.df.idm.registration.ForwardVerificationResultHandler">
+		<property name="succeedUrl" value="/verify/success" />
+		<property name="failedUrl" value="/verify/failure" />
+	</bean>
+	<bean id="objectMapper" class="com.df.http.rs.json.ObjectMapperFactoryBean" />
+	<bean id="jacksonContextResolver" class="com.df.http.rs.provider.JacksonContextResolver" />
+	<bean id="idmExceptionMapper" class="com.df.http.rs.provider.IdmExceptionMapper" />
+	<bean id="validationExceptionMapper" class="com.df.http.rs.provider.ValidationExceptionMapper">
+		<constructor-arg index="0" ref="objectMapper" />
+	</bean>
+	<bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref bean="basicAuthenticationProvider" />
+			</list>
+		</property>
+	</bean>
+	<context:component-scan base-package="com.df.idm.rs.resources" />
+</beans>

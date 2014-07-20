@@ -1,0 +1,4 @@
+include ':common'
+project(':common').projectDir = new File(settingsDir, '../common')
+include ':idm'
+project(':idm').projectDir = new File(settingsDir, '../idm')
