@@ -11,5 +11,5 @@ bin/
 #############
 ## Gradle
 #############
-.gradle 
+.gradle/ 
 bin/
