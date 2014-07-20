@@ -67,13 +67,8 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 		ops.set(USER.AGE_PROPERTY, user.getAge());
 		ops.set(USER.FIRST_NAME_PROPERTY, user.getFirstName());
 		ops.set(USER.LAST_NAME_PROPERTY, user.getLastName());
-		ops.set(USER.IS_CELLPHONE_VERIFIED, user.isCellphoneVerified());
-		ops.set(USER.IS_EMAIL_VERIFIED_PROPERTY, user.isEmailVerified());
-		ops.set(USER.LAST_LOGIN_PROPERTY, user.getLastLogin());
 		ops.set(USER.NICK_NAME_PROPERTY, user.getNickName());
-		ops.set(USER.IS_DISABLED_PROPERTY, user.isDisabled());
 		ops.set(USER.CHANGE_TIME_PROPERTY, new Date());
-		ops.set(USER.ROLES_PROPERTY, user.getRoles());
 		return this.getDatastore().update(user, ops).getUpdatedCount();
 	}
 

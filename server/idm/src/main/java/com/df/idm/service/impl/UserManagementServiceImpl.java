@@ -204,7 +204,9 @@ public class UserManagementServiceImpl implements UserManagementService {
 
 	@Override
 	public void disableUser(String userId) {
-		int updated = userDao.updateUserProperties(userId, new Property<Boolean>(Constants.USER.IS_DISABLED_PROPERTY, true));
+		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_DISABLED_PROPERTY, true);
+		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGE_TIME_PROPERTY, new Date());
+		int updated = userDao.updateUserProperties(userId, p1, p2);
 		if (updated == 0) {
 			throw UserException.userIdNotFound(userId);
 		}
@@ -247,5 +249,33 @@ public class UserManagementServiceImpl implements UserManagementService {
 		found.setEmailVerified(true);
 		userDao.updateUserProperties(found.getId(), new Property<Boolean>(Constants.USER.CELL_PHONE_PROPERTY, true));
 		return true;
+	}
+
+	@Override
+	public void unLockUser(String userId) {
+		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_LOCKED_PROPERTY, false);
+		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGE_TIME_PROPERTY, new Date());
+		int updated = userDao.updateUserProperties(userId, p1, p2);
+		if (updated == 0) {
+			throw UserException.userIdNotFound(userId);
+		}
+	}
+
+	@Override
+	public void lockUser(String userId) {
+		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_LOCKED_PROPERTY, true);
+		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGE_TIME_PROPERTY, new Date());
+		int updated = userDao.updateUserProperties(userId, p1, p2);
+		if (updated == 0) {
+			throw UserException.userIdNotFound(userId);
+		}
+	}
+
+	@Override
+	public void updateUserLastLogin(String userId, Date lastLoginDate) {
+		int updated = userDao.updateUserProperties(userId, new Property<Date>(Constants.USER.LAST_LOGIN_PROPERTY, lastLoginDate));
+		if (updated == 0) {
+			throw UserException.userIdNotFound(userId);
+		}
 	}
 }

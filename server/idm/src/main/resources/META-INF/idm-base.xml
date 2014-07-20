@@ -56,7 +56,7 @@
 	<bean id="validationMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
 			<array value-type="java.lang.String">
-				<value>classpath*:messages/idm_validation_messages</value>
+				<value>classpath:messages/idm_validation_messages</value>
 			</array>
 		</property>
 	</bean>

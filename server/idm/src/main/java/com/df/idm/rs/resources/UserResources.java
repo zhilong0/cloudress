@@ -2,6 +2,7 @@ package com.df.idm.rs.resources;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -13,8 +14,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.df.idm.exception.UserException;
 import com.df.idm.model.User;
 import com.df.idm.registration.EmailVerificationResultHandler;
 import com.df.idm.registration.ForwardVerificationResultHandler;
@@ -69,13 +73,31 @@ public class UserResources {
 	}
 
 	@GET
+	@Path("/")
+	public User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+			String name = authentication.getName();
+			return userManagementService.getUserByCode(name);
+		}
+		return null;
+	}
+
+	@GET
 	@Path("/id/{id}")
 	public User getUserById(@PathParam("id") String userId) {
 		User found = userManagementService.getUserById(userId);
 		if (found != null) {
 			found.cleanPassword();
+			return found;
 		}
-		return found;
+		throw UserException.userIdNotFound(userId);
+	}
+
+	@DELETE
+	@Path("/id/{id}")
+	public void disableUserById(@PathParam("id") String userId) {
+		userManagementService.disableUser(userId);
 	}
 
 	@GET
@@ -84,8 +106,9 @@ public class UserResources {
 		User found = userManagementService.getUserByCode(userCode);
 		if (found != null) {
 			found.cleanPassword();
+			return found;
 		}
-		return found;
+		throw UserException.userCodeNotFound(userCode);
 	}
 
 	@GET

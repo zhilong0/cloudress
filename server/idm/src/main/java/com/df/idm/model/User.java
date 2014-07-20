@@ -64,7 +64,7 @@ public class User implements Serializable {
 	@Indexed(name = "user_code_idx", unique = true, dropDups = false)
 	private String code;
 
-	private boolean locked;
+	private boolean isLocked;
 
 	private Date createdTime;
 
@@ -207,11 +207,11 @@ public class User implements Serializable {
 	}
 
 	public boolean isLocked() {
-		return locked;
+		return isLocked;
 	}
 
-	public void setLocked(boolean locked) {
-		this.locked = locked;
+	public void setLocked(boolean isLocked) {
+		this.isLocked = isLocked;
 	}
 
 	public String getImageId() {

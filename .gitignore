@@ -1,15 +1,14 @@
 #################
 ## Eclipse
 #################
-
 *.project
 .classpath
 .metadata
 .settings/
 bin/
-
 #############
 ## Gradle
 #############
-.gradle/ 
+.gradle/
 bin/
+build/

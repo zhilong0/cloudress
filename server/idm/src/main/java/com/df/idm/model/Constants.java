@@ -39,8 +39,10 @@ public interface Constants {
 		public static final String IS_CELLPHONE_VERIFIED = "isCellphoneVerified";
 
 		public static final String IS_DISABLED_PROPERTY = "isDisabled";
-		
+
 		public static final String ROLES_PROPERTY = "roles";
+
+		public static final String IS_LOCKED_PROPERTY = "isLocked";
 
 	}
 

@@ -1,5 +1,7 @@
 package com.df.idm.service.contract;
 
+import java.util.Date;
+
 import com.df.idm.model.ExternalUserReference;
 import com.df.idm.model.User;
 import com.df.idm.model.ExternalUserReference.Provider;
@@ -33,5 +35,11 @@ public interface UserManagementService {
 	User getUserByCellphone(String cellphone);
 
 	void disableUser(String userId);
+
+	void unLockUser(String userId);
+
+	void lockUser(String userId);
+	
+	void updateUserLastLogin(String userId, Date lastLoginDate);
 
 }

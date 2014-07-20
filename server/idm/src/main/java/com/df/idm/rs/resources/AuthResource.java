@@ -1,5 +1,7 @@
 package com.df.idm.rs.resources;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,6 +25,8 @@ import org.springframework.stereotype.Component;
 import com.df.idm.authentication.UserPropertyAuthenticationToken;
 import com.df.idm.authentication.http.AuthenticationRequest;
 import com.df.idm.authentication.http.AuthenticationResponse;
+import com.df.idm.model.User;
+import com.df.idm.service.contract.UserManagementService;
 
 @Path("/auth")
 @Produces("application/json;charset=UTF-8")
@@ -31,6 +35,9 @@ public class AuthResource {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private UserManagementService userManagementService;
 
 	private RememberMeServices rememberMeServices = new NullRememberMeServices();
 
@@ -42,6 +49,10 @@ public class AuthResource {
 
 	public void setRememberMeServices(RememberMeServices rememberMeServices) {
 		this.rememberMeServices = rememberMeServices;
+	}
+
+	public UserManagementService getUserManagementService() {
+		return userManagementService;
 	}
 
 	@POST
@@ -59,6 +70,10 @@ public class AuthResource {
 			aRep.setAuthenticated(true);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			rememberMeServices.loginSuccess(request, response, authentication);
+			User user = userManagementService.getUserByCode(ar.getAccount());
+			if (user != null) {
+				userManagementService.updateUserLastLogin(user.getId(), new Date());
+			}
 		} catch (AuthenticationException ex) {
 			logger.error("authentication failure for user " + ar.getAccount(), ex);
 			aRep.setAuthenticated(false);
