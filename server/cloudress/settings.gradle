@@ -2,3 +2,5 @@ include ':common'
 project(':common').projectDir = new File(settingsDir, '../common')
 include ':idm'
 project(':idm').projectDir = new File(settingsDir, '../idm')
+include ':blob-store'
+project(':blob-store').projectDir = new File(settingsDir, '../blob-store')

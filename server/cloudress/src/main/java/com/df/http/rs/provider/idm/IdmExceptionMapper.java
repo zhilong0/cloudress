@@ -1,9 +1,10 @@
-package com.df.http.rs.provider;
+package com.df.http.rs.provider.idm;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import com.df.http.rs.provider.ErrorResponse;
 import com.df.idm.exception.IdmException;
 
 @Provider

@@ -11,6 +11,7 @@ repositories {
 dependencies {
 	compile project(':common')
 	compile project(':idm')
+	compile project(':blob-store')
 	providedRuntime "javax.servlet:javax.servlet-api:3.1.0"
 	compile "org.slf4j:slf4j-log4j12:1.7.5"
 	compile "org.springframework:spring-core:4.0.6.RELEASE"

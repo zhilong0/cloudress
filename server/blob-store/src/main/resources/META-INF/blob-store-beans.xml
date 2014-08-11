@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="mongoClientOptions" class="com.df.idm.morphia.MongoClientOptionsFactoryBean">
+		<property name="socketTimeout" value="10000" />
+		<property name="readSecondary" value="true" />
+	</bean>
+	<bean id="mongoClient" class="com.df.idm.morphia.MongoClientFactoryBean">
+		<property name="addresses">
+			<list>
+				<value>127.0.0.1:27017</value>
+			</list>
+		</property>
+		<property name="credentials" ref="mongoCredentials" />
+		<property name="mongoClientOptions" ref="mongoClientOptions" />
+	</bean>
+	<bean id="mongoDB" class="com.df.blobstore.mongo.MongoDBFactoryBean">
+		<property name="dbName" value="blob_store" />
+		<property name="mongoClient" ref="mongoClient" />
+	</bean>
+	<bean id="imageService" class="com.df.blobstore.image.ImageServiceImpl">
+		<constructor-arg index="0" ref="imageServiceRoute" />
+	</bean>
+	<bean id="imageServiceRoute" class="com.df.blobstore.image.mongo.MongoDBImageServiceRoute">
+		<constructor-arg index="0" ref="mongoDB" />
+		<constructor-arg index="1" value="image_store" />
+	</bean>
+	<bean id="imageLinkCreator" class="com.df.blobstore.image.http.DefaultImageLinkCreator">
+		<property name="imageRequestPrefix" value="/image" />
+	</bean>
+	<bean id="imageReferenceFactory" class="com.df.blobstore.image.http.DefaultImageReferenceFactory">
+		<constructor-arg index="0" ref="imageLinkCreator" />
+		<constructor-arg index="1" ref="imageAttributesLoader" />
+	</bean>
+	<bean id="imageAttributesLoader" class="com.df.blobstore.image.mongo.MongoDBImageAttributesLoader">
+		<constructor-arg index="0" ref="mongoDB" />
+		<constructor-arg index="1" value="images_store" />
+	</bean>
+	<bean id="objectMapper" class="com.df.core.json.ext.ObjectMapperFactoryBean" />
+</beans>

@@ -21,7 +21,9 @@ public class DataStoreFactoryBean extends AbstractFactoryBean<Datastore> {
 
 	@Override
 	protected Datastore createInstance() throws Exception {
-		return morphia.createDatastore(mongoClient, dbName);
+		Datastore dataStore = morphia.createDatastore(mongoClient, dbName);
+		dataStore.ensureIndexes();
+		return dataStore;
 	}
 
 	@Override

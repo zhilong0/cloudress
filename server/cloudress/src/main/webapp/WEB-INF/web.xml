@@ -23,6 +23,14 @@
 		<servlet-name>javax.ws.rs.core.Application</servlet-name>
 		<url-pattern>/rs/*</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>ImageServlet</servlet-name>
+		<servlet-class>com.df.blobstore.image.http.DefaultImageServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ImageServlet</servlet-name>
+		<url-pattern>/images/*</url-pattern>
+	</servlet-mapping>
 	<listener>
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>

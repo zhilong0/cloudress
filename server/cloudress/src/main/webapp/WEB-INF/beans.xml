@@ -6,6 +6,7 @@
 	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd ">
 	<import resource="classpath:META-INF/idm-beans.xml" />
+	<import resource="classpath:META-INF/blob-store-beans.xml" />
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
 	<bean id="registrationMessageNotifier" class="com.df.idm.registration.message.DefaultRegistrationMessageNotifier">
 		<property name="emailContextProvider" ref="emailContextProvider" />
@@ -19,10 +20,11 @@
 	</bean>
 	<bean id="objectMapper" class="com.df.http.rs.json.ObjectMapperFactoryBean" />
 	<bean id="jacksonContextResolver" class="com.df.http.rs.provider.JacksonContextResolver" />
-	<bean id="idmExceptionMapper" class="com.df.http.rs.provider.IdmExceptionMapper" />
-	<bean id="validationExceptionMapper" class="com.df.http.rs.provider.ValidationExceptionMapper">
+	<bean id="idmExceptionMapper" class="com.df.http.rs.provider.idm.IdmExceptionMapper" />
+	<bean id="validationExceptionMapper" class="com.df.http.rs.provider.idm.ValidationExceptionMapper">
 		<constructor-arg index="0" ref="objectMapper" />
 	</bean>
+	<bean id="imageServiceExceptionMapper" class="com.df.http.rs.provider.image.ImageServiceExceptionMapper" />
 	<bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
@@ -31,4 +33,7 @@
 		</property>
 	</bean>
 	<context:component-scan base-package="com.df.idm.rs.resources" />
+	<bean id="imageResource" class="com.df.blobstore.image.http.resources.ImageResources">
+		<constructor-arg index="0" ref="imageService" />
+	</bean>
 </beans>

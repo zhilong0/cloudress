@@ -1,4 +1,4 @@
-package com.df.http.rs.provider;
+package com.df.http.rs.provider.idm;
 
 import java.util.ArrayList;
 
@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.df.http.rs.provider.ErrorResponse;
 import com.df.http.rs.provider.ErrorResponse.ErrorFormat;
 import com.df.idm.common.validation.exception.ValidationException;
 

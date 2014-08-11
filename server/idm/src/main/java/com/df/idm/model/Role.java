@@ -17,7 +17,7 @@ public class Role implements GrantedAuthority {
 	@Id
 	ObjectId id;
 
-	@Indexed
+	@Indexed(name="role_name_idx")
 	private String name;
 
 	private String description;
