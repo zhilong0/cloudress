@@ -3,13 +3,13 @@
 	xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean id="mongoCredentials" class="com.df.idm.morphia.MongoCredentialsFactoryBean">
+	<bean id="mongoCredentials" class="com.df.common.morphia.MongoCredentialsFactoryBean">
 	</bean>
-	<bean id="mongoClientOptions" class="com.df.idm.morphia.MongoClientOptionsFactoryBean">
+	<bean id="mongoClientOptions" class="com.df.common.morphia.MongoClientOptionsFactoryBean">
 		<property name="socketTimeout" value="10000" />
 		<property name="readSecondary" value="true" />
 	</bean>
-	<bean id="mongoClient" class="com.df.idm.morphia.MongoClientFactoryBean">
+	<bean id="mongoClient" class="com.df.common.morphia.MongoClientFactoryBean">
 		<property name="addresses">
 			<list>
 				<value>127.0.0.1:27017</value>
@@ -18,7 +18,7 @@
 		<property name="credentials" ref="mongoCredentials" />
 		<property name="mongoClientOptions" ref="mongoClientOptions" />
 	</bean>
-	<bean id="morphia" class="com.df.idm.morphia.MorphiaFactoryBean">
+	<bean id="morphia" class="com.df.common.morphia.MorphiaFactoryBean">
 		<property name="mapClasses">
 			<array value-type="java.lang.String">
 				<value>com.df.idm.model.User</value>
@@ -27,7 +27,7 @@
 			</array>
 		</property>
 	</bean>
-	<bean id="idmDataStore" class="com.df.idm.morphia.DataStoreFactoryBean">
+	<bean id="idmDataStore" class="com.df.common.morphia.DataStoreFactoryBean">
 		<property name="mongoClient" ref="mongoClient" />
 		<property name="morphia" ref="morphia" />
 		<property name="dbName" value="idm" />

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<import resource="classpath:META-INF/speciality-base.xml" />
+	<bean id="regionDao" class="com.df.spec.locality.dao.mongo.RegionDaoImpl">
+		<constructor-arg index="0" ref="specialityDataStore" />
+	</bean>
+	<bean id="shopDao" class="com.df.spec.locality.dao.mongo.ShopDaoImpl">
+		<constructor-arg index="0" ref="specialityDataStore" />
+	</bean>
+	<bean id="specialityDao" class="com.df.spec.locality.dao.mongo.SpecialityDaoImpl">
+		<constructor-arg index="0" ref="specialityDataStore" />
+	</bean>
+	<bean id="proxy" class="org.apache.http.HttpHost">
+		<constructor-arg index="0" value="proxy.sha.sap.corp" />
+		<constructor-arg index="1" value="8080" />
+		<constructor-arg index="2" value="http" />
+	</bean>
+	<bean id="requestFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+		<constructor-arg>
+			<bean class="com.df.common.http.client.HttpClientBeanFactory">
+				<property name="proxy" ref="proxy" />
+				<property name="httpClientConnectionManager">
+					<bean class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" />
+				</property>
+			</bean>
+		</constructor-arg>
+		<property name="connectTimeout" value="5000" />
+	</bean>
+	<bean id="objectMapper" class="com.df.common.json.ObjectMapperFactoryBean" />
+	<bean id="baiduMessageConverter" class="com.df.spec.locality.http.converter.BaiduMessageConverter">
+		<property name="objectMapper" ref="objectMapper" />
+	</bean>
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<constructor-arg index="0" ref="requestFactory" />
+		<property name="messageConverters">
+			<list>
+				<ref bean="baiduMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<bean id="geoService" class="com.df.spec.locality.geo.baidu.BaiduGeoServiceImpl">
+		<constructor-arg index="0" ref="restTemplate" />
+		<constructor-arg index="1" value="pCPMbjiAzVcWs26VqGw9PUQr" />
+	</bean>
+	<bean id="regionService" class="com.df.spec.locality.service.impl.RegionServiceImpl">
+		<constructor-arg index="0" ref="regionDao" />
+		<constructor-arg index="1" ref="geoService" />
+	</bean>
+	<bean id="specialityService" class="com.df.spec.locality.service.impl.SpecialityServiceImpl">
+		<constructor-arg index="0" ref="specialityDao" />
+		<constructor-arg index="1" ref="regionService" />
+		<constructor-arg index="2" ref="imageService" />
+	</bean>
+</beans>

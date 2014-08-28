@@ -7,6 +7,7 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd ">
 	<import resource="classpath:META-INF/idm-beans.xml" />
 	<import resource="classpath:META-INF/blob-store-beans.xml" />
+	<import resource="classpath:META-INF/speciality-beans.xml" />
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
 	<bean id="registrationMessageNotifier" class="com.df.idm.registration.message.DefaultRegistrationMessageNotifier">
 		<property name="emailContextProvider" ref="emailContextProvider" />
@@ -18,7 +19,7 @@
 		<property name="succeedUrl" value="/verify/success" />
 		<property name="failedUrl" value="/verify/failure" />
 	</bean>
-	<bean id="objectMapper" class="com.df.http.rs.json.ObjectMapperFactoryBean" />
+	<bean id="objectMapper" class="com.df.common.json.ObjectMapperFactoryBean" />
 	<bean id="jacksonContextResolver" class="com.df.http.rs.provider.JacksonContextResolver" />
 	<bean id="idmExceptionMapper" class="com.df.http.rs.provider.idm.IdmExceptionMapper" />
 	<bean id="validationExceptionMapper" class="com.df.http.rs.provider.idm.ValidationExceptionMapper">
@@ -35,5 +36,15 @@
 	<context:component-scan base-package="com.df.idm.rs.resources" />
 	<bean id="imageResource" class="com.df.blobstore.image.http.resources.ImageResources">
 		<constructor-arg index="0" ref="imageService" />
+	</bean>
+	<bean id="regionResource" class="com.df.spec.locality.http.resources.RegionResources">
+		<property name="regionService" ref="regionService" />
+	</bean>
+	<bean id="specialityResource" class="com.df.spec.locality.http.resources.SpecialityResources">
+		<property name="specialityService" ref="specialityService" />
+	</bean>
+	<bean id="geoResource" class="com.df.spec.locality.http.resources.GeoResources">
+		<property name="regionService" ref="regionService" />
+		<property name="geoService" ref="geoService" />
 	</bean>
 </beans>

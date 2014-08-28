@@ -1,4 +1,4 @@
-package com.df.idm.morphia;
+package com.df.common.morphia;
 
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.config.AbstractFactoryBean;

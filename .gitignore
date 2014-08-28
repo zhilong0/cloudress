@@ -12,3 +12,4 @@ bin/
 .gradle/
 bin/
 build/
+**/gradle.properties

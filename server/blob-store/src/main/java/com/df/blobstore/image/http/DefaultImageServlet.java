@@ -3,12 +3,12 @@ package com.df.blobstore.image.http;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.ImageServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DefaultImageServlet extends ImageServlet {
 

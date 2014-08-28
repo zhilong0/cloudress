@@ -1,4 +1,4 @@
-package com.df.idm.morphia;
+package com.df.common.morphia;
 
 import java.util.ArrayList;
 import java.util.Arrays;

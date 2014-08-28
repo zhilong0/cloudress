@@ -44,8 +44,8 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 	@Override
 	public User getUserByExternalId(String externalId, Provider provider) {
 		Query<User> query = this.getDatastore().createQuery(User.class);
-		query.filter(USER.EXTERNAL_USER_ID_PROPERTY, externalId);
-		query.filter(USER.EXTERNAL_USER_PROVIDER_PROPERTY, provider);
+		query.filter(USER.EXTERNAL_USER_ID_PROPERTY + " =", externalId);
+		query.filter(USER.EXTERNAL_USER_PROVIDER_PROPERTY + " =", provider);
 		return query.get();
 	}
 

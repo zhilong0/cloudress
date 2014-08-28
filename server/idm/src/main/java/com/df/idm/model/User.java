@@ -20,7 +20,7 @@ import com.df.idm.validation.group.UserConstraintGroup.CreateUser;
 import com.df.idm.validation.group.UserConstraintGroup.CreateUserByCellPhone;
 import com.df.idm.validation.group.UserConstraintGroup.CreateUserByEmail;
 
-@Entity("users")
+@Entity(value = "users", noClassnameStored = true)
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;

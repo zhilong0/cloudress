@@ -1,4 +1,4 @@
-package com.df.idm.morphia;
+package com.df.common.morphia;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
