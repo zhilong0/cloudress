@@ -28,11 +28,11 @@
 		<constructor-arg index="1" value="image_store" />
 	</bean>
 	<bean id="imageLinkCreator" class="com.df.blobstore.image.http.DefaultImageLinkCreator">
-		<property name="imageRequestPrefix" value="/image" />
+		<property name="imageRequestPrefix" value="/images" />
 	</bean>
-	<bean id="imageReferenceFactory" class="com.df.blobstore.image.http.DefaultImageReferenceFactory">
+	<bean id="imageDetailsFactory" class="com.df.blobstore.image.http.DefaultImageDetailsFactory">
 		<constructor-arg index="0" ref="imageLinkCreator" />
-		<constructor-arg index="1" ref="imageAttributesLoader" />
+		<constructor-arg index="1" ref="imageService" />
 	</bean>
 	<bean id="imageAttributesLoader" class="com.df.blobstore.image.mongo.MongoDBImageAttributesLoader">
 		<constructor-arg index="0" ref="mongoDB" />

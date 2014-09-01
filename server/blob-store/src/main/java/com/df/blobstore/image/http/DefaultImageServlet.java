@@ -20,7 +20,11 @@ public class DefaultImageServlet extends ImageServlet {
 		if (pathInfo != null) {
 			String[] pathes = pathInfo.split("/");
 			if (pathes.length >= 2) {
-				return new ImageKey(pathes[1]);
+				if(pathes[1].lastIndexOf(".") ==-1){
+					return new ImageKey(pathes[1]);
+				}else{
+					return new ImageKey(pathes[1].substring(0, pathes[1].lastIndexOf(".")));
+				}
 			}
 		}
 		return null;
@@ -41,7 +45,7 @@ public class DefaultImageServlet extends ImageServlet {
 	@Override
 	protected void initImageReferenceFactory(ServletConfig config) {
 		WebApplicationContext wc = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
-		ImageReferenceFactory irf = wc.getAutowireCapableBeanFactory().getBean(ImageReferenceFactory.class);
+		ImageDetailsFactory irf = wc.getAutowireCapableBeanFactory().getBean(ImageDetailsFactory.class);
 		this.setImageReferenceFactory(irf);
 	}
 

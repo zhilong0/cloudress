@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ public class RegionServiceImpl implements RegionService {
 	private RegionDao regionDao;
 
 	private GeoService geoService;
+
+	private static final Charset UTF8 = Charset.forName("utf-8");
 
 	private static final Logger logger = LoggerFactory.getLogger(RegionServiceImpl.class);
 
@@ -74,7 +77,7 @@ public class RegionServiceImpl implements RegionService {
 	@Override
 	public void importFromCSV(InputStream in, boolean continueOnError) {
 		Assert.notNull(in);
-		Reader reader = new InputStreamReader(in);
+		Reader reader = new InputStreamReader(in, UTF8);
 		CSVReaderBuilder<String[]> builder = new CSVReaderBuilder<String[]>(reader).strategy(CSVStrategy.UK_DEFAULT);
 		CSVReader<String[]> csvReader = builder.entryParser(new DefaultCSVEntryParser()).build();
 		List<String[]> entries;
@@ -95,7 +98,7 @@ public class RegionServiceImpl implements RegionService {
 
 				}
 			}
-			Region region = new Region(entry[0], entry[1]);
+			Region region = new Region(entry[0].trim(), entry[1].trim());
 			if (entry.length >= 3) {
 				region.setDistrict(entry[2]);
 			}
@@ -103,7 +106,7 @@ public class RegionServiceImpl implements RegionService {
 				this.addRegion(region);
 			} catch (DuplicateRegionException ex) {
 				if (continueOnError) {
-					logger.warn("Region %s already exist", ex.getRegion());
+					logger.warn("Region " + ex.getRegion() + " already exist");
 					continue;
 				} else {
 					throw ex;

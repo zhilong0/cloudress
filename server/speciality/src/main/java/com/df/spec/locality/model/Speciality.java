@@ -2,6 +2,7 @@ package com.df.spec.locality.model;
 
 import java.io.Serializable;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
@@ -11,22 +12,22 @@ public class Speciality implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String code;
+	ObjectId code;
 
 	private String name;
 
-	private String descriptor;
+	private String description;
 
 	private String regionCode;
 
 	private ImageSet imageSet = new ImageSet();
 
 	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
+		if (code != null) {
+			return code.toHexString();
+		} else {
+			return null;
+		}
 	}
 
 	public String getName() {
@@ -37,16 +38,12 @@ public class Speciality implements Serializable {
 		this.name = name;
 	}
 
-	public String getDescriptor() {
-		return descriptor;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDescriptor(String descriptor) {
-		this.descriptor = descriptor;
-	}
-
-	public void addImage(String imageId) {
-		imageSet.addImage(imageId);
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void removeImage(String imageId) {
@@ -64,5 +61,4 @@ public class Speciality implements Serializable {
 	public void setRegionCode(String regionCode) {
 		this.regionCode = regionCode;
 	}
-
 }

@@ -25,7 +25,7 @@ public class Constants {
 		public static final String ADDRESS = "address";
 
 	}
-	
+
 	public static interface SPECIALITY {
 
 		public static final String CODE = "_id";
@@ -33,6 +33,11 @@ public class Constants {
 		public static final String NAME = "name";
 
 		public static final String REGION_CODE = "regionCode";
+
+		public static final String DESCRIPTION = "description";
+		
+		public static final String IMAGE_SET = "imageSet";
+
 
 	}
 

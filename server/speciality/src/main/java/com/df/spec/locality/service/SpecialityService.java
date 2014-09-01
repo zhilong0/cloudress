@@ -10,10 +10,14 @@ public interface SpecialityService {
 
 	List<Speciality> getSpecialityListByRegionCode(String regionCode);
 
-	String uploadSpecialityImage(String specialityCode, byte[] imageData);
+	String uploadSpecialityImage(String specialityCode, byte[] imageData, String imageName);
 
 	void deleteSpecialityImage(String specialityCode, String imageId);
-	
+
 	Speciality getSpecialityByCode(String specialityCode);
+
+	Speciality findSpeciality(String regionCode, String specialityName);
 	
+	void update(Speciality spec);
+
 }

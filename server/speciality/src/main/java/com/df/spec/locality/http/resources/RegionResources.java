@@ -6,7 +6,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 import org.springframework.stereotype.Component;
 
@@ -33,8 +32,8 @@ public class RegionResources {
 	}
 
 	@GET
-	@Path("/coordinate")
-	public Region getRegionByCoordinate(@QueryParam(value = "latitide") double latitude, @QueryParam(value = "longitude") double longitude) {
+	@Path("/{latitude},{longitude}")
+	public Region getRegionByCoordinate(@PathParam(value = "latitude") double latitude, @PathParam(value = "longitude") double longitude) {
 		Coordinate coordinate = new Coordinate(CoordType.WGS84LL, latitude, longitude);
 		return regionService.getRegionByCoordinate(coordinate);
 	}

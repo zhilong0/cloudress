@@ -5,6 +5,8 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.df.blobstore.image.ImageAttributes;
+import com.df.blobstore.image.ImageFormat;
 import com.df.spec.locality.exception.SpecialityAlreadyExistException;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
@@ -21,8 +23,10 @@ public class MongoSpecialityDaoTest extends SpecialityBaseTest {
 	public void testAddSpeciality() {
 		Speciality speciality = new Speciality();
 		speciality.setName("臭豆腐");
-		speciality.addImage("123455");
-		speciality.addImage("434343");
+		ImageAttributes attributes = new ImageAttributes("p1", 1024, 768, ImageFormat.JPEG);
+		speciality.getImageSet().addImage("123455", attributes);
+		ImageAttributes attributes2 = new ImageAttributes("p2", 1024, 768, ImageFormat.JPEG);
+		speciality.getImageSet().addImage("434343", attributes2);
 		Region region = new Region("湖南省", "长沙市", "");
 		try {
 			regionDao.addRegion(region);
@@ -39,8 +43,6 @@ public class MongoSpecialityDaoTest extends SpecialityBaseTest {
 	public void testAddSpecialityWithSameNameInSameRegion() {
 		Speciality speciality = new Speciality();
 		speciality.setName("臭豆腐");
-		speciality.addImage("123455");
-		speciality.addImage("434343");
 		Region region = new Region("湖南省", "长沙市", "");
 		try {
 			regionDao.addRegion(region);

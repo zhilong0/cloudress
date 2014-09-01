@@ -50,4 +50,9 @@ public class ImageServiceImpl implements ImageService {
 		}
 		return succeed ? image : null;
 	}
+
+	@Override
+	public ImageAttributes getImageAttributes(ImageKey imageKey) {
+		return serviceRoute.getImageAttributesLoader().loadImageAttributes(imageKey);
+	}
 }

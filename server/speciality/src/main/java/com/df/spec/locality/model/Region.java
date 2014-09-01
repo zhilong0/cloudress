@@ -2,6 +2,7 @@ package com.df.spec.locality.model;
 
 import java.io.Serializable;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
@@ -14,7 +15,7 @@ public class Region implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String code;
+	ObjectId code;
 
 	private String province;
 
@@ -60,11 +61,11 @@ public class Region implements Serializable {
 	}
 
 	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
+		if (code != null) {
+			return code.toHexString();
+		} else {
+			return null;
+		}
 	}
 
 	@Override

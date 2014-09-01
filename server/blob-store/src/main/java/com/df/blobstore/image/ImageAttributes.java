@@ -19,6 +19,9 @@ public final class ImageAttributes implements Serializable {
 
 	private Date createdDate;
 
+	ImageAttributes() {
+	}
+
 	public ImageAttributes(String imageName) {
 		this.name = imageName;
 	}

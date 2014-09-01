@@ -59,9 +59,11 @@ public class ImageResources {
 
 	@GET
 	@Path("/{imageId}")
-	public Response getItemImage(@PathParam("imageId") String imageId) {
+	public Response getImage(@PathParam("imageId") String imageId) {
 		int index = imageId.lastIndexOf(".");
-		imageId = imageId.substring(0, index);
+		if(index!=-1){
+			imageId = imageId.substring(0, index);
+		}
 		Image image = imageService.fetchImage(new ImageKey(imageId));
 		if (image == null) {
 			return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD_TYPE).build();

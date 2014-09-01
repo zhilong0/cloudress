@@ -30,7 +30,7 @@ public abstract class ImageServlet extends HttpServlet {
 
 	private ImageServiceImpl imageService;
 
-	private ImageReferenceFactory imageReferenceFactory;
+	private ImageDetailsFactory imageReferenceFactory;
 
 	private ObjectMapper objectMapper;
 
@@ -40,11 +40,11 @@ public abstract class ImageServlet extends HttpServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(ImageServlet.class);
 
-	public void setImageReferenceFactory(ImageReferenceFactory imageReferenceFactory) {
+	public void setImageReferenceFactory(ImageDetailsFactory imageReferenceFactory) {
 		this.imageReferenceFactory = imageReferenceFactory;
 	}
 
-	protected ImageReferenceFactory getImageReferenceFactory() {
+	protected ImageDetailsFactory getImageReferenceFactory() {
 		return imageReferenceFactory;
 	}
 
@@ -109,7 +109,7 @@ public abstract class ImageServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		byte[] imageData = readImageData(req);
 		ImageKey key = imageService.uploadImage(new ByteArrayInputStream(imageData), getOwnerFromRequest(req), getImageNameFromRequest(req));
-		ImageReference reference = imageReferenceFactory.createImageReference(key);
+		ImageDetails reference = imageReferenceFactory.createImageDetails(key);
 		resp.setContentType("application/json");
 		objectMapper.writeValue(resp.getOutputStream(), reference);
 	}

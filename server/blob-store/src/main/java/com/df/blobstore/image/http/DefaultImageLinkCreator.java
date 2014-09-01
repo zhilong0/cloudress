@@ -20,12 +20,22 @@ public class DefaultImageLinkCreator implements ImageLinkCreator {
 
 	@Override
 	public String createImageLink(ImageKey imageKey, ImageAttributes attributes) {
-		String suffix = attributes.getFormat().name().toLowerCase();
-		if (imageRequestPrefix != null) {
-			return imageRequestPrefix + "/" + imageKey + "." + suffix;
-		} else {
-			return "/" + imageKey + "." + suffix;
+		String suffix = "";
+		String link = "";
+		if (attributes != null) {
+			suffix = attributes.getFormat().getFileSuffix().toLowerCase();
 		}
+		if (imageRequestPrefix != null) {
+			link = imageRequestPrefix + "/" + imageKey + "." + suffix;
+		} else {
+			link = "/" + imageKey + "." + suffix;
+		}
+
+		if (suffix.length() == 0) {
+			link = link.substring(0, link.length() - 1);
+		}
+		return link;
+
 	}
 
 }

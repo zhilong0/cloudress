@@ -3,8 +3,10 @@ package com.df.spec.locality.service.impl;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
+import com.df.blobstore.image.ImageAttributes;
 import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.ImageService;
+import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.dao.SpecialityDao;
 import com.df.spec.locality.exception.SpecialityWithCodeNotFoundException;
 import com.df.spec.locality.model.Region;
@@ -41,13 +43,14 @@ public class SpecialityServiceImpl implements SpecialityService {
 	}
 
 	@Override
-	public String uploadSpecialityImage(String specialityCode, byte[] imageData) {
-		ImageKey key = imageService.uploadImage(new ByteArrayInputStream(imageData), null, null);
+	public String uploadSpecialityImage(String specialityCode, byte[] imageData, String imageName) {
+		ImageKey key = imageService.uploadImage(new ByteArrayInputStream(imageData), null, imageName);
 		Speciality found = specialityDao.getSpecialityByCode(specialityCode);
 		if (found == null) {
 			throw new SpecialityWithCodeNotFoundException(null, specialityCode);
 		}
-		specialityDao.addImage(specialityCode, key.getKey());
+		ImageAttributes imageAttributes = imageService.getImageAttributes(key);
+		specialityDao.addImage(specialityCode, new ImageDetails(key.getKey(), imageAttributes));
 		return key.getKey();
 	}
 
@@ -65,6 +68,15 @@ public class SpecialityServiceImpl implements SpecialityService {
 	@Override
 	public Speciality getSpecialityByCode(String specialityCode) {
 		return specialityDao.getSpecialityByCode(specialityCode);
+	}
+
+	public Speciality findSpeciality(String regionCode, String specialityName) {
+		return specialityDao.findSpeciality(regionCode, specialityName);
+	}
+
+	@Override
+	public void update(Speciality spec) {
+		specialityDao.update(spec);
 	}
 
 }

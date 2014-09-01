@@ -42,9 +42,26 @@
 	</bean>
 	<bean id="specialityResource" class="com.df.spec.locality.http.resources.SpecialityResources">
 		<property name="specialityService" ref="specialityService" />
+		<property name="imageLinkCreator" ref="imageLinkCreator" />
 	</bean>
 	<bean id="geoResource" class="com.df.spec.locality.http.resources.GeoResources">
 		<property name="regionService" ref="regionService" />
 		<property name="geoService" ref="geoService" />
+	</bean>
+	<bean id="provisionService" class="com.df.common.provision.ProvisionService" />
+	<bean id="regionImporter" class="com.df.spec.locality.provision.RegionImporter">
+		<constructor-arg index="0" value="1" />
+		<constructor-arg index="1" value="speciality" />
+		<constructor-arg index="2" ref="regionService" />
+	</bean>
+	<bean id="specialityImporter" class="com.df.spec.locality.provision.SpecialityImporter">
+		<constructor-arg index="0" value="2" />
+		<constructor-arg index="1" value="speciality" />
+		<property name="objectMapper" ref="objectMapper" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:speciality_sh.json</value>
+			</list>
+		</property>
 	</bean>
 </beans>
