@@ -9,7 +9,7 @@ public class SpecialitySource {
 
 	private Region region;
 
-	private String imageBaseLocation;
+	private String imageBaseUri;
 
 	private List<SpecialityInfo> specialities = new ArrayList<SpecialityInfo>();
 
@@ -21,12 +21,12 @@ public class SpecialitySource {
 		this.region = region;
 	}
 
-	public String getImageBaseLocation() {
-		return imageBaseLocation;
+	public String getImageBaseUri() {
+		return imageBaseUri;
 	}
 
-	public void setImageBaseLocation(String imageBaseLocation) {
-		this.imageBaseLocation = imageBaseLocation;
+	public void setImageBaseUri(String imageBaseUri) {
+		this.imageBaseUri = imageBaseUri;
 	}
 
 	public List<SpecialityInfo> getSpecialities() {
@@ -42,6 +42,8 @@ public class SpecialitySource {
 		private String name;
 
 		private String description;
+
+		private int rank;
 
 		private String[] images;
 
@@ -67,6 +69,14 @@ public class SpecialitySource {
 
 		public void setImages(String[] images) {
 			this.images = images;
+		}
+
+		public int getRank() {
+			return rank;
+		}
+
+		public void setRank(int rank) {
+			this.rank = rank;
 		}
 
 	}

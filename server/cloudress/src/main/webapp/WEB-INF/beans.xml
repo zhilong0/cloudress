@@ -20,8 +20,11 @@
 		<property name="failedUrl" value="/verify/failure" />
 	</bean>
 	<bean id="objectMapper" class="com.df.common.json.ObjectMapperFactoryBean" />
-	<bean id="jacksonContextResolver" class="com.df.http.rs.provider.JacksonContextResolver" />
+	<bean id="jacksonContextResolver" class="com.df.http.rs.provider.JacksonContextResolver">
+		<property name="objectMapper" ref="objectMapper" />
+	</bean>
 	<bean id="idmExceptionMapper" class="com.df.http.rs.provider.idm.IdmExceptionMapper" />
+	<bean id="specialityExceptionMapper" class="com.df.http.rs.provider.speciality.SpecialityExceptionMapper" />
 	<bean id="validationExceptionMapper" class="com.df.http.rs.provider.idm.ValidationExceptionMapper">
 		<constructor-arg index="0" ref="objectMapper" />
 	</bean>
@@ -48,6 +51,14 @@
 		<property name="regionService" ref="regionService" />
 		<property name="geoService" ref="geoService" />
 	</bean>
+	<bean id="shopResource" class="com.df.spec.locality.http.resources.ShopResources">
+		<property name="shopService" ref="shopService" />
+		<property name="imageLinkCreator" ref="imageLinkCreator" />
+	</bean>
+	<bean id="supplierResource" class="com.df.spec.locality.http.resources.SupplierResources">
+		<constructor-arg index="0" ref="geoService" />
+		<constructor-arg index="1" ref="supplierService" />
+	</bean>
 	<bean id="provisionService" class="com.df.common.provision.ProvisionService" />
 	<bean id="regionImporter" class="com.df.spec.locality.provision.RegionImporter">
 		<constructor-arg index="0" value="1" />
@@ -61,6 +72,16 @@
 		<property name="resourceNames">
 			<list value-type="java.lang.String">
 				<value>classpath:speciality_sh.json</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="shopImporter" class="com.df.spec.locality.provision.ShopImporter">
+		<constructor-arg index="0" value="3" />
+		<constructor-arg index="1" value="speciality" />
+		<property name="objectMapper" ref="objectMapper" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:shop_sh.json</value>
 			</list>
 		</property>
 	</bean>

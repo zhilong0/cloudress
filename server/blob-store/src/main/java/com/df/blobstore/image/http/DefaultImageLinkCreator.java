@@ -26,9 +26,9 @@ public class DefaultImageLinkCreator implements ImageLinkCreator {
 			suffix = attributes.getFormat().getFileSuffix().toLowerCase();
 		}
 		if (imageRequestPrefix != null) {
-			link = imageRequestPrefix + "/" + imageKey + "." + suffix;
+			link = imageRequestPrefix + "/" + imageKey + suffix;
 		} else {
-			link = "/" + imageKey + "." + suffix;
+			link = "/" + imageKey + suffix;
 		}
 
 		if (suffix.length() == 0) {

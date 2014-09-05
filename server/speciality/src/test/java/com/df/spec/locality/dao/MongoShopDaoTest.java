@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.df.spec.locality.exception.ShopNameAlreadyExistException;
+import com.df.spec.locality.exception.DuplicateShopException;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
 
@@ -30,39 +30,36 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 	@Test
 	public void testAddShop() {
 		Region region = this.createRegion();
-		Shop shop = new Shop();
+		Shop shop = new Shop("城隍庙第一百货", "黄浦区安仁街218号");
 		try {
-			shop.setName("城隍庙第一百货");
-			shop.setAddress("黄浦区安仁街218号");
+
 			shopDao.addShop(shop, region);
 			shopDao.deleteShop(shop.getCode());
-			Shop shop2 = new Shop();
-			shop2.setName(shop.getName());
-			shop2.setAddress(shop.getAddress());
+			Shop shop2 = new Shop(shop.getName(), shop.getAddress());
 			try {
 				shopDao.addShop(shop2, region);
-			} catch (ShopNameAlreadyExistException ex) {
+			} catch (DuplicateShopException ex) {
 				return;
 			}
 			TestCase.fail();
 		} finally {
 			this.removeRegion(region);
-			shopDao.deleteShopByName("城隍庙第一百货");
+			if (shop.getCode() != null) {
+				shopDao.deleteShop(shop.getCode());
+			}
 		}
 	}
 
 	@Test
-	public void testGetShopByName() {
+	public void testGetShopByCode() {
 		Region region = this.createRegion();
-		Shop shop = new Shop();
+		Shop shop = new Shop("城隍庙第一百货", "黄浦区安仁街218号");
 		try {
-			shop.setName("城隍庙第一百货");
-			shop.setAddress("黄浦区安仁街218号");
 			shopDao.addShop(shop, region);
-			TestCase.assertNotNull(shopDao.getShopByName(shop.getName()));
+			TestCase.assertNotNull(shopDao.getShopByCode(shop.getCode()));
 		} finally {
 			this.removeRegion(region);
-			shopDao.deleteShopByName(shop.getName());
+			shopDao.deleteShop(shop.getCode());
 		}
 	}
 }

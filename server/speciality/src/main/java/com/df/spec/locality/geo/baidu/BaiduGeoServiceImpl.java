@@ -9,9 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.df.spec.locality.exception.GeoErrorCode;
+import com.df.spec.locality.exception.SpecialityBaseException;
 import com.df.spec.locality.geo.CoordType;
 import com.df.spec.locality.geo.Coordinate;
 import com.df.spec.locality.geo.GeoService;
+import com.df.spec.locality.geo.baidu.BaiduGeoServiceImpl.GeoConvertResult.Coord;
 import com.df.spec.locality.geo.baidu.BaiduGeoServiceImpl.GeoResult.AddressComponent;
 import com.df.spec.locality.geo.baidu.BaiduGeoServiceImpl.PlaceSuggestionResponse.Suggestion;
 import com.df.spec.locality.model.Region;
@@ -26,6 +29,8 @@ public class BaiduGeoServiceImpl implements GeoService {
 	private static final String GEO_URL = "http://api.map.baidu.com/geocoder/v2/";
 
 	private static final String SUGGESTION_URL = "http://api.map.baidu.com/place/v2/suggestion/";
+
+	private static final String GEO_CONVERT_URL = "http://api.map.baidu.com/geoconv/v1/";
 
 	private static final Logger logger = LoggerFactory.getLogger(BaiduGeoServiceImpl.class);
 
@@ -42,6 +47,14 @@ public class BaiduGeoServiceImpl implements GeoService {
 		this.ak = ak;
 	}
 
+	private SpecialityBaseException createHttpRequestError(ResponseEntity<?> response) {
+		return new SpecialityBaseException(GeoErrorCode.GEO_HTTP_REQUEST_ERROR, "HTTP request error:%s", response.toString());
+	}
+
+	private SpecialityBaseException createBaiDuServiceError(int baiduServiceStatus, String message) {
+		return new SpecialityBaseException(GeoErrorCode.GEO_HTTP_REQUEST_ERROR, "Baidu service status:%d, message:%s", baiduServiceStatus, message);
+	}
+
 	@Override
 	public Coordinate lookupCoordiate(String address, Region filter) {
 		String url = GEO_URL + "?address={address}&output=json&ak={ak}&city={city}";
@@ -55,25 +68,65 @@ public class BaiduGeoServiceImpl implements GeoService {
 		if (entity.getStatusCode() == HttpStatus.OK) {
 			BaiduGeoResponse response = entity.getBody();
 			if (response.status == 0) {
-				return new Coordinate(CoordType.WGS84LL, response.result.location.lat, response.result.location.lng);
+				return new Coordinate(CoordType.BD09LL, response.result.location.lat, response.result.location.lng);
 			} else {
 				logger.debug("Get coordinate for address {} returns status {}", address, response.status);
+				throw this.createBaiDuServiceError(response.status, response.msg);
 			}
+		} else {
+			throw this.createHttpRequestError(entity);
 		}
-		return null;
+
 	}
 
 	@Override
 	public Region lookupRegionWithCoordiate(Coordinate coordinate) {
-		String url = GEO_URL + "?location={lat},{lng}&ak={ak}&pois=0&output=json&coordtype=wgs84ll";
+		String coordinateType = "bd09ll";
+		if (coordinate.getCoordType() == CoordType.WGS84LL) {
+			coordinateType = CoordType.WGS84LL.name().toLowerCase();
+		} else if (coordinate.getCoordType() == CoordType.GCJ02LL) {
+			coordinateType = CoordType.GCJ02LL.name().toLowerCase();
+		}
+		String url = GEO_URL + "?location={lat},{lng}&ak={ak}&pois=0&output=json&coordtype={ct}";
 		ResponseEntity<BaiduGeoResponse> entity = restTemplate.getForEntity(url, BaiduGeoResponse.class, coordinate.getLatitude(), coordinate.getLongitude(),
-				this.ak);
+				this.ak, coordinateType);
 		if (entity.getStatusCode() == HttpStatus.OK) {
 			BaiduGeoResponse response = entity.getBody();
 			if (response.status == 0) {
 				AddressComponent ac = response.result.addressComponent;
 				return new Region(ac.province, ac.city, ac.district);
+			} else {
+				throw this.createBaiDuServiceError(response.status, response.msg);
 			}
+		} else {
+			throw this.createHttpRequestError(entity);
+		}
+	}
+
+	@Override
+	public Coordinate convertCoordinate(Coordinate coordinate, CoordType coordType) {
+		if (coordType == coordinate.getCoordType()) {
+			return coordinate;
+		}
+		if (coordinate.getCoordType() != CoordType.WGS84LL && coordType != CoordType.BD09LL) {
+			String msg = "Only support convert coordinate type from %s to %s";
+			throw new SpecialityBaseException(GeoErrorCode.GEO_COORDINATE_CONVERT_NOT_SUPPORTED, msg, CoordType.WGS84LL, CoordType.BD09LL);
+		}
+		String url = GEO_CONVERT_URL + "?coords={lat},{lng}&ak={ak}&from={from}&to={to}";
+		ResponseEntity<GeoConvertResult> entity = restTemplate.getForEntity(url, GeoConvertResult.class, coordinate.getLatitude(), coordinate.getLongitude(),
+				this.ak, 1, 5);
+		if (entity.getStatusCode() == HttpStatus.OK) {
+			GeoConvertResult response = entity.getBody();
+			if (response.status == 0) {
+				Coord[] c = response.result;
+				if (c.length > 0) {
+					return new Coordinate(CoordType.BD09LL, c[0].x, c[0].y);
+				}
+			} else {
+				throw this.createBaiDuServiceError(response.status, response.msg);
+			}
+		} else {
+			throw this.createHttpRequestError(entity);
 		}
 		return null;
 	}
@@ -89,7 +142,11 @@ public class BaiduGeoServiceImpl implements GeoService {
 				for (Suggestion suggestion : response.result) {
 					places.add(suggestion.name);
 				}
+			} else {
+				throw this.createBaiDuServiceError(response.status, response.msg);
 			}
+		} else {
+			throw this.createHttpRequestError(entity);
 		}
 		return places;
 	}
@@ -119,6 +176,26 @@ public class BaiduGeoServiceImpl implements GeoService {
 		static class Suggestion {
 			@JsonProperty
 			String name;
+		}
+	}
+
+	static class GeoConvertResult {
+
+		@JsonProperty
+		int status;
+
+		@JsonProperty
+		String msg;
+
+		@JsonProperty
+		Coord[] result;
+
+		static class Coord {
+			@JsonProperty
+			double x;
+
+			@JsonProperty
+			double y;
 		}
 	}
 
@@ -158,5 +235,4 @@ public class BaiduGeoServiceImpl implements GeoService {
 		@JsonProperty
 		String level;
 	}
-
 }

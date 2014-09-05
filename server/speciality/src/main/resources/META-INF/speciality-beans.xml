@@ -54,4 +54,13 @@
 		<constructor-arg index="1" ref="regionService" />
 		<constructor-arg index="2" ref="imageService" />
 	</bean>
+	<bean id="shopService" class="com.df.spec.locality.service.impl.ShopServiceImpl">
+		<constructor-arg index="0" ref="shopDao" />
+		<constructor-arg index="1" ref="regionService" />
+		<constructor-arg index="2" ref="geoService" />
+		<constructor-arg index="3" ref="imageService" />
+	</bean>
+	<bean id="supplierService" class="com.df.spec.locality.service.impl.SupplierServiceImpl">
+		<constructor-arg index="0" ref="shopService" />
+	</bean>
 </beans>

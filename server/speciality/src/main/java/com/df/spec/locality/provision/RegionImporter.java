@@ -2,6 +2,8 @@ package com.df.spec.locality.provision;
 
 import java.io.InputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -15,9 +17,11 @@ public class RegionImporter extends AbstractImporterBean implements ResourceLoad
 
 	private RegionService regionService;
 
-	private String csvResourceName = "classpath:region.csv";
+	private String resourceName = "classpath:region.csv";
 
 	private ResourceLoader resourceLoader;
+
+	private static final Logger logger = LoggerFactory.getLogger(RegionImporter.class);
 
 	public RegionImporter(int order, String groupName, RegionService regionService) {
 		super(order, groupName);
@@ -28,14 +32,18 @@ public class RegionImporter extends AbstractImporterBean implements ResourceLoad
 		this.regionService = regionService;
 	}
 
-	public void setCsvResourceName(String csvResourceName) {
-		this.csvResourceName = csvResourceName;
+	public void setResourceName(String resourceName) {
+		this.resourceName = resourceName;
 	}
 
 	@Override
 	public void execute(ProvisionContext context) throws Exception {
 		Assert.notNull(regionService);
-		Resource resource = resourceLoader.getResource(csvResourceName);
+		if (resourceName == null) {
+			logger.warn("ResourceName is not specified, ignore region data import");
+			return;
+		}
+		Resource resource = resourceLoader.getResource(resourceName);
 		InputStream in = resource.getInputStream();
 		regionService.importFromCSV(in, true);
 	}

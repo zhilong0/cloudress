@@ -1,13 +1,24 @@
 project.ext.set('sourceCompatibility',JavaVersion.VERSION_1_6)
+project.ext.set('targetCompatibility',JavaVersion.VERSION_1_6)
+
 apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
 webAppDirName = "src/main/webapp"
 
+eclipse{
+	wtp {
+	 	facet {
+    	 	facet name:'jst.web', version:'3.0'
+         	facet name:'java', version:'1.6'
+		}
+	}
+}
+
 repositories {
     mavenCentral()
-} 
-	
+}
+
 dependencies {
 	compile project(':common')
 	compile project(':idm')

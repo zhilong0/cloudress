@@ -1,12 +1,13 @@
 project.ext.set('sourceCompatibility',JavaVersion.VERSION_1_6)
+project.ext.set('targetCompatibility',JavaVersion.VERSION_1_6)
 
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
-	
+
 repositories {
     mavenCentral()
 } 
-	
+
 dependencies {
 	compile project(':common')
 	compile project(':blob-store')

@@ -13,6 +13,11 @@ public class SpecialityBaseException extends BaseException {
 		super(throwable, messageFormat, args);
 	}
 
+	public SpecialityBaseException(String errorCode, String messageFormat, Object... args) {
+		this((Throwable) null, messageFormat, args);
+		this.errorCode = errorCode;
+	}
+
 	public SpecialityBaseException(Throwable cause, String errorCode) {
 		this(cause);
 		this.errorCode = errorCode;

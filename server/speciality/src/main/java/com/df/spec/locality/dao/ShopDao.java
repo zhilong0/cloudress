@@ -8,13 +8,17 @@ import com.df.spec.locality.model.Shop;
 public interface ShopDao {
 
 	void addShop(Shop newShop, Region region);
+	
+	void update(Shop shop);
 
 	void deleteShop(String shopCode);
 
-	void deleteShopByName(String shopName);
-
-	Shop getShopByName(String shopName);
-
 	List<Shop> getShopByRegion(String regionCode);
+	
+	Shop getShopByCode(String shopCode); 
+	
+	List<Shop> getShopListBySpeciality(String specialityCode);
+	
+	Shop findShop(String shopName, String address);
 
 }

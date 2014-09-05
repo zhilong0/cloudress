@@ -14,7 +14,7 @@ public class ImageDetails implements Serializable {
 
 	private ImageAttributes attributes;
 
-	public ImageDetails() {
+	ImageDetails() {
 	}
 
 	public ImageDetails(String imageId, ImageAttributes attributes) {

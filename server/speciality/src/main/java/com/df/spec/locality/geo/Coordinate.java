@@ -12,6 +12,9 @@ public final class Coordinate implements Serializable {
 
 	private CoordType coordType;
 
+	Coordinate() {
+	}
+
 	public Coordinate(CoordType coordType, double latitude, double longitude) {
 		this.coordType = coordType;
 		this.latitude = latitude;

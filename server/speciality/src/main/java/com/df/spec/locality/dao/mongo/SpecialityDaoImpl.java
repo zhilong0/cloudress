@@ -56,7 +56,13 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 		Query<Speciality> query = this.createQuery();
 		query.filter(Constants.SPECIALITY.CODE, new ObjectId(speciality.getCode()));
 		UpdateOperations<Speciality> updateOperations = this.createUpdateOperations();
-		updateOperations.set(Constants.SPECIALITY.DESCRIPTION, speciality.getDescription());
+		if (speciality.getDescription() == null) {
+			updateOperations.unset(Constants.SPECIALITY.DESCRIPTION);
+		} else {
+			updateOperations.set(Constants.SPECIALITY.DESCRIPTION, speciality.getDescription());
+		}
+		updateOperations.set(Constants.SPECIALITY.RANK, speciality.getRank());
+		updateOperations.set(Constants.SPECIALITY.IMAGE_SET, speciality.getImageSet());
 		this.update(query, updateOperations);
 	}
 

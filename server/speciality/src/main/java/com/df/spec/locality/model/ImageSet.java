@@ -1,6 +1,7 @@
 package com.df.spec.locality.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.util.Assert;
@@ -24,7 +25,7 @@ public class ImageSet {
 	public void removeImage(String imageId) {
 		for (ImageDetails image : this.images) {
 			if (image.getImageId().equals(imageId)) {
-				images.remove(imageId);
+				images.remove(image);
 				break;
 			}
 		}
@@ -46,7 +47,7 @@ public class ImageSet {
 	}
 
 	public List<ImageDetails> getImages() {
-		return images;
+		return Collections.unmodifiableList(images); 
 	}
 
 	@JsonIgnore

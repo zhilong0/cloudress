@@ -5,8 +5,11 @@ import java.io.Serializable;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
 
 @Entity(value = "specialities", noClassnameStored = true)
+@Indexes(@Index(value = "regionCode,name", unique = true))
 public class Speciality implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -19,6 +22,8 @@ public class Speciality implements Serializable {
 	private String description;
 
 	private String regionCode;
+
+	private int rank;
 
 	private ImageSet imageSet = new ImageSet();
 
@@ -46,10 +51,6 @@ public class Speciality implements Serializable {
 		this.description = description;
 	}
 
-	public void removeImage(String imageId) {
-		imageSet.removeImage(imageId);
-	}
-
 	public ImageSet getImageSet() {
 		return this.imageSet;
 	}
@@ -60,5 +61,13 @@ public class Speciality implements Serializable {
 
 	public void setRegionCode(String regionCode) {
 		this.regionCode = regionCode;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 }

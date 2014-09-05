@@ -12,4 +12,5 @@ public interface GeoService {
 
 	List<String> getPlaceSuggestion(String address, Region filter);
 
+	Coordinate convertCoordinate(Coordinate coordinate, CoordType coordType);
 }

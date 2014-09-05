@@ -87,9 +87,11 @@ public class RegionServiceImpl implements RegionService {
 		} catch (IOException ex) {
 			throw new SpecialityBaseException(ex, RegionErrorCode.REGION_CSV_READ_ERROR);
 		}
-		for (String[] entry : entries) {
+		for (int i = 0; i < entries.size(); ++i) {
+			String[] entry = entries.get(i);
 			if (entry.length < 2) {
 				if (continueOnError) {
+					logger.warn("Line {} is an invalid entry, province and city must be provided.", i);
 					continue;
 				} else {
 					SpecialityBaseException ex = new SpecialityBaseException(null, "Invalid region entry, province and city must be provided");
