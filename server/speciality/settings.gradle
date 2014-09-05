@@ -1,4 +1,0 @@
-include ':common'
-project(':common').projectDir = new File(settingsDir, '../common')
-include ':blob-store'
-project(':blob-store').projectDir = new File(settingsDir, '../blob-store')

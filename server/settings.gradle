@@ -8,3 +8,5 @@ include ':speciality'
 project(':speciality').projectDir = new File(settingsDir, './speciality')
 include ':cloudress'
 project(':cloudress').projectDir = new File(settingsDir, './cloudress')
+include ':configuration'
+project(':configuration').projectDir = new File(settingsDir, './configuration')

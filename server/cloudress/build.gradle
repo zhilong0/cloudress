@@ -1,7 +1,3 @@
-project.ext.set('sourceCompatibility',JavaVersion.VERSION_1_6)
-project.ext.set('targetCompatibility',JavaVersion.VERSION_1_6)
-
-apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
 webAppDirName = "src/main/webapp"
@@ -13,10 +9,6 @@ eclipse{
          	facet name:'java', version:'1.6'
 		}
 	}
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -33,11 +25,3 @@ dependencies {
 	compile "org.jboss.resteasy:resteasy-spring:3.0.8.Final"
 	compile "org.jboss.resteasy:resteasy-jackson2-provider:3.0.8.Final"
 }
-
-eclipse {
-	classpath{
-		defaultOutputDir=new File(project.buildDir.path+'/target')
-	}
-}
-
-
