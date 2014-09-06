@@ -12,10 +12,10 @@ import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.springframework.util.Assert;
 
-import com.df.spec.locality.geo.Coordinate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(value = "shops", noClassnameStored = true)
-@Indexes(@Index(value = "name,address", unique = true))
+@Indexes(@Index(value = "name,location.address", unique = true))
 public class Shop implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -25,9 +25,7 @@ public class Shop implements Serializable {
 
 	private String regionCode;
 
-	private String address;
-
-	private Coordinate coordinate;
+	private Location location;
 
 	private String name;
 
@@ -52,7 +50,7 @@ public class Shop implements Serializable {
 	}
 
 	public Shop(String name, String address) {
-		this.address = address;
+		this.location = new Location(address, null);
 		this.name = name;
 	}
 
@@ -76,20 +74,12 @@ public class Shop implements Serializable {
 		this.regionCode = regionCode;
 	}
 
-	public String getAddress() {
-		return address;
+	public Location getLocation() {
+		return location;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public Coordinate getCoordinate() {
-		return coordinate;
-	}
-
-	public void setCoordinate(Coordinate coordinate) {
-		this.coordinate = coordinate;
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	public String getName() {
@@ -158,6 +148,11 @@ public class Shop implements Serializable {
 
 	public void setContact(String contact) {
 		this.contact = contact;
+	}
+
+	@JsonIgnore
+	public String getAddress() {
+		return this.getLocation().getAddress();
 	}
 
 	public boolean addGoods(Goods goods) {

@@ -7,6 +7,9 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.Transient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity(value = "specialities", noClassnameStored = true)
 @Indexes(@Index(value = "regionCode,name", unique = true))
@@ -24,6 +27,9 @@ public class Speciality implements Serializable {
 	private String regionCode;
 
 	private int rank;
+
+	@Transient
+	private String image;
 
 	private ImageSet imageSet = new ImageSet();
 
@@ -43,6 +49,7 @@ public class Speciality implements Serializable {
 		this.name = name;
 	}
 
+	@JsonProperty(value = "desc")
 	public String getDescription() {
 		return description;
 	}
@@ -69,5 +76,13 @@ public class Speciality implements Serializable {
 
 	public void setRank(int rank) {
 		this.rank = rank;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 }

@@ -13,8 +13,10 @@ import com.df.spec.locality.exception.ShopErrorCode;
 import com.df.spec.locality.exception.SpecialityBaseException;
 import com.df.spec.locality.geo.Coordinate;
 import com.df.spec.locality.geo.GeoService;
+import com.df.spec.locality.model.Comment;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
+import com.df.spec.locality.service.CommentService;
 import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.ShopService;
 
@@ -27,6 +29,10 @@ public class ShopServiceImpl implements ShopService {
 	private GeoService geoService;
 
 	private ImageService imageService;
+
+	private CommentService commentService;
+
+	private static final String SHOP_OBJECT_TYPE = "shop";
 
 	public ShopServiceImpl(ShopDao shopDao, RegionService regionService, GeoService geoService, ImageService imageService) {
 		this.shopDao = shopDao;
@@ -49,12 +55,16 @@ public class ShopServiceImpl implements ShopService {
 
 	@Override
 	public void addShop(Shop newShop, String regionCode) {
+		Assert.notNull(newShop.getName());
+		Assert.notNull(newShop.getLocation());
+		Assert.notNull(newShop.getLocation().getAddress());
 		Region region = regionService.getRegionByCode(regionCode, true);
-		Coordinate coordiate = geoService.lookupCoordiate(newShop.getAddress(), region);
+		String address = newShop.getLocation().getAddress();
+		Coordinate coordiate = geoService.lookupCoordiate(address, region);
 		if (coordiate == null) {
-			throw new SpecialityBaseException(ShopErrorCode.SHOP_LOCATE_ERROR, "Cannot locate location for address %s", newShop.getAddress());
+			throw new SpecialityBaseException(ShopErrorCode.SHOP_LOCATE_ERROR, "Cannot locate location for address %s", address);
 		}
-		newShop.setCoordinate(coordiate); 
+		newShop.getLocation().setCoordinate(coordiate);
 		shopDao.addShop(newShop, region);
 	}
 
@@ -84,15 +94,15 @@ public class ShopServiceImpl implements ShopService {
 		Region region = regionService.getRegionByCode(found.getRegionCode(), true);
 		if (!found.getAddress().equals(shop.getAddress())) {
 			Coordinate coordiate = geoService.lookupCoordiate(shop.getAddress(), region);
-			found.setCoordinate(coordiate);
-			found.setAddress(shop.getAddress());
+			found.getLocation().setCoordinate(coordiate);
+			found.getLocation().setAddress(shop.getAddress()); 
 		}
 		found.setDescription(shop.getDescription());
 		found.setGoodsList(shop.getGoodsList());
 		found.setBusinessHour(shop.getBusinessHour());
 		found.setContact(shop.getContact());
-		found.setTelephone(shop.getTelephone()); 
- 		shopDao.update(found);
+		found.setTelephone(shop.getTelephone());
+		shopDao.update(found);
 	}
 
 	@Override
@@ -111,6 +121,11 @@ public class ShopServiceImpl implements ShopService {
 		Shop found = this.getShopByCode(shopCode, true);
 		found.getImageSet().removeImage(imageId);
 		shopDao.update(found);
+	}
+
+	@Override
+	public List<Comment> getCommentList() {
+		return null;
 	}
 
 }

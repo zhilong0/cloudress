@@ -36,7 +36,7 @@ public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
 		Assert.notNull(region.getCode());
 		Assert.notNull(newShop.getName());
 		Assert.notNull(newShop.getAddress());
-		Assert.notNull(newShop.getCoordinate());
+		Assert.notNull(newShop.getLocation().getCoordinate());
 		try {
 			newShop.setRegionCode(region.getCode());
 			newShop.setScore(5);
@@ -88,7 +88,7 @@ public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
 		query.filter(Constants.SPECIALITY.CODE, new ObjectId(shop.getCode()));
 		UpdateOperations<Shop> updateOperations = this.createUpdateOperations();
 		updateOperations.set(Constants.SHOP.GOODS_LIST, shop.getGoodsList());
-		updateOperations.set(Constants.SHOP.COORDINATE, shop.getCoordinate());
+		updateOperations.set(Constants.SHOP.COORDINATE, shop.getLocation().getCoordinate());
 		if (shop.getDescription() == null) {
 			updateOperations.unset(Constants.SHOP.DESCRIPTION);
 		} else {

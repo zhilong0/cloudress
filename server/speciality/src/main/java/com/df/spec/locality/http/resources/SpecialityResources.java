@@ -57,6 +57,9 @@ public class SpecialityResources {
 		ImageSet imageSet = speciality.getImageSet();
 		for (ImageDetails image : imageSet.getImages()) {
 			String link = imageLinkCreator.createImageLink(new ImageKey(image.getImageId()), image.getAttributes());
+			if (speciality.getImage()== null) {
+				speciality.setImage(link);
+			}
 			image.setImageLink(link);
 		}
 	}

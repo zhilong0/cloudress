@@ -47,18 +47,11 @@ public class ImageSet {
 	}
 
 	public List<ImageDetails> getImages() {
-		return Collections.unmodifiableList(images); 
+		return Collections.unmodifiableList(images);
 	}
 
 	@JsonIgnore
 	public int getImageCount() {
 		return images == null ? 0 : images.size();
-	}
-
-	public String getCover() {
-		if (images.size() > 0) {
-			return images.get(0).getImageId();
-		}
-		return null;
 	}
 }

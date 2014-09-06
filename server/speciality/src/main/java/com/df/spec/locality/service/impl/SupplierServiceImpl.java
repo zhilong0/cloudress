@@ -25,7 +25,8 @@ public class SupplierServiceImpl implements SupplierService {
 		ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
 		for (Shop shop : shops) {
 			Supplier supplier = new Supplier(shop);
-			int distance = calculateDistance(cc.getLatitude(), cc.getLongitude(), shop.getCoordinate().getLatitude(), shop.getCoordinate().getLongitude());
+			Coordinate coordinate = shop.getLocation().getCoordinate();
+			int distance = calculateDistance(cc.getLatitude(), cc.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude());
 			supplier.setDistance(distance);
 			suppliers.add(supplier);
 		}

@@ -21,8 +21,7 @@
 	<bean id="requestFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
 		<constructor-arg>
 			<bean class="com.df.common.http.client.HttpClientBeanFactory">
-				<property name="proxy" ref="proxy" />
-				<property name="httpClientConnectionManager">
+ 				<property name="httpClientConnectionManager">
 					<bean class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" />
 				</property>
 			</bean>

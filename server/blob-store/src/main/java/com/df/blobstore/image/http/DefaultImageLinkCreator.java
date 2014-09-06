@@ -1,11 +1,17 @@
 package com.df.blobstore.image.http;
 
+import javax.servlet.ServletContext;
+
+import org.springframework.web.context.ServletContextAware;
+
 import com.df.blobstore.image.ImageAttributes;
 import com.df.blobstore.image.ImageKey;
 
-public class DefaultImageLinkCreator implements ImageLinkCreator {
+public class DefaultImageLinkCreator implements ImageLinkCreator, ServletContextAware {
 
 	private String imageRequestPrefix;
+
+	private ServletContext servletContext;
 
 	public DefaultImageLinkCreator() {
 	}
@@ -16,6 +22,10 @@ public class DefaultImageLinkCreator implements ImageLinkCreator {
 
 	public void setImageRequestPrefix(String imageRequestPrefix) {
 		this.imageRequestPrefix = imageRequestPrefix;
+	}
+
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
 	}
 
 	@Override
@@ -34,7 +44,15 @@ public class DefaultImageLinkCreator implements ImageLinkCreator {
 		if (suffix.length() == 0) {
 			link = link.substring(0, link.length() - 1);
 		}
-		return link;
+		if (servletContext != null) {
+			if (link.startsWith("/")) {
+				return servletContext.getContextPath() + link;
+			} else {
+				return servletContext.getContextPath() + "/" + link;
+			}
+		} else {
+			return link;
+		}
 
 	}
 

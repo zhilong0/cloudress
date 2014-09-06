@@ -98,6 +98,23 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 		for (ShopInfo shopInfo : shopSource.getShops()) {
 			Shop shop = shopService.findShop(shopInfo.getName(), shopInfo.getAddress());
 
+			if (shop == null) {
+				shop = new Shop(shopInfo.getName(), shopInfo.getAddress());
+				shop.setRegionCode(region.getCode());
+				shop.setContact(shopInfo.getContact());
+				shop.setTelephone(shopInfo.getTelephone());
+				shop.setDescription(shopInfo.getDescription());
+				shop.setBusinessHour(shopInfo.getBusinessHour());
+				shopService.addShop(shop, region.getCode());
+			} else {
+				shop.getLocation().setAddress(shopInfo.getAddress());
+				shop.setDescription(shopInfo.getDescription());
+				shop.setContact(shopInfo.getContact());
+				shop.setTelephone(shopInfo.getTelephone());
+				shop.setBusinessHour(shopInfo.getBusinessHour());
+				shopService.updateShop(shop);
+			}
+
 			List<GoodsInfo> goodsList = shopInfo.getGoodsList();
 			if (goodsList != null) {
 				for (GoodsInfo goodsInfo : goodsList) {
@@ -108,24 +125,9 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 						logger.warn("Specaility {} does not exist in region {}", goodsInfo.getSpecialityName(), region);
 					}
 				}
-			}
-
-			if (shop == null) {
-				shop = new Shop(shopInfo.getName(), shopInfo.getAddress());
-				shop.setRegionCode(region.getCode());
-				shop.setContact(shopInfo.getContact());
-				shop.setTelephone(shopInfo.getTelephone());
-				shop.setDescription(shopInfo.getDescription());
-				shop.setBusinessHour(shopInfo.getBusinessHour());
-				shopService.addShop(shop, region.getCode());
-			} else {
-				shop.setAddress(shopInfo.getAddress());
-				shop.setDescription(shopInfo.getDescription());
-				shop.setContact(shopInfo.getContact());
-				shop.setTelephone(shopInfo.getTelephone());
-				shop.setBusinessHour(shopInfo.getBusinessHour());
 				shopService.updateShop(shop);
 			}
+
 			String[] images = shopInfo.getImages();
 			ImageSet imageSet = shop.getImageSet();
 			for (String image : images) {

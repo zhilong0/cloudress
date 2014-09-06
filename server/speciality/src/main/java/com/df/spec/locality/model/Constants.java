@@ -20,22 +20,22 @@ public class Constants {
 
 		public static final String REGION_CODE = "regionCode";
 
-		public static final String ADDRESS = "address";
+		public static final String ADDRESS = "location.address";
 
 		public static final String GOODS_LIST = "goodsList";
 
 		public static final String DESCRIPTION = "description";
 
-		public static final String COORDINATE = "coordinate";
-		
+		public static final String COORDINATE = "location.coordinate";
+
 		public static final String IMAGESET = "imageSet";
-		
+
 		public static final String TEL = "telephone";
 
 		public static final String CONTACT = "contact";
-		
+
 		public static final String BUSINESS_HOUR = "businessHour";
-		
+
 		public static final String GOODS_SPECIALITY = "goodsList.specialityCode";
 
 	}
@@ -53,6 +53,16 @@ public class Constants {
 		public static final String RANK = "rank";
 
 		public static final String IMAGE_SET = "imageSet";
+
+	}
+
+	public static interface COMMENT {
+
+		public static final String ID = "_id";
+
+		public static final String OBJECT_ID = "objectId";
+
+		public static final String OBJECT_TYPE = "objectType";
 
 	}
 
