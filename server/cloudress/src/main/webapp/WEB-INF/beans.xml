@@ -53,7 +53,11 @@
 	</bean>
 	<bean id="shopResource" class="com.df.spec.locality.http.resources.ShopResources">
 		<property name="shopService" ref="shopService" />
+		<property name="commentService" ref="commentService" />
 		<property name="imageLinkCreator" ref="imageLinkCreator" />
+	</bean>
+	<bean id="commentResource" class="com.df.spec.locality.http.resources.CommentResources">
+		<property name="commentService" ref="commentService" />
 	</bean>
 	<bean id="supplierResource" class="com.df.spec.locality.http.resources.SupplierResources">
 		<constructor-arg index="0" ref="geoService" />

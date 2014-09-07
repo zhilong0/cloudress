@@ -7,14 +7,19 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.springframework.stereotype.Component;
 
 import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.http.ImageDetails;
 import com.df.blobstore.image.http.ImageLinkCreator;
+import com.df.spec.locality.model.Comment;
+import com.df.spec.locality.model.CommentObject;
+import com.df.spec.locality.model.Constants;
 import com.df.spec.locality.model.ImageSet;
 import com.df.spec.locality.model.Shop;
+import com.df.spec.locality.service.CommentService;
 import com.df.spec.locality.service.ShopService;
 
 @Path("/shops")
@@ -26,8 +31,16 @@ public class ShopResources {
 
 	private ImageLinkCreator imageLinkCreator;
 
+	private CommentService commentService;
+
+	private static final int DEFAULT_PAGE_SIZE = 100;
+
 	public void setShopService(ShopService shopService) {
 		this.shopService = shopService;
+	}
+
+	public void setCommentService(CommentService commentService) {
+		this.commentService = commentService;
 	}
 
 	public void setImageLinkCreator(ImageLinkCreator imageLinkCreator) {
@@ -56,6 +69,27 @@ public class ShopResources {
 			processImageLink(shop);
 		}
 		return shops;
+	}
+
+	@GET
+	@Path("/{shopCode}/comment")
+	public List<Comment> getShopCommentList(@PathParam("shopCode") String shopCode, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+		if (offset < 0) {
+			offset = 0;
+		}
+		if (limit <= 0) {
+			limit = DEFAULT_PAGE_SIZE;
+		}
+		CommentObject co = new CommentObject(Constants.SHOP.COMMENT_OBJECT_TYPE, shopCode);
+		return commentService.getCommentList(co, offset, limit);
+	}
+
+	@POST
+	@Path("/{shopCode}/comment")
+	public Comment addComment(@PathParam("shopCode") String shopCode, Comment comment) {
+		CommentObject co = new CommentObject(Constants.SHOP.COMMENT_OBJECT_TYPE, shopCode);
+		commentService.addComment(comment, co);
+		return comment;
 	}
 
 	protected void processImageLink(Shop shop) {

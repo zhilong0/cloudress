@@ -152,7 +152,11 @@ public class Shop implements Serializable {
 
 	@JsonIgnore
 	public String getAddress() {
-		return this.getLocation().getAddress();
+		if (this.location != null) {
+			return this.getLocation().getAddress();
+		} else {
+			return null;
+		}
 	}
 
 	public boolean addGoods(Goods goods) {

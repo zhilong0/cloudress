@@ -4,10 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Entity
+@Indexes(@Index(value = "commentObject.objectType,commentObject.objectId,-writeDate", unique = false))
 public class Comment implements Serializable {
 
 	private static final long serialVersionUID = 1L;

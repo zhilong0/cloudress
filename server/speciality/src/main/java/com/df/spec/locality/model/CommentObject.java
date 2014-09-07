@@ -12,7 +12,7 @@ public class CommentObject implements Serializable {
 	public CommentObject() {
 	}
 
-	public CommentObject(String objectId, String objectType) {
+	public CommentObject(String objectType, String objectId) {
 		this.objectId = objectId;
 		this.objectType = objectType;
 	}

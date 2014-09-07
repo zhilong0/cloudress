@@ -18,7 +18,7 @@ public class MongoRegionDaoTest extends SpecialityBaseTest {
 
 	@Test
 	public void testAddGetDeleteRegion() {
-		Region newRegion = new Region("湖南省", "岳阳市", "汨罗市");
+		Region newRegion = new Region("湖南省测试", "岳阳市", "汨罗市");
 		try {
 			regionDao.addRegion(newRegion);
 			Assert.isTrue(regionDao.findRegion(newRegion) != null);
@@ -29,7 +29,7 @@ public class MongoRegionDaoTest extends SpecialityBaseTest {
 
 	@Test
 	public void testGetRegionList() {
-		Region newRegion = new Region("湖南省", "岳阳市", "汨罗市");
+		Region newRegion = new Region("湖南省测试", "岳阳市", "汨罗市");
 		try {
 			regionDao.addRegion(newRegion);
 			List<Region> regions = regionDao.getRegionList();

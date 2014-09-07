@@ -1,6 +1,7 @@
 package com.df.spec.locality.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.util.Assert;
 
@@ -35,6 +36,12 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public void deleteComment(String commentId) {
 		commentDao.deleteComment(commentId);
+	}
+
+	public List<Comment> getCommentList(CommentObject object, int offset, int limit) {
+		Assert.isTrue(offset >= 0, "Offset must be greater or equal than 0");
+		Assert.isTrue(limit >= 0, "limit must be greater or equal than 0");
+		return commentDao.getCommentList(object, offset, limit);
 	}
 
 }

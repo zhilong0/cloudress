@@ -13,6 +13,9 @@
 	<bean id="specialityDao" class="com.df.spec.locality.dao.mongo.SpecialityDaoImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 	</bean>
+	<bean id="commentDao" class="com.df.spec.locality.dao.mongo.CommentDaoImpl">
+		<constructor-arg index="0" ref="specialityDataStore" />
+	</bean>
 	<bean id="proxy" class="org.apache.http.HttpHost">
 		<constructor-arg index="0" value="proxy.sha.sap.corp" />
 		<constructor-arg index="1" value="8080" />
@@ -21,7 +24,7 @@
 	<bean id="requestFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
 		<constructor-arg>
 			<bean class="com.df.common.http.client.HttpClientBeanFactory">
- 				<property name="httpClientConnectionManager">
+				<property name="httpClientConnectionManager">
 					<bean class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" />
 				</property>
 			</bean>
@@ -61,5 +64,8 @@
 	</bean>
 	<bean id="supplierService" class="com.df.spec.locality.service.impl.SupplierServiceImpl">
 		<constructor-arg index="0" ref="shopService" />
+	</bean>
+	<bean id="commentService" class="com.df.spec.locality.service.impl.CommentServiceImpl">
+		<constructor-arg index="0" ref="commentDao" />
 	</bean>
 </beans>

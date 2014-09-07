@@ -49,11 +49,11 @@ public class ShopSource {
 
 		private String telephone;
 
-		private List<GoodsInfo> goodsList = new ArrayList<GoodsInfo>();
-
 		private String[] images;
 
 		private String businessHour;
+
+		private List<GoodsInfo> goodsList = new ArrayList<GoodsInfo>();
 
 		ShopInfo() {
 		}
@@ -139,7 +139,5 @@ public class ShopSource {
 		public void setSpecialityName(String specialityName) {
 			this.specialityName = specialityName;
 		}
-
 	}
-
 }

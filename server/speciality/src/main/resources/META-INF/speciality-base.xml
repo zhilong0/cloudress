@@ -18,15 +18,7 @@
 		<property name="credentials" ref="mongoCredentials" />
 		<property name="mongoClientOptions" ref="mongoClientOptions" />
 	</bean>
-	<bean id="morphia" class="com.df.common.morphia.MorphiaFactoryBean">
-		<property name="mapClasses">
-			<array value-type="java.lang.String">
-				<value>com.df.spec.locality.model.Region</value>
-				<value>com.df.spec.locality.model.Shop</value>
-				<value>com.df.spec.locality.model.Speciality</value>
-			</array>
-		</property>
-	</bean>
+	<bean id="morphia" class="com.df.common.morphia.MorphiaFactoryBean" />
 	<bean id="specialityDataStore" class="com.df.common.morphia.DataStoreFactoryBean">
 		<property name="mongoClient" ref="mongoClient" />
 		<property name="morphia" ref="morphia" />

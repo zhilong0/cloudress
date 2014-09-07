@@ -36,7 +36,6 @@ public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
 		Assert.notNull(region.getCode());
 		Assert.notNull(newShop.getName());
 		Assert.notNull(newShop.getAddress());
-		Assert.notNull(newShop.getLocation().getCoordinate());
 		try {
 			newShop.setRegionCode(region.getCode());
 			newShop.setScore(5);
