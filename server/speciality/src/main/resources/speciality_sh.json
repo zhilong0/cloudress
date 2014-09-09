@@ -3,7 +3,7 @@
 		"province": "上海市",
 		"city": "上海市"
 	},
-	"imageBaseUri": "file:///C:/workstation/workspace/cloudress/server/speciality/artifacts/sh/speciality/images/",
+	"imageBaseUri": "classpath:sh/speciality/images/",
 	"specialities": [{
 		"images": ["pic0.jpg"],
 		"name": "翠冠梨",

@@ -3,7 +3,7 @@
 		"province":"上海市",
 		"city":"上海市"
 	},
-	"imageBaseUri":"file:///C:/workstation/workspace/cloudress/server/speciality/artifacts/sh/shop/images/",
+	"imageBaseUri":"classpath:sh/shop/images/",
 	"shops":[{
 		"images": ["nxmtd.jpg"],
 		"name": "南翔馒头店(豫园路店)",
