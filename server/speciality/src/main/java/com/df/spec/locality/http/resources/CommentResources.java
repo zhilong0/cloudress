@@ -29,8 +29,8 @@ public class CommentResources {
 
 	@GET
 	@Path("/{objectType}/{objectId}")
-	public List<Comment> getShopCommentList(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
-			@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+	public List<Comment> getCommentList(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId, @QueryParam("offset") int offset,
+			@QueryParam("limit") int limit) {
 		if (offset < 0) {
 			offset = 0;
 		}
@@ -40,5 +40,4 @@ public class CommentResources {
 		CommentObject co = new CommentObject(objectType, objectId);
 		return commentService.getCommentList(co, offset, limit);
 	}
-
 }

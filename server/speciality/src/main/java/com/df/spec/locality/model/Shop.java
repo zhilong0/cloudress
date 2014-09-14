@@ -13,6 +13,7 @@ import org.mongodb.morphia.annotations.Indexes;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity(value = "shops", noClassnameStored = true)
 @Indexes(@Index(value = "name,location.address", unique = true))
@@ -90,6 +91,7 @@ public class Shop implements Serializable {
 		this.name = name;
 	}
 
+	@JsonProperty(value = "desc")
 	public String getDescription() {
 		return description;
 	}
@@ -106,6 +108,7 @@ public class Shop implements Serializable {
 		this.shopOwner = shopOwner;
 	}
 
+	@JsonProperty(value = "rank")
 	public float getScore() {
 		return score;
 	}
