@@ -22,33 +22,33 @@ public class SpecialitySeasonalComparator implements Comparator<Speciality> {
 			if (s2.isSeasonal()) {
 				if (isInSeason(s1)) {
 					if (isInSeason(s2)) {
-						return s1.getRank() - s2.getRank();
+						return -(s1.getRank() - s2.getRank());
 					} else {
-						return 1;
+						return -1;
 					}
 				} else {
 					if (isInSeason(s2)) {
-						return -1;
+						return 1;
 					} else {
-						return s1.getRank() - s2.getRank();
+						return -(s1.getRank() - s2.getRank());
 					}
 				}
 			} else {
 				if (isInSeason(s1)) {
-					return s1.getRank() - s2.getRank();
+					return -(s1.getRank() - s2.getRank());
 				} else {
-					return -1;
+					return 1;
 				}
 			}
 		} else {
 			if (s2.isSeasonal()) {
 				if (isInSeason(s2)) {
-					return s1.getRank() - s2.getRank();
+					return -(s1.getRank() - s2.getRank());
 				} else {
-					return 1;
+					return -1;
 				}
 			} else {
-				return s1.getRank() - s2.getRank();
+				return -(s1.getRank() - s2.getRank());
 			}
 		}
 	}

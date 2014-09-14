@@ -54,14 +54,14 @@ public class SpecialityServiceTest extends SpecialityBaseTest {
 		spec2.setName("spec2");
 		spec2.setRank(4);
 		SpecialitySeasonalComparator cmp = new SpecialitySeasonalComparator();
-		TestCase.assertTrue(cmp.compare(spec1, spec2) < 0);
+		TestCase.assertTrue(cmp.compare(spec1, spec2) > 0);
 		spec2.setStartMonth(7);
 		spec2.setEndMonth(11);
-		TestCase.assertTrue(cmp.compare(spec1, spec2) < 0);
-		spec2.setEndMonth(2);
-		TestCase.assertTrue(cmp.compare(spec1, spec2) < 0);
-		spec2.setEndMonth(8);
 		TestCase.assertTrue(cmp.compare(spec1, spec2) > 0);
+		spec2.setEndMonth(2);
+		TestCase.assertTrue(cmp.compare(spec1, spec2) > 0);
+		spec2.setEndMonth(8);
+		TestCase.assertTrue(cmp.compare(spec1, spec2) < 0);
 
 	}
 }

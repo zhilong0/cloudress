@@ -89,11 +89,15 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 					spec.setName(speciality.getName());
 					spec.setDescription(speciality.getDescription());
 					spec.setRank(speciality.getRank());
+					spec.setStartMonth(speciality.getStartMonth());
+					spec.setEndMonth(speciality.getEndMonth());
 					specialityService.addSpeciality(spec, found.getCode());
 				} else {
 					logger.info("speciality {} in region {} already exist,update it", spec.getName(), found);
 					spec.setDescription(speciality.getDescription());
 					spec.setRank(speciality.getRank());
+					spec.setStartMonth(speciality.getStartMonth()); 
+					spec.setEndMonth(speciality.getEndMonth()); 
 					specialityService.update(spec);
 				}
 

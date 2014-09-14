@@ -37,7 +37,7 @@ public class Constants {
 		public static final String BUSINESS_HOUR = "businessHour";
 
 		public static final String GOODS_SPECIALITY = "goodsList.specialityCode";
-		
+
 		public static final String COMMENT_OBJECT_TYPE = "shop";
 
 	}
@@ -55,6 +55,10 @@ public class Constants {
 		public static final String RANK = "rank";
 
 		public static final String IMAGE_SET = "imageSet";
+
+		public static final String START_MONTH = "startMonth";
+
+		public static final String END_MONTH = "endMonth";
 
 	}
 

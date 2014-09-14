@@ -45,6 +45,10 @@ public class SpecialitySource {
 
 		private int rank;
 
+		private int startMonth;
+
+		private int endMonth;
+
 		private String[] images;
 
 		public String getName() {
@@ -79,5 +83,20 @@ public class SpecialitySource {
 			this.rank = rank;
 		}
 
+		public int getStartMonth() {
+			return startMonth;
+		}
+
+		public void setStartMonth(int startMonth) {
+			this.startMonth = startMonth;
+		}
+
+		public int getEndMonth() {
+			return endMonth;
+		}
+
+		public void setEndMonth(int endMonth) {
+			this.endMonth = endMonth;
+		}
 	}
 }
