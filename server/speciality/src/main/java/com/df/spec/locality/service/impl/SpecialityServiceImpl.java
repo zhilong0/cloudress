@@ -1,6 +1,7 @@
 package com.df.spec.locality.service.impl;
 
 import java.io.ByteArrayInputStream;
+import java.util.Collections;
 import java.util.List;
 
 import com.df.blobstore.image.ImageAttributes;
@@ -8,6 +9,7 @@ import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.ImageService;
 import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.dao.SpecialityDao;
+import com.df.spec.locality.data.streamline.SpecialitySeasonalComparator;
 import com.df.spec.locality.exception.SpecialityWithCodeNotFoundException;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
@@ -62,7 +64,10 @@ public class SpecialityServiceImpl implements SpecialityService {
 
 	@Override
 	public List<Speciality> getSpecialityListByRegionCode(String regionCode) {
-		return specialityDao.getSpecialityListByRegionCode(regionCode);
+		SpecialitySeasonalComparator comparator = new SpecialitySeasonalComparator();
+		List<Speciality> result = specialityDao.getSpecialityListByRegionCode(regionCode);
+		Collections.sort(result, comparator);
+		return result;
 	}
 
 	@Override

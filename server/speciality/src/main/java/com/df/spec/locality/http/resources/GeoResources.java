@@ -2,6 +2,7 @@ package com.df.spec.locality.http.resources;
 
 import java.util.List;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -28,6 +29,8 @@ public class GeoResources {
 		this.regionService = regionService;
 	}
 
+	@GET
+	@Path("/suggestion")
 	public List<String> getPlaceSuggestion(String address, String regionCode) {
 		Region region = regionService.getRegionByCode(regionCode, true);
 		return geoService.getPlaceSuggestion(address, region);
