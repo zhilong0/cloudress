@@ -26,8 +26,12 @@ public class SupplierServiceImpl implements SupplierService {
 		for (Shop shop : shops) {
 			Supplier supplier = new Supplier(shop);
 			Coordinate coordinate = shop.getLocation().getCoordinate();
-			int distance = calculateDistance(cc.getLatitude(), cc.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude());
-			supplier.setDistance(distance);
+			if (coordinate.getLatitude() <= 0 && coordinate.getLongitude() <= 0) {
+				supplier.setDistance(0);
+			} else {
+				int distance = calculateDistance(cc.getLatitude(), cc.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude());
+				supplier.setDistance(distance);
+			}
 			suppliers.add(supplier);
 		}
 		return suppliers;

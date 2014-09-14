@@ -43,6 +43,9 @@ public class SupplierResources {
 	public List<Supplier> getSpecialitySuppliers(@PathParam("specialityCode") String specialityCode, @QueryParam("coordtype") String coordtype,
 			@QueryParam("latitude") double latitude, @QueryParam("longitude") double longitude) {
 		CoordType type = CoordType.BD09LL;
+		if(latitude == 0 && longitude ==0){
+			type = CoordType.BD09LL;
+		}
 		if (CoordType.WGS84LL.name().toLowerCase().equals(coordtype)) {
 			type = CoordType.WGS84LL;
 		} else if (CoordType.GCJ02LL.name().toLowerCase().equals(coordtype)) {

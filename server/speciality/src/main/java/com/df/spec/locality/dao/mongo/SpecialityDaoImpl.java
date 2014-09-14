@@ -16,7 +16,7 @@ import com.df.spec.locality.exception.SpecialityAlreadyExistException;
 import com.df.spec.locality.model.Constants;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
 
@@ -62,6 +62,8 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 			updateOperations.set(Constants.SPECIALITY.DESCRIPTION, speciality.getDescription());
 		}
 		updateOperations.set(Constants.SPECIALITY.RANK, speciality.getRank());
+		updateOperations.set(Constants.SPECIALITY.START_MONTH, speciality.getStartMonth());
+		updateOperations.set(Constants.SPECIALITY.END_MONTH, speciality.getEndMonth());
 		updateOperations.set(Constants.SPECIALITY.IMAGE_SET, speciality.getImageSet());
 		this.update(query, updateOperations);
 	}
@@ -108,7 +110,8 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 	public List<Speciality> getSpecialityListByRegionCode(String regionCode) {
 		Query<Speciality> query = this.createQuery();
 		query.filter(Constants.SPECIALITY.REGION_CODE + " =", regionCode);
-		return ImmutableList.copyOf(this.find(query));
+		query.order("-" + Constants.SPECIALITY.RANK);
+		return Lists.newArrayList(this.find(query));
 	}
 
 	@Override

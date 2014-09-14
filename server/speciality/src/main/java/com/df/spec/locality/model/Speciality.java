@@ -33,6 +33,10 @@ public class Speciality implements Serializable {
 
 	private ImageSet imageSet = new ImageSet();
 
+	private int startMonth;
+
+	private int endMonth;
+
 	public String getCode() {
 		if (code != null) {
 			return code.toHexString();
@@ -85,4 +89,25 @@ public class Speciality implements Serializable {
 	public void setImage(String image) {
 		this.image = image;
 	}
+
+	public boolean isSeasonal() {
+		return startMonth != 0 && endMonth != 0;
+	}
+
+	public int getStartMonth() {
+		return startMonth;
+	}
+
+	public void setStartMonth(int startMonth) {
+		this.startMonth = startMonth;
+	}
+
+	public int getEndMonth() {
+		return endMonth;
+	}
+
+	public void setEndMonth(int endMonth) {
+		this.endMonth = endMonth;
+	}
+
 }
