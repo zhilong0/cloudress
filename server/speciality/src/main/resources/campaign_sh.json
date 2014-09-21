@@ -1,0 +1,35 @@
+{
+	"region": {
+		"province": "上海市",
+		"city": "上海市"
+	},
+	"imageBaseUri": "classpath:sh/campaign/images/",
+	"campaigns": [{
+		"sponsor": "i061134",
+		"title": "南汇水蜜桃团购,8.5折",
+		"publishDate": "2014-09-21 10:14:14 +0800",
+		"validFrom": "2014-09-21 10:14:14 +0800",
+		"validTo": "2014-09-25 10:14:14 +0800",
+		"contact": "xia pin",
+		"contactCellphone": "13621992125",
+		"content": "9月27号在晨晖路1001号SAP门口集合",
+		"requireAssembly": true,
+		"assemblyLocation": {
+			"address": "晨晖路1001号",
+			"coordinate": {
+				"latitude": 30.143531690378,
+				"longitude": 120.26723497736,
+				"coordType": "BD09LL"
+			}
+		},
+		"assemblyTime": "2014-09-27 10:14:14 +0800",
+		"lastModified": "2014-09-21 10:14:15 +0800",
+		"type": "SpecialityGroupPurcharse",
+		"participants": [],
+		"imageSet": {
+			"images": []
+		},
+		"cancelled": false,
+		"assemblyAddress": "晨晖路1002号"
+	}]
+}

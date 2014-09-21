@@ -6,7 +6,7 @@ import com.df.spec.locality.model.Region;
 
 public interface GeoService {
 
-	Coordinate lookupCoordiate(String address, Region filter);
+	Coordinate lookupCoordinate(String address, Region filter);
 
 	Region lookupRegionWithCoordiate(Coordinate coordinate);
 

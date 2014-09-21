@@ -51,7 +51,7 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 	}
 
 	@Override
-	public void update(Speciality speciality) {
+	public boolean update(Speciality speciality) {
 		Assert.notNull(speciality.getCode());
 		Query<Speciality> query = this.createQuery();
 		query.filter(Constants.SPECIALITY.CODE, new ObjectId(speciality.getCode()));
@@ -65,7 +65,7 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 		updateOperations.set(Constants.SPECIALITY.START_MONTH, speciality.getStartMonth());
 		updateOperations.set(Constants.SPECIALITY.END_MONTH, speciality.getEndMonth());
 		updateOperations.set(Constants.SPECIALITY.IMAGE_SET, speciality.getImageSet());
-		this.update(query, updateOperations);
+		return this.update(query, updateOperations).getUpdatedCount() > 0;
 	}
 
 	@Override

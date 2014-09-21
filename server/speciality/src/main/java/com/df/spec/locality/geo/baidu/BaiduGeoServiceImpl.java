@@ -56,7 +56,7 @@ public class BaiduGeoServiceImpl implements GeoService {
 	}
 
 	@Override
-	public Coordinate lookupCoordiate(String address, Region filter) {
+	public Coordinate lookupCoordinate(String address, Region filter) {
 		String url = GEO_URL + "?address={address}&output=json&ak={ak}&city={city}";
 		String normalizedAddress = address;
 		if (filter.getDistrict() == null && !address.startsWith(filter.getCity())) {

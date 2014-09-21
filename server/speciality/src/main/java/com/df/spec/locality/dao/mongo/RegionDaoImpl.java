@@ -10,6 +10,7 @@ import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.CriteriaContainerImpl;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
+import org.springframework.util.Assert;
 
 import com.df.spec.locality.dao.RegionDao;
 import com.df.spec.locality.exception.DuplicateRegionException;
@@ -33,6 +34,7 @@ public class RegionDaoImpl extends BasicDAO<Region, ObjectId> implements RegionD
 	@Override
 	public Region addRegion(Region newRegion) {
 		try {
+			Assert.notNull(newRegion.getCode());
 			this.save(newRegion);
 			return newRegion;
 		} catch (DuplicateKeyException ex) {
@@ -74,7 +76,9 @@ public class RegionDaoImpl extends BasicDAO<Region, ObjectId> implements RegionD
 
 	@Override
 	public Region getRegionByCode(String regionCode) {
-		return this.get(new ObjectId(regionCode));
+		Query<Region> query = this.createQuery();
+		query.filter(Constants.REGION.CODE_PROPERTY + " =", regionCode);
+		return this.findOne(query);
 	}
 
 }

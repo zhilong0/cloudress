@@ -89,9 +89,9 @@ public class RegionServiceImpl implements RegionService {
 		}
 		for (int i = 0; i < entries.size(); ++i) {
 			String[] entry = entries.get(i);
-			if (entry.length < 2) {
+			if (entry.length < 3) {
 				if (continueOnError) {
-					logger.warn("Line {} is an invalid entry, province and city must be provided.", i);
+					logger.warn("Line {} is an invalid entry, code,province and city must be provided.", i);
 					continue;
 				} else {
 					SpecialityBaseException ex = new SpecialityBaseException(null, "Invalid region entry, province and city must be provided");
@@ -100,9 +100,10 @@ public class RegionServiceImpl implements RegionService {
 
 				}
 			}
-			Region region = new Region(entry[0].trim(), entry[1].trim());
-			if (entry.length >= 3) {
-				region.setDistrict(entry[2]);
+			Region region = new Region(entry[1].trim(), entry[2].trim());
+			region.setCode(entry[0]);
+			if (entry.length >= 4) {
+				region.setDistrict(entry[3]);
 			}
 			try {
 				this.addRegion(region);

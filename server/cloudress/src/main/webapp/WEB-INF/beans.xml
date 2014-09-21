@@ -24,8 +24,11 @@
 		<property name="objectMapper" ref="objectMapper" />
 	</bean>
 	<bean id="idmExceptionMapper" class="com.df.http.rs.provider.idm.IdmExceptionMapper" />
+	<bean id="idmValidationExceptionMapper" class="com.df.http.rs.provider.idm.ValidationExceptionMapper">
+		<constructor-arg index="0" ref="objectMapper" />
+	</bean>
 	<bean id="specialityExceptionMapper" class="com.df.http.rs.provider.speciality.SpecialityExceptionMapper" />
-	<bean id="validationExceptionMapper" class="com.df.http.rs.provider.idm.ValidationExceptionMapper">
+	<bean id="specialityvalidationExceptionMapper" class="com.df.http.rs.provider.speciality.ValidationExceptionMapper">
 		<constructor-arg index="0" ref="objectMapper" />
 	</bean>
 	<bean id="imageServiceExceptionMapper" class="com.df.http.rs.provider.image.ImageServiceExceptionMapper" />
@@ -62,6 +65,9 @@
 	<bean id="supplierResource" class="com.df.spec.locality.http.resources.SupplierResources">
 		<constructor-arg index="0" ref="geoService" />
 		<constructor-arg index="1" ref="supplierService" />
+	</bean>
+	<bean id="campaignResource" class="com.df.spec.locality.http.resources.CampaignResources">
+		<constructor-arg index="0" ref="campaignService" />
 	</bean>
 	<bean id="provisionService" class="com.df.common.provision.ProvisionService" />
 	<bean id="regionImporter" class="com.df.spec.locality.provision.RegionImporter">

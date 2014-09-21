@@ -17,7 +17,7 @@ public interface SpecialityService {
 	Speciality getSpecialityByCode(String specialityCode);
 
 	Speciality findSpeciality(String regionCode, String specialityName);
-	
-	void update(Speciality spec);
+
+	boolean update(Speciality spec);
 
 }

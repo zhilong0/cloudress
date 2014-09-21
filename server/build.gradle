@@ -22,6 +22,16 @@ subprojects {
 		}
 	}
 	
+	eclipseJdt << {
+		File f = file('.settings/org.eclipse.core.resources.prefs')
+		f.write('eclipse.preferences.version=1\n')
+		f.append('encoding/<project>=UTF-8')
+	}
+	
+	tasks.withType(Compile) {
+		options.encoding = 'UTF-8'
+	}
+	
 	compileJava {
 		sourceCompatibility = 1.6
 		targetCompatibility = 1.6

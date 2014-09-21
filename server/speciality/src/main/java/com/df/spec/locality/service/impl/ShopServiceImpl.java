@@ -13,7 +13,6 @@ import com.df.spec.locality.exception.ShopErrorCode;
 import com.df.spec.locality.exception.SpecialityBaseException;
 import com.df.spec.locality.geo.Coordinate;
 import com.df.spec.locality.geo.GeoService;
-import com.df.spec.locality.model.Comment;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
 import com.df.spec.locality.service.RegionService;
@@ -56,7 +55,7 @@ public class ShopServiceImpl implements ShopService {
 		Region region = regionService.getRegionByCode(regionCode, true);
 		if (newShop.getLocation().getCoordinate() == null) {
 			String address = newShop.getLocation().getAddress();
-			Coordinate coordiate = geoService.lookupCoordiate(address, region);
+			Coordinate coordiate = geoService.lookupCoordinate(address, region);
 			if (coordiate == null) {
 				throw new SpecialityBaseException(ShopErrorCode.SHOP_LOCATE_ERROR, "Cannot locate location for address %s", address);
 			}
@@ -90,7 +89,7 @@ public class ShopServiceImpl implements ShopService {
 		Shop found = this.getShopByCode(shop.getCode(), true);
 		Region region = regionService.getRegionByCode(found.getRegionCode(), true);
 		if (!found.getAddress().equals(shop.getAddress())) {
-			Coordinate coordiate = geoService.lookupCoordiate(shop.getAddress(), region);
+			Coordinate coordiate = geoService.lookupCoordinate(shop.getAddress(), region);
 			found.getLocation().setCoordinate(coordiate);
 			found.getLocation().setAddress(shop.getAddress());
 		}
@@ -119,10 +118,4 @@ public class ShopServiceImpl implements ShopService {
 		found.getImageSet().removeImage(imageId);
 		shopDao.update(found);
 	}
-
-	@Override
-	public List<Comment> getCommentList() {
-		return null;
-	}
-
 }

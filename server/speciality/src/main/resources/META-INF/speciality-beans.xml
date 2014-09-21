@@ -16,6 +16,9 @@
 	<bean id="commentDao" class="com.df.spec.locality.dao.mongo.CommentDaoImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 	</bean>
+	<bean id="campaignDao" class="com.df.spec.locality.dao.mongo.CampaignDaoImpl">
+		<constructor-arg index="0" ref="specialityDataStore" />
+	</bean>
 	<bean id="proxy" class="org.apache.http.HttpHost">
 		<constructor-arg index="0" value="proxy.sha.sap.corp" />
 		<constructor-arg index="1" value="8080" />
@@ -67,5 +70,11 @@
 	</bean>
 	<bean id="commentService" class="com.df.spec.locality.service.impl.CommentServiceImpl">
 		<constructor-arg index="0" ref="commentDao" />
+	</bean>
+	<bean id="campaignService" class="com.df.spec.locality.service.impl.CampaignServiceImpl">
+		<constructor-arg index="0" ref="campaignDao" />
+		<constructor-arg index="1" ref="validator" />
+		<constructor-arg index="2" ref="regionService" />
+		<constructor-arg index="3" ref="geoService" />
 	</bean>
 </beans>

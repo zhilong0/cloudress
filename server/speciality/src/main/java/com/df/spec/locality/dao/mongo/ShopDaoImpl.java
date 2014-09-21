@@ -20,6 +20,7 @@ import com.df.spec.locality.model.Shop;
 import com.google.common.collect.ImmutableList;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
+import com.mongodb.WriteConcern;
 
 public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
 
@@ -37,9 +38,16 @@ public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
 		Assert.notNull(newShop.getName());
 		Assert.notNull(newShop.getAddress());
 		try {
+			Query<Shop> query = this.createQuery();
+			query.filter(Constants.SHOP.ADDRESS, newShop.getAddress());
+			query.filter(Constants.SHOP.NAME, newShop.getName());
+			Shop found = query.get();
+			if (found != null) {
+				throw new DuplicateShopException(null, newShop.getName(), newShop.getAddress());
+			}
 			newShop.setRegionCode(region.getCode());
 			newShop.setScore(5);
-			this.save(newShop);
+			this.save(newShop, WriteConcern.JOURNALED);
 		} catch (DuplicateKeyException ex) {
 			throw new DuplicateShopException(ex, newShop.getName(), newShop.getAddress());
 		}

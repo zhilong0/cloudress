@@ -22,12 +22,13 @@ public class MongoSpecialityDaoTest extends SpecialityBaseTest {
 	@Test
 	public void testAddSpeciality() {
 		Speciality speciality = new Speciality();
-		speciality.setName("³ô¶¹¸¯");
+		speciality.setName("æµ‹è¯•ç‰¹äº§");
 		ImageAttributes attributes = new ImageAttributes("p1", 1024, 768, ImageFormat.JPEG);
 		speciality.getImageSet().addImage("123455", attributes);
 		ImageAttributes attributes2 = new ImageAttributes("p2", 1024, 768, ImageFormat.JPEG);
 		speciality.getImageSet().addImage("434343", attributes2);
-		Region region = new Region("ºşÄÏÊ¡", "³¤É³ÊĞ", "");
+		Region region = new Region("æµ‹è¯•çœ", "æµ‹è¯•å¸‚", "");
+		region.setCode("testcs");
 		try {
 			regionDao.addRegion(region);
 			specialityDao.add(speciality, region);
@@ -42,8 +43,9 @@ public class MongoSpecialityDaoTest extends SpecialityBaseTest {
 	@Test
 	public void testAddSpecialityWithSameNameInSameRegion() {
 		Speciality speciality = new Speciality();
-		speciality.setName("³ô¶¹¸¯");
-		Region region = new Region("ºşÄÏÊ¡", "³¤É³ÊĞ", "");
+		speciality.setName("");
+		Region region = new Region("æµ‹è¯•çœ", "æµ‹è¯•å¸‚", "");
+		region.setCode("cs");
 		try {
 			regionDao.addRegion(region);
 			specialityDao.add(speciality, region);

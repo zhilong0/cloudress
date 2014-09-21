@@ -18,7 +18,7 @@ public class MongoRegionDaoTest extends SpecialityBaseTest {
 
 	@Test
 	public void testAddGetDeleteRegion() {
-		Region newRegion = new Region("ºşÄÏÊ¡²âÊÔ", "ÔÀÑôÊĞ", "ãèÂŞÊĞ");
+		Region newRegion = new Region("test", "æµ‹è¯•çœ", "æµ‹è¯•å¸‚", "æµ‹è¯•å¿");
 		try {
 			regionDao.addRegion(newRegion);
 			Assert.isTrue(regionDao.findRegion(newRegion) != null);
@@ -29,7 +29,7 @@ public class MongoRegionDaoTest extends SpecialityBaseTest {
 
 	@Test
 	public void testGetRegionList() {
-		Region newRegion = new Region("ºşÄÏÊ¡²âÊÔ", "ÔÀÑôÊĞ", "ãèÂŞÊĞ");
+		Region newRegion = new Region("test", "æµ‹è¯•çœ", "æµ‹è¯•å¸‚", "æµ‹è¯•å¿");
 		try {
 			regionDao.addRegion(newRegion);
 			List<Region> regions = regionDao.getRegionList();

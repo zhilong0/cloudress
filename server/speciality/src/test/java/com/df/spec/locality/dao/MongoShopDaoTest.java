@@ -18,18 +18,18 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 	private RegionDao regionDao;
 
 	protected Region createRegion() {
-		Region region = new Region("ÉÏº£ÊĞ", "ÉÏº£ÊĞ", "»ÆÆÖÇø");
+		Region region = new Region("test","æµ‹è¯•çœ", "æµ‹è¯•å¸‚", "æµ‹è¯•å¿");
 		regionDao.addRegion(region);
 		return region;
 	}
 
 	protected void removeRegion() {
-		regionDao.deleteRegion(new Region("ÉÏº£ÊĞ", "ÉÏº£ÊĞ", "»ÆÆÖÇø"));
+		regionDao.deleteRegion(new Region("test","æµ‹è¯•çœ", "æµ‹è¯•å¸‚", "æµ‹è¯•å¿"));
 	}
 
 	@Test
 	public void testAddShop() {
-		Shop shop = new Shop("³ÇÚòÃíµÚÒ»°Ù»õ²âÊÔ", "»ÆÆÖÇø°²ÈÊ½Ö218ºÅ");
+		Shop shop = new Shop("å•†é“º1", "address1");
 		try {
 			Region region = this.createRegion();
 			shopDao.addShop(shop, region);
@@ -50,7 +50,7 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 
 	@Test
 	public void testGetShopByCode() {
-		Shop shop = new Shop("³ÇÚòÃíµÚÒ»°Ù»õ²âÊÔ", "»ÆÆÖÇø°²ÈÊ½Ö218ºÅ");
+		Shop shop = new Shop("å•†é“º2", "address2");
 		try {
 			Region region = this.createRegion();
 			shopDao.addShop(shop, region);

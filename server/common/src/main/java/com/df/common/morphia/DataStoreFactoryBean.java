@@ -22,7 +22,7 @@ public class DataStoreFactoryBean extends AbstractFactoryBean<Datastore> {
 	@Override
 	protected Datastore createInstance() throws Exception {
 		Datastore dataStore = morphia.createDatastore(mongoClient, dbName);
-		dataStore.ensureIndexes();
+		dataStore.ensureIndexes(true);
 		return dataStore;
 	}
 

@@ -4,6 +4,8 @@ public class Constants {
 
 	public static interface REGION {
 
+		public static final String CODE_PROPERTY = "_id";
+
 		public static final String PROVINCE_PROPERTY = "province";
 
 		public static final String CITY_PROPERTY = "city";
@@ -73,6 +75,74 @@ public class Constants {
 		public static final String USER_ID = "userId";
 
 		public static final String WRITE_DATE = "writeDate";
+
+	}
+
+	public static interface PARTICIPANT_JOURNAL {
+
+		public static final String ID = "_id";
+
+		public static final String USER_ID = "userId";
+
+		public static final String CAMPAIGN_ID = "campaignId";
+
+		public static final String PARTICIPATE_TIME = "participateTime";
+
+		public static final String DEPART_COUNT = "departCount";
+
+	}
+
+	public static interface PARTICIPANT {
+
+		public static final String USER_ID = "userId";
+
+		public static final String PARTICIPATE_TIME = "participateTime";
+
+	}
+
+	public static interface CAMPAIGN {
+
+		public static final String ID = "_id";
+
+		public static final String VERSION = "_version";
+
+		public static final String SPONSOR = "sponsor";
+
+		public static final String TITLE = "title";
+
+		public static final String REGION_CODE = "regionCode";
+
+		public static final String PUBLISH_DATE = "publishDate";
+
+		public static final String SHOP_CODE = "shopCode";
+
+		public static final String VALID_FROM = "validFrom";
+
+		public static final String VALID_TO = "validTo";
+
+		public static final String PARTICIPANT_LIMIT = "participantLimit";
+
+		public static final String CONTACT = "contact";
+
+		public static final String CELLPHONE = "cellphone";
+
+		public static final String IS_CANCELLED = "isCancelled";
+
+		public static final String REQUIRE_ASSEMBLY = "requireAssembly";
+
+		public static final String ASSEMBLY_LOCATION = "assemblyLocation";
+
+		public static final String ASSEMBLY_TIME = "assemblyTime";
+
+		public static final String TYPE = "type";
+
+		public static final String CONTENT = "content";
+
+		public static final String IMAGE_SET = "imageSet";
+
+		public static final String PARTICIPANTS = "participants";
+
+		public static final String PARTICIPANT_USER_ID = "participants.userId";
 
 	}
 

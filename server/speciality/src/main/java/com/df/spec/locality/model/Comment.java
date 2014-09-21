@@ -11,7 +11,7 @@ import org.mongodb.morphia.annotations.Indexes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
+@Entity(value = "comments", noClassnameStored = true)
 @Indexes(@Index(value = "commentObject.objectType,commentObject.objectId,-writeDate", unique = false))
 public class Comment implements Serializable {
 

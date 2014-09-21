@@ -59,5 +59,6 @@
 				<value>classpath:messages/idm_validation_messages</value>
 			</array>
 		</property>
+		<property name="defaultEncoding" value="utf-8"/>
 	</bean>
 </beans>

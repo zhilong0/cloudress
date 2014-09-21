@@ -28,7 +28,8 @@ public class SpecialityServiceTest extends SpecialityBaseTest {
 
 	@Test
 	public void testAddSpeciality() {
-		Region region = new Region("²âÊÔÊ¡11", "²âÊÔÊĞ");
+		Region region = new Region("æµ‹è¯•çœ", "æµ‹è¯•å¸‚");
+		region.setCode("testre");
 		Speciality spec = new Speciality();
 		spec.setName("spec1");
 		try {

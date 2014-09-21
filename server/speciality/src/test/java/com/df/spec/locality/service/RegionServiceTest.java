@@ -24,12 +24,12 @@ public class RegionServiceTest extends SpecialityBaseTest {
 		try {
 			InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("region_test.csv");
 			regionService.importFromCSV(in, true);
-			Region region = regionService.findRegion("²âÊÔÊ¡2", "²âÊÔÊĞ", "²âÊÔÏØ");
+			Region region = regionService.findRegion("æµ‹è¯•çœ2", "æµ‹è¯•å¸‚", "æµ‹è¯•å¿");
 			TestCase.assertNotNull(region);
 		} finally {
-			regionDao.deleteRegion(new Region("²âÊÔÊ¡2", "²âÊÔÊĞ", "²âÊÔÏØ"));
-			regionDao.deleteRegion(new Region("²âÊÔÊ¡1", "²âÊÔÊĞ"));
-			regionDao.deleteRegion(new Region("±±¾©ÊĞ", "±±¾©ÊĞ"));
+			regionDao.deleteRegion(new Region("æµ‹è¯•çœ2", "æµ‹è¯•å¸‚", "æµ‹è¯•å¿"));
+			regionDao.deleteRegion(new Region("æµ‹è¯•çœ1", "æµ‹è¯•å¸‚"));
+			regionDao.deleteRegion(new Region("åŒ—äº¬å¸‚", "åŒ—äº¬å¸‚"));
 		}
 
 	}

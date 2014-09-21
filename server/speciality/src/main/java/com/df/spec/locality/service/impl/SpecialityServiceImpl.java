@@ -80,8 +80,8 @@ public class SpecialityServiceImpl implements SpecialityService {
 	}
 
 	@Override
-	public void update(Speciality spec) {
-		specialityDao.update(spec);
+	public boolean update(Speciality spec) {
+		return specialityDao.update(spec);
 	}
 
 }

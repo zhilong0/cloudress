@@ -10,7 +10,7 @@ public interface SpecialityDao {
 
 	void add(Speciality spec, Region region);
 
-	void update(Speciality speciality);
+	boolean update(Speciality speciality);
 
 	void addImage(String specialityCode, ImageDetails image);
 

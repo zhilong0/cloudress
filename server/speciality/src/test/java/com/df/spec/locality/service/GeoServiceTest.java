@@ -13,29 +13,28 @@ import com.df.spec.locality.geo.GeoService;
 import com.df.spec.locality.model.Region;
 
 public class GeoServiceTest extends SpecialityBaseTest {
-
 	@Autowired
 	private GeoService geoService;
 
 	@Test
 	public void testLookupCoordiate() {
-		Coordinate coordiate = geoService.lookupCoordiate("ãèÂŞÊĞÌìºã³¬ÊĞ", new Region("ºşÄÏÊ¡", "ÔÀÑôÊĞ", "ãèÂŞÊĞ"));
+		Coordinate coordiate = geoService.lookupCoordinate("æ±¨ç½—å¸‚å¤©æ’è¶…å¸‚", new Region("æ¹–å—çœ", "å²³é˜³å¸‚", "æ±¨ç½—å¸‚"));
 		TestCase.assertNotNull(coordiate);
 	}
 
 	@Test
 	public void testLookupRegionWithCoordiate() {
-		Coordinate coordiate = geoService.lookupCoordiate("ãèÂŞÊĞÌìºã³¬ÊĞ", new Region("ºşÄÏÊ¡", "ÔÀÑôÊĞ", "ãèÂŞÊĞ"));
+		Coordinate coordiate = geoService.lookupCoordinate("æ±¨ç½—å¸‚å¤©æ’è¶…å¸‚", new Region("æ¹–å—çœ", "å²³é˜³å¸‚", "æ±¨ç½—å¸‚"));
 		Region region = geoService.lookupRegionWithCoordiate(coordiate);
-		TestCase.assertEquals(region.getProvince(), "ºşÄÏÊ¡");
-		TestCase.assertEquals(region.getCity(), "ÔÀÑôÊĞ");
-		TestCase.assertEquals(region.getDistrict(), "ãèÂŞÊĞ");
+		TestCase.assertEquals(region.getProvince(), "æ¹–å—çœ");
+		TestCase.assertEquals(region.getCity(), "å²³é˜³å¸‚");
+		TestCase.assertEquals(region.getDistrict(), "æ±¨ç½—å¸‚");
 
 	}
 
 	@Test
 	public void testGetPlaceSuggestion() {
-		List<String> suggestions = geoService.getPlaceSuggestion("Ìì°²ÃÅ", new Region("±±¾©ÊĞ", "±±¾©ÊĞ"));
+		List<String> suggestions = geoService.getPlaceSuggestion("å¤©å®‰é—¨", new Region("åŒ—äº¬å¸‚", "åŒ—äº¬å¸‚"));
 		TestCase.assertTrue(suggestions.size() > 0);
 	}
 

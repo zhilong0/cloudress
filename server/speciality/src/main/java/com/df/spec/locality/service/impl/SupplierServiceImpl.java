@@ -3,6 +3,7 @@ package com.df.spec.locality.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.df.common.utils.MathUtils;
 import com.df.spec.locality.geo.Coordinate;
 import com.df.spec.locality.model.Shop;
 import com.df.spec.locality.model.view.Supplier;
@@ -29,21 +30,11 @@ public class SupplierServiceImpl implements SupplierService {
 			if (coordinate.getLatitude() <= 0 && coordinate.getLongitude() <= 0) {
 				supplier.setDistance(0);
 			} else {
-				int distance = calculateDistance(cc.getLatitude(), cc.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude());
+				int distance = MathUtils.calculateDistance(cc.getLatitude(), cc.getLongitude(), coordinate.getLatitude(), coordinate.getLongitude());
 				supplier.setDistance(distance);
 			}
 			suppliers.add(supplier);
 		}
 		return suppliers;
 	}
-
-	public static int calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-		double latDistance = Math.toRadians(lat1 - lat2);
-		double lngDistance = Math.toRadians(lng1 - lng2);
-		double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-				* Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH * c * 1000));
-	}
-
 }
