@@ -42,6 +42,10 @@ public class UserObjectServiceImpl implements UserObjectService {
 
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-		return this.loadUserByEmail(userName);
+		User user = userManagementService.getUserByCode(userName);
+		if (user == null) {
+			throw new UserNotFoundException(String.format("User with code %s is not found", userName));
+		}
+		return new UserObject(user);
 	}
 }
