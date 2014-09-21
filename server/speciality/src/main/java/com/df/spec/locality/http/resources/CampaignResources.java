@@ -76,6 +76,7 @@ public class CampaignResources {
 	@POST
 	@Path("/{regionCode}/0")
 	public Campaign createCampaign(@PathParam("regionCode") String regionCode, SpecialityGroupPurcharse campaign) {
+		campaign.setRegionCode(regionCode);
 		return campaignService.createCampaign(campaign, loadUserProfile());
 	}
 

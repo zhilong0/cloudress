@@ -38,7 +38,7 @@ public abstract class Campaign implements Serializable {
 	private String shopCode;
 
 	private Date startTime;
-
+	
 	@NotNull(message = "{campaign.validTo.NotNull}")
 	@Future(message = "{campaign.validTo.Future}")
 	private Date endTime;
@@ -56,7 +56,7 @@ public abstract class Campaign implements Serializable {
 
 	private boolean requireAssembly;
 
-	private Location assemblyLocation;
+	private Location location;
 
 	private Date assemblyTime;
 
@@ -201,15 +201,15 @@ public abstract class Campaign implements Serializable {
 	}
 
 	public Location getAssemblyLocation() {
-		return assemblyLocation;
+		return location;
 	}
 
-	public String getAssemblyAddress() {
-		return assemblyLocation == null ? null : assemblyLocation.getAddress();
+	public String getAddress() {
+		return location == null ? null : location.getAddress();
 	}
 
-	public void setAssemblyLocation(Location assemblyLocation) {
-		this.assemblyLocation = assemblyLocation;
+	public void location(Location location) {
+		this.location = location;
 	}
 
 	public Date getAssemblyTime() {

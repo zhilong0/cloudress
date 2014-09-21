@@ -71,7 +71,7 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 		c = Calendar.getInstance();
 		c.add(Calendar.DAY_OF_YEAR, 8);
 		campaign.setAssemblyTime(c.getTime());
-		campaign.setAssemblyLocation(new Location("beijing", null));
+		campaign.location(new Location("beijing", null));
 		campaign.setContact("xia pin");
 		campaign.setContactCellphone("13621992125");
 		violations = validator.validate(campaign);
@@ -99,7 +99,7 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 		now = Calendar.getInstance();
 		now.add(Calendar.DAY_OF_YEAR, 3);
 		campaign.setAssemblyTime(now.getTime());
-		campaign.setAssemblyLocation(new Location("晨晖路1001号", null));
+		campaign.location(new Location("晨晖路1001号", null));
 		campaign.setDesc("assembly at SAP gateway at 10am ");
 		try {
 			region.setCode("shanghai");
@@ -137,7 +137,7 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 		now = Calendar.getInstance();
 		now.add(Calendar.DAY_OF_YEAR, 4);
 		campaign.setAssemblyTime(now.getTime());
-		campaign.setAssemblyLocation(new Location("晨晖路1001号", null));
+		campaign.location(new Location("晨晖路1001号", null));
 		campaign.setDesc("assembly at SAP gateway at 10am ");
 		Region region = new Region("shanghai", "shanghai");
 		region.setCode("shanghai");
@@ -147,7 +147,7 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 			campaignService.createCampaign(campaign, user);
 			List<Campaign> founds = campaignService.getPublishedCampaignList(user.getId());
 			TestCase.assertTrue(founds.size() == 1);
-			campaign.setAssemblyLocation(new Location("晨晖路1002号", null));
+			campaign.location(new Location("晨晖路1002号", null));
 			campaignService.updateCampaign(campaign, user);
 			founds = campaignService.getPublishedCampaignList(user.getId());
 			TestCase.assertTrue(founds.size() == 1);

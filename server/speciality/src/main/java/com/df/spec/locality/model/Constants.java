@@ -130,7 +130,7 @@ public class Constants {
 
 		public static final String REQUIRE_ASSEMBLY = "requireAssembly";
 
-		public static final String ASSEMBLY_LOCATION = "assemblyLocation";
+		public static final String LOCATION = "location";
 
 		public static final String ASSEMBLY_TIME = "assemblyTime";
 

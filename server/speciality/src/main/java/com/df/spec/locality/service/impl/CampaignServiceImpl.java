@@ -113,11 +113,11 @@ public class CampaignServiceImpl implements CampaignService {
 		if (violations.size() != 0) {
 			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
 		}
-		if (campaign.getAssemblyAddress() != null) {
-			if (!campaign.getAssemblyAddress().equals(found.getAssemblyAddress())) {
+		if (campaign.getAddress() != null) {
+			if (!campaign.getAddress().equals(found.getAddress())) {
 				Region region = regionService.getRegionByCode(campaign.getRegionCode(), true);
 				Coordinate coordinate = geoService.lookupCoordinate(campaign.getAssemblyLocation().getAddress(), region);
-				found.setAssemblyLocation(new Location(campaign.getAssemblyAddress(), coordinate));
+				found.location(new Location(campaign.getAddress(), coordinate));
 			}
 		}
 		return campaignDao.update(found);
