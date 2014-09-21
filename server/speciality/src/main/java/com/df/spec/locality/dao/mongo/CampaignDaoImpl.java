@@ -77,14 +77,17 @@ public class CampaignDaoImpl implements CampaignDao {
 	@Override
 	public void insert(Campaign campaign) {
 		Assert.notNull(campaign.getSponsor());
-		Assert.notNull(campaign.getTitle());
-		Assert.notNull(campaign.getValidFrom());
-		Assert.notNull(campaign.getValidTo());
-		Assert.notNull(campaign.getContent());
+		Assert.notNull(campaign.getSubject());
+		Assert.notNull(campaign.getStartTime());
+		Assert.notNull(campaign.getEndTime());
+		Assert.notNull(campaign.getDesc());
 		Assert.notNull(campaign.getRegionCode());
 		Assert.notNull(campaign.getType());
 		if (campaign.getPublishDate() == null) {
 			campaign.setPublishDate(new Date());
+		}
+		if (campaign.isRequireAssembly()) {
+			campaign.setApplyDeadLine(campaign.getStartTime());
 		}
 		this.getDataStore().save(campaign, WriteConcern.JOURNALED);
 	}
@@ -95,8 +98,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		Query<? extends Campaign> query = this.getDataStore().createQuery(campaignClazz);
 		query.filter(Constants.CAMPAIGN.REGION_CODE, regionCode);
 		query.filter(Constants.CAMPAIGN.TYPE, type.name());
-		query.filter(Constants.CAMPAIGN.VALID_FROM + " <", currentDate);
-		query.filter(Constants.CAMPAIGN.VALID_TO + " >", currentDate);
+		query.filter(Constants.CAMPAIGN.APPLY_DEADLINE + " >", currentDate);
 		query.filter(Constants.CAMPAIGN.IS_CANCELLED, false);
 		query.order("-" + Constants.CAMPAIGN.PUBLISH_DATE);
 		query.offset(offset);
@@ -111,12 +113,9 @@ public class CampaignDaoImpl implements CampaignDao {
 		BasicDBObject where = new BasicDBObject();
 		where.append(Constants.CAMPAIGN.REGION_CODE, regionCode);
 		where.append(Constants.CAMPAIGN.IS_CANCELLED, false);
-		BasicDBObject validFrom = new BasicDBObject();
-		validFrom.append("$lt", currentDate);
-		BasicDBObject validTo = new BasicDBObject();
-		validTo.append("$gt", currentDate);
-		where.append(Constants.CAMPAIGN.VALID_FROM, validFrom);
-		where.append(Constants.CAMPAIGN.VALID_TO, validTo);
+		BasicDBObject gtApplyDeadline = new BasicDBObject();
+		gtApplyDeadline.append("$gt", currentDate);
+		where.append(Constants.CAMPAIGN.APPLY_DEADLINE, gtApplyDeadline);
 		DBCursor cursor = collection.find(where);
 		cursor.skip(offset);
 		cursor.limit(limit);
@@ -241,12 +240,9 @@ public class CampaignDaoImpl implements CampaignDao {
 			where.append(Constants.CAMPAIGN.IS_CANCELLED, false);
 		}
 		if (!includeExpired) {
-			BasicDBObject validFrom = new BasicDBObject();
-			validFrom.append("$lt", now);
-			BasicDBObject validTo = new BasicDBObject();
-			validTo.append("$gt", now);
-			where.append(Constants.CAMPAIGN.VALID_FROM, validFrom);
-			where.append(Constants.CAMPAIGN.VALID_TO, validTo);
+			BasicDBObject gtApplyDeadline = new BasicDBObject();
+			gtApplyDeadline.append("$gt", now);
+			where.append(Constants.CAMPAIGN.APPLY_DEADLINE, gtApplyDeadline);
 		}
 		DBCursor cursor = collection.find(where);
 		Iterator<DBObject> iterator = cursor.iterator();
@@ -269,12 +265,9 @@ public class CampaignDaoImpl implements CampaignDao {
 			where.append(Constants.CAMPAIGN.IS_CANCELLED, false);
 		}
 		if (!includeExpired) {
-			BasicDBObject validFrom = new BasicDBObject();
-			validFrom.append("$lt", now);
-			BasicDBObject validTo = new BasicDBObject();
-			validTo.append("$gt", now);
-			where.append(Constants.CAMPAIGN.VALID_FROM, validFrom);
-			where.append(Constants.CAMPAIGN.VALID_TO, validTo);
+			BasicDBObject gtApplyDeadline = new BasicDBObject();
+			gtApplyDeadline.append("$gt", now);
+			where.append(Constants.CAMPAIGN.APPLY_DEADLINE, gtApplyDeadline);
 		}
 		DBCursor cursor = collection.find(where);
 		Iterator<DBObject> iterator = cursor.iterator();

@@ -69,14 +69,21 @@ public class CampaignServiceImpl implements CampaignService {
 			if (campaign.getContactCellphone() == null) {
 				campaign.setContactCellphone(user.getCellPhone());
 			}
+		} else {
+			if (campaign.getStartTime() == null) {
+				campaign.setStartTime(new Date());
+			}
+			if (campaign.getApplyDeadline() == null) {
+				campaign.setApplyDeadLine(campaign.getEndTime());
+			}
 		}
 		Set<ConstraintViolation<Campaign>> violations = validator.validate(campaign, Default.class, CreateCampaign.class);
 		if (violations.size() != 0) {
 			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
 		}
 		campaign.setPublishDate(new Date());
-		if (campaign.getValidFrom() == null) {
-			campaign.setValidFrom(campaign.getPublishDate());
+		if (campaign.getStartTime() == null) {
+			campaign.setStartTime(campaign.getPublishDate());
 		}
 		if (campaign.getAssemblyLocation() != null && campaign.getAssemblyLocation().getAddress() != null) {
 			Region region = regionService.getRegionByCode(campaign.getRegionCode(), true);
@@ -93,13 +100,13 @@ public class CampaignServiceImpl implements CampaignService {
 		found.setAssemblyTime(campaign.getAssemblyTime());
 		found.setContact(campaign.getContact());
 		found.setContactCellphone(campaign.getContactCellphone());
-		found.setContent(campaign.getContent());
+		found.setDesc(campaign.getDesc());
 		found.setParticipantLimit(campaign.getParticipantLimit());
 		found.setRequireAssembly(campaign.isRequireAssembly());
 		found.setShopCode(campaign.getShopCode());
-		found.setTitle(campaign.getTitle());
-		found.setValidFrom(campaign.getValidFrom());
-		found.setValidTo(campaign.getValidTo());
+		found.setSubject(campaign.getSubject());
+		found.setStartTime(campaign.getStartTime());
+		found.setEndTime(campaign.getEndTime());
 		found.setLastModified(new Date());
 
 		Set<ConstraintViolation<Campaign>> violations = validator.validate(found, Default.class, CreateCampaign.class);

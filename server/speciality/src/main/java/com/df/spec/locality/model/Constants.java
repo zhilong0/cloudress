@@ -108,7 +108,7 @@ public class Constants {
 
 		public static final String SPONSOR = "sponsor";
 
-		public static final String TITLE = "title";
+		public static final String TITLE = "subject";
 
 		public static final String REGION_CODE = "regionCode";
 
@@ -116,9 +116,9 @@ public class Constants {
 
 		public static final String SHOP_CODE = "shopCode";
 
-		public static final String VALID_FROM = "validFrom";
+		public static final String START_TIME = "startTime";
 
-		public static final String VALID_TO = "validTo";
+		public static final String END_TIME = "endTime";
 
 		public static final String PARTICIPANT_LIMIT = "participantLimit";
 
@@ -136,7 +136,9 @@ public class Constants {
 
 		public static final String TYPE = "type";
 
-		public static final String CONTENT = "content";
+		public static final String CONTENT = "desc";
+		
+		public static final String APPLY_DEADLINE = "applyDeadline";
 
 		public static final String IMAGE_SET = "imageSet";
 

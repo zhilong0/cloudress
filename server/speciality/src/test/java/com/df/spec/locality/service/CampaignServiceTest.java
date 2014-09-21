@@ -46,16 +46,16 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 		for (ConstraintViolation<Campaign> violation : violations) {
 			pathes.add(violation.getPropertyPath().toString());
 		}
-		TestCase.assertTrue(pathes.contains(Constants.CAMPAIGN.VALID_TO));
+		TestCase.assertTrue(pathes.contains(Constants.CAMPAIGN.END_TIME));
 		TestCase.assertTrue(pathes.contains(Constants.CAMPAIGN.TITLE));
 		TestCase.assertTrue(pathes.contains(Constants.CAMPAIGN.REGION_CODE));
 		TestCase.assertTrue(pathes.contains(Constants.CAMPAIGN.CONTENT));
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.DAY_OF_YEAR, 5);
-		campaign.setValidTo(c.getTime());
-		campaign.setTitle("test title");
+		campaign.setEndTime(c.getTime());
+		campaign.setSubject("test title");
 		campaign.setRegionCode("test region");
-		campaign.setContent("test content");
+		campaign.setDesc("test content");
 		violations = validator.validate(campaign);
 		TestCase.assertTrue(violations.size() == 0);
 		campaign.setRequireAssembly(true);
@@ -68,12 +68,15 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 		TestCase.assertTrue(pathes.contains("{campaign.assembly.assemblyLocation.NotNull}"));
 		TestCase.assertTrue(pathes.contains("{campaign.assembly.contact.NotNull}"));
 		TestCase.assertTrue(pathes.contains("{campaign.assembly.cellphone.NotNull}"));
+		c = Calendar.getInstance();
+		c.add(Calendar.DAY_OF_YEAR, 8);
 		campaign.setAssemblyTime(c.getTime());
 		campaign.setAssemblyLocation(new Location("beijing", null));
 		campaign.setContact("xia pin");
 		campaign.setContactCellphone("13621992125");
 		violations = validator.validate(campaign);
-		TestCase.assertEquals(1,violations.size());
+		TestCase.assertEquals(1, violations.size());
+		c = Calendar.getInstance();
 		c.add(Calendar.DAY_OF_YEAR, 1);
 		campaign.setAssemblyTime(c.getTime());
 		violations = validator.validate(campaign);
@@ -88,16 +91,16 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 		user.setCellPhone("13621992125");
 		user.setRealName("xia pin");
 		Campaign campaign = new SpecialityGroupPurcharse();
-		campaign.setTitle("nan hui peach group purcharse with 80% discount");
-		campaign.setRequireAssembly(true);
+		campaign.setSubject("nan hui peach group purcharse with 80% discount");
+		campaign.setRequireAssembly(false);
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.DAY_OF_YEAR, 2);
-		campaign.setValidTo(now.getTime());
+		campaign.setEndTime(now.getTime());
 		now = Calendar.getInstance();
 		now.add(Calendar.DAY_OF_YEAR, 3);
 		campaign.setAssemblyTime(now.getTime());
 		campaign.setAssemblyLocation(new Location("晨晖路1001号", null));
-		campaign.setContent("assembly at SAP gateway at 10am ");
+		campaign.setDesc("assembly at SAP gateway at 10am ");
 		try {
 			region.setCode("shanghai");
 			regionDao.addRegion(region);
@@ -120,16 +123,22 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 		user.setCellPhone("13621992125");
 		user.setRealName("xia pin");
 		Campaign campaign = new SpecialityGroupPurcharse();
-		campaign.setTitle("nan hui peach group purcharse with 80% discount");
+		campaign.setSubject("nan hui peach group purcharse with 80% discount");
 		campaign.setRequireAssembly(true);
 		Calendar now = Calendar.getInstance();
-		now.add(Calendar.DAY_OF_YEAR, 2);
-		campaign.setValidTo(now.getTime());
-		now = Calendar.getInstance();
 		now.add(Calendar.DAY_OF_YEAR, 3);
+		campaign.setStartTime(now.getTime());
+		now = Calendar.getInstance();
+		now.add(Calendar.DAY_OF_YEAR, 5);
+		campaign.setEndTime(now.getTime());
+		now = Calendar.getInstance();
+		now.add(Calendar.DAY_OF_YEAR, 2);
+		campaign.setApplyDeadLine(now.getTime());
+		now = Calendar.getInstance();
+		now.add(Calendar.DAY_OF_YEAR, 4);
 		campaign.setAssemblyTime(now.getTime());
 		campaign.setAssemblyLocation(new Location("晨晖路1001号", null));
-		campaign.setContent("assembly at SAP gateway at 10am ");
+		campaign.setDesc("assembly at SAP gateway at 10am ");
 		Region region = new Region("shanghai", "shanghai");
 		region.setCode("shanghai");
 		try {

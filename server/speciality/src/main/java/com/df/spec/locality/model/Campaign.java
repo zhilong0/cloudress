@@ -28,7 +28,7 @@ public abstract class Campaign implements Serializable {
 	private String sponsor;
 
 	@NotEmpty(message = "{campaign.title.NotEmpty}")
-	private String title;
+	private String subject;
 
 	private Date publishDate;
 
@@ -37,11 +37,11 @@ public abstract class Campaign implements Serializable {
 
 	private String shopCode;
 
-	private Date validFrom;
+	private Date startTime;
 
 	@NotNull(message = "{campaign.validTo.NotNull}")
 	@Future(message = "{campaign.validTo.Future}")
-	private Date validTo;
+	private Date endTime;
 
 	private int participantLimit;
 
@@ -52,7 +52,7 @@ public abstract class Campaign implements Serializable {
 	private boolean isCancelled;
 
 	@NotEmpty(message = "{campaign.content.NotEmpty}")
-	private String content;
+	private String desc;
 
 	private boolean requireAssembly;
 
@@ -61,6 +61,8 @@ public abstract class Campaign implements Serializable {
 	private Date assemblyTime;
 
 	private Date lastModified;
+
+	private Date applyDeadline;
 
 	@NotEmpty(message = "{campaign.type.NotEmpty}")
 	private String type;
@@ -81,24 +83,24 @@ public abstract class Campaign implements Serializable {
 		}
 	}
 
-	public String getTitle() {
-		return title;
+	public String getSubject() {
+		return subject;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
 	public boolean IsShopCampaign() {
 		return shopCode != null;
 	}
 
-	public boolean isValid() {
+	public boolean isApplyOutDate() {
 		Date now = new Date();
-		return validFrom.before(now) && validTo.after(now);
+		return now.before(applyDeadline);
 	}
-	
-	public int getParticipantCount(){
+
+	public int getParticipantCount() {
 		return this.participants.size();
 	}
 
@@ -118,20 +120,20 @@ public abstract class Campaign implements Serializable {
 		this.shopCode = shopCode;
 	}
 
-	public Date getValidFrom() {
-		return validFrom;
+	public Date getStartTime() {
+		return startTime;
 	}
 
-	public void setValidFrom(Date validFrom) {
-		this.validFrom = validFrom;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
-	public Date getValidTo() {
-		return validTo;
+	public Date getEndTime() {
+		return endTime;
 	}
 
-	public void setValidTo(Date validTo) {
-		this.validTo = validTo;
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 	public int getParticipantLimit() {
@@ -174,12 +176,12 @@ public abstract class Campaign implements Serializable {
 		this.regionCode = regionCode;
 	}
 
-	public String getContent() {
-		return content;
+	public String getDesc() {
+		return desc;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 
 	public String getType() {
@@ -270,5 +272,13 @@ public abstract class Campaign implements Serializable {
 			}
 		}
 		return null;
+	}
+
+	public Date getApplyDeadline() {
+		return applyDeadline;
+	}
+
+	public void setApplyDeadLine(Date applyDeadline) {
+		this.applyDeadline = applyDeadline;
 	}
 }

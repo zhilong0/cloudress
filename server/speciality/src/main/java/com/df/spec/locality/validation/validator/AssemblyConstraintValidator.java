@@ -34,10 +34,16 @@ public class AssemblyConstraintValidator implements ConstraintValidator<Assembly
 				isValid = false;
 				context.buildConstraintViolationWithTemplate("{campaign.assembly.cellphone.NotNull}").addConstraintViolation();
 			}
-			if (value.getAssemblyTime() != null && value.getValidTo() != null) {
-				if (!value.getAssemblyTime().after(value.getValidTo())) {
+			if (value.getAssemblyTime() != null && value.getEndTime() != null) {
+				if (value.getAssemblyTime().after(value.getEndTime())) {
 					isValid = false;
 					context.buildConstraintViolationWithTemplate("{campaign.assembly.assemblyTime.Future}").addConstraintViolation();
+				}
+			}
+			if (value.getApplyDeadline() != null) {
+				if (value.getApplyDeadline().after(value.getStartTime())) {
+					isValid = false;
+					context.buildConstraintViolationWithTemplate("{campaign.assembly.applyDeadline.Past}").addConstraintViolation();
 				}
 			}
 		}
