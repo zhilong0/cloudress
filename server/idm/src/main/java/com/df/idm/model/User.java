@@ -58,7 +58,6 @@ public class User implements Serializable {
 	@Indexed(name = "user_email_idx")
 	private String email;
 
-	@Email(message = "{user.code.Email}")
 	@NotEmpty(message = "{user.code.NotEmpty}")
 	@Size(message = "{user.code.Size}", max = 64)
 	@Indexed(name = "user_code_idx", unique = true, dropDups = false)
