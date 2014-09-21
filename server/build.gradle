@@ -1,12 +1,12 @@
 subprojects {
-  
+	
     apply plugin: 'java'
 	apply plugin: 'eclipse-wtp'
     
 	project.ext.set('sourceCompatibility',JavaVersion.VERSION_1_6)
 	project.ext.set('targetCompatibility',JavaVersion.VERSION_1_6)
     project.version=1.0
-	
+
 	repositories {
 		mavenCentral()
 	}
@@ -31,6 +31,16 @@ subprojects {
 	compileJava {
 		sourceCompatibility = 1.6
 		targetCompatibility = 1.6
+		options.fork = true
+		options.encoding ="UTF-8"
+	}
+	
+	compileTestJava {
+		sourceCompatibility = 1.6
+		targetCompatibility = 1.6
+		options.fork = true
+		options.failOnError=false
+		options.encoding ="UTF-8"
 	}
 
     test {
