@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -18,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.df.idm.authentication.http.AuthenticationRequest;
 import com.df.idm.exception.UserException;
 import com.df.idm.model.User;
 import com.df.idm.registration.EmailVerificationResultHandler;
@@ -45,24 +45,24 @@ public class UserResources {
 
 	@POST
 	@Path("/email")
-	public User newUserByEmail(@HeaderParam("email") String email, @HeaderParam("password") String password) {
-		User newUser = userManagementService.createUserByEmail(email, password);
+	public User newUserByEmail(AuthenticationRequest request) {
+		User newUser = userManagementService.createUserByEmail(request.getCode(), request.getPassword());
 		newUser.cleanPassword();
 		return newUser;
 	}
 
 	@POST
 	@Path("/code")
-	public User newUserByCode(@HeaderParam("code") String userCode, @HeaderParam("password") String password) {
-		User newUser = userManagementService.createUserByCode(userCode, password);
+	public User newUserByCode(AuthenticationRequest request) {
+		User newUser = userManagementService.createUserByCode(request.getCode(), request.getPassword());
 		newUser.cleanPassword();
 		return newUser;
 	}
 
 	@POST
 	@Path("/cellphone")
-	public User newUserByCellphone(@HeaderParam("cellphone") String cellphone, @HeaderParam("password") String password) {
-		User newUser = userManagementService.createUserByCellphone(cellphone, password);
+	public User newUserByCellphone(AuthenticationRequest request) {
+		User newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword());
 		return newUser;
 	}
 

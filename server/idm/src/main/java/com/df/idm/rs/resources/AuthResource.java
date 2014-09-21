@@ -59,23 +59,23 @@ public class AuthResource {
 	@Path("/login")
 	public AuthenticationResponse login(@Context HttpServletResponse response, @Context HttpServletRequest request, AuthenticationRequest ar) {
 		AuthenticationResponse aRep = new AuthenticationResponse();
-		if (ar == null || ar.getAccount() == null) {
+		if (ar == null || ar.getCode() == null) {
 			aRep.setAuthenticated(false);
 			aRep.setErrorMessage("Invalid parameter, user account must not be null");
 			return aRep;
 		}
-		Authentication authentication = new UserPropertyAuthenticationToken(ar.getAccount(), ar.getPassword());
+		Authentication authentication = new UserPropertyAuthenticationToken(ar.getCode(), ar.getPassword());
 		try {
 			authentication = authenticationManager.authenticate(authentication);
 			aRep.setAuthenticated(true);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			rememberMeServices.loginSuccess(request, response, authentication);
-			User user = userManagementService.getUserByCode(ar.getAccount());
+			User user = userManagementService.getUserByCode(ar.getCode());
 			if (user != null) {
 				userManagementService.updateUserLastLogin(user.getId(), new Date());
 			}
 		} catch (AuthenticationException ex) {
-			logger.error("authentication failure for user " + ar.getAccount(), ex);
+			logger.error("authentication failure for user " + ar.getCode(), ex);
 			aRep.setAuthenticated(false);
 			aRep.setErrorMessage(ex.getMessage());
 		}

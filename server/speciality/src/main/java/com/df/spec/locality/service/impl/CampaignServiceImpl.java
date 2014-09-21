@@ -60,6 +60,7 @@ public class CampaignServiceImpl implements CampaignService {
 
 	@Override
 	public Campaign createCampaign(Campaign campaign, UserProfile user) {
+		Region region = regionService.getRegionByCode(campaign.getRegionCode(), true);
 		campaign.setSponsor(user.getId());
 		campaign.getParticipants().clear();
 		if (campaign.isRequireAssembly()) {
@@ -86,7 +87,6 @@ public class CampaignServiceImpl implements CampaignService {
 			campaign.setStartTime(campaign.getPublishDate());
 		}
 		if (campaign.getAssemblyLocation() != null && campaign.getAssemblyLocation().getAddress() != null) {
-			Region region = regionService.getRegionByCode(campaign.getRegionCode(), true);
 			Coordinate coordinate = geoService.lookupCoordinate(campaign.getAssemblyLocation().getAddress(), region);
 			campaign.getAssemblyLocation().setCoordinate(coordinate);
 		}

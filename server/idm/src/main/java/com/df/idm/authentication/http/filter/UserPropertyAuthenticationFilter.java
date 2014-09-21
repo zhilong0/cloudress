@@ -22,7 +22,7 @@ public class UserPropertyAuthenticationFilter extends AbstractAuthenticationProc
 
 	public static final String DEFAULT_FILTER_PROCESS_URL = "/auth/login";
 
-	public static final String SECURITY_AUTH_ACCOUNT_KEY = "account";
+	public static final String SECURITY_AUTH_ACCOUNT_KEY = "code";
 
 	public static final String SECURITY_AUTH_PASSWORD_KEY = "password";
 

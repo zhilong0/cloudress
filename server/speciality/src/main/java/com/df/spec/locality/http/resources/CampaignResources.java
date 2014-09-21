@@ -80,10 +80,12 @@ public class CampaignResources {
 		return campaignService.createCampaign(campaign, loadUserProfile());
 	}
 
+	
 	protected UserProfile loadUserProfile() {
 		UserProfile user = new UserProfile();
 		user.setId("i061134");
-		user.setCellPhone("13621992125");
+		user.setCellPhone(""
+				+ "");
 		user.setRealName("xia pin");
 		return user;
 	}
