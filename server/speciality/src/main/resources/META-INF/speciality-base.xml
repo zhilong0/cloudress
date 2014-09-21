@@ -24,7 +24,7 @@
 		<property name="morphia" ref="morphia" />
 		<property name="dbName" value="speciality" />
 	</bean>
-	<bean id="validationMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<bean id="specValidationMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
 			<array value-type="java.lang.String">
 				<value>classpath:messages/speciality_validation_messages</value>
@@ -32,8 +32,8 @@
 		</property>
 		<property name="defaultEncoding" value="utf-8"/>
 	</bean>
-	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-		<property name="validationMessageSource" ref="validationMessageSource" />
+	<bean id="specValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource" ref="specValidationMessageSource" />
 		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
 	</bean>
 </beans>

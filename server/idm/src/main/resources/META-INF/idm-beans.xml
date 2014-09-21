@@ -54,7 +54,7 @@
 		<constructor-arg index="1" ref="passwordEncoder" />
 		<property name="registrationVerifier" ref="registrationVerifier" />
 		<property name="registrationMessageNotifier" ref="registrationMessageNotifier" />
-		<property name="validator" ref="validator" />
+		<property name="validator" ref="idmValidator" />
 	</bean>
 	<bean id="userAuthorityService" class="com.df.idm.service.impl.UserAuthorityServiceImpl">
 		<constructor-arg index="0" ref="userDao" />

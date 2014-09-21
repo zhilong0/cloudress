@@ -78,6 +78,7 @@ public class AuthResource {
 			logger.error("authentication failure for user " + ar.getCode(), ex);
 			aRep.setAuthenticated(false);
 			aRep.setErrorMessage(ex.getMessage());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		}
 		return aRep;
 	}

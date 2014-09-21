@@ -49,11 +49,11 @@
 			</props>
 		</property>
 	</bean>
-	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-		<property name="validationMessageSource" ref="validationMessageSource" />
+	<bean id="idmValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource" ref="idmValidationMessageSource" />
 		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
 	</bean>
-	<bean id="validationMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<bean id="idmValidationMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
 			<array value-type="java.lang.String">
 				<value>classpath:messages/idm_validation_messages</value>

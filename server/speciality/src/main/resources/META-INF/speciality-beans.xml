@@ -73,7 +73,7 @@
 	</bean>
 	<bean id="campaignService" class="com.df.spec.locality.service.impl.CampaignServiceImpl">
 		<constructor-arg index="0" ref="campaignDao" />
-		<constructor-arg index="1" ref="validator" />
+		<constructor-arg index="1" ref="specValidator" />
 		<constructor-arg index="2" ref="regionService" />
 		<constructor-arg index="3" ref="geoService" />
 	</bean>
