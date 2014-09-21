@@ -84,6 +84,6 @@ public class CampaignResources {
 		user.setId("i061134");
 		user.setCellPhone("13621992125");
 		user.setRealName("xia pin");
-		return null;
+		return user;
 	}
 }
