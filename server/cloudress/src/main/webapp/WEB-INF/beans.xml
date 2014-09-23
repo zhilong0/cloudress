@@ -8,6 +8,8 @@
 	<import resource="classpath:META-INF/idm-beans.xml" />
 	<import resource="classpath:META-INF/blob-store-beans.xml" />
 	<import resource="classpath:META-INF/speciality-beans.xml" />
+	<import resource="security.xml" />
+
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
 	<bean id="registrationMessageNotifier" class="com.df.idm.registration.message.DefaultRegistrationMessageNotifier">
 		<property name="emailContextProvider" ref="emailContextProvider" />

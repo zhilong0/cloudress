@@ -4,7 +4,7 @@ public interface Constants {
 
 	public static interface USER {
 
-		public static final String ID_PROPERTY = "id";
+		public static final String ID_PROPERTY = "_id";
 
 		public static final String EMAIL_PROPERTY = "email";
 

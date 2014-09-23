@@ -63,13 +63,10 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 
 	@Override
 	public int updateUser(User user) {
-		UpdateOperations<User> ops = this.getDatastore().createUpdateOperations(User.class);
-		ops.set(USER.AGE_PROPERTY, user.getAge());
-		ops.set(USER.FIRST_NAME_PROPERTY, user.getFirstName());
-		ops.set(USER.LAST_NAME_PROPERTY, user.getLastName());
-		ops.set(USER.NICK_NAME_PROPERTY, user.getNickName());
-		ops.set(USER.CHANGE_TIME_PROPERTY, new Date());
-		return this.getDatastore().update(user, ops).getUpdatedCount();
+		Query<User> query = this.createQuery();
+		user.setChangedTime(new Date());
+		query.filter(USER.ID_PROPERTY, new ObjectId(user.getId()));
+		return this.getDatastore().updateFirst(query, user, false).getUpdatedCount();
 	}
 
 	@Override

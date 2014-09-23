@@ -54,7 +54,7 @@ public abstract class UserObjectAuthenticationProvider implements Authentication
 		if (postAuthenticationChecks != null) {
 			postAuthenticationChecks.check(user);
 		}
-		Object principalToReturn = user;
+		Object principalToReturn = user.getCode();
 		return createSuccessAuthentication(principalToReturn, authentication, user);
 	}
 

@@ -30,6 +30,8 @@ public class UserObject implements UserDetails {
 
 	private List<Role> roles;
 
+	private String userName;
+
 	public UserObject(User user) {
 		this.code = user.getCode();
 		this.email = user.getEmail();
@@ -39,6 +41,17 @@ public class UserObject implements UserDetails {
 		this.password = user.getPassword();
 		this.roles = user.getRoles();
 		this.userId = user.getId();
+		if (user.getFirstName() == null) {
+			if (user.getLastName() != null) {
+				this.userName = user.getLastName();
+			}
+		} else {
+			if (user.getLastName() == null) {
+				this.userName = user.getFirstName();
+			} else {
+				this.userName = user.getFirstName() + user.getLastName();
+			}
+		}
 	}
 
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -82,7 +95,7 @@ public class UserObject implements UserDetails {
 	}
 
 	public String getUsername() {
-		return this.getCode();
+		return this.userName;
 	}
 
 	public String getUserId() {

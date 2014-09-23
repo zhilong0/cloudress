@@ -7,17 +7,12 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security.xsd">
 	<sec:debug />
+	<bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+		<property name="userDetailsService" ref="userObjectService" />
+		<property name="key" value="Oba.2247d" />
+	</bean>
 	<bean id="secureChannelProcessor" class="org.springframework.security.web.access.channel.SecureChannelProcessor" />
 	<bean id="insecureChannelProcessor" class="org.springframework.security.web.access.channel.InsecureChannelProcessor" />
-	<bean id="channelDecisionManager" class="org.springframework.security.web.access.channel.ChannelDecisionManagerImpl">
-		<property name="channelProcessors">
-			<list>
-				<ref bean="secureChannelProcessor" />
-				<ref bean="insecureChannelProcessor" />
-			</list>
-		</property>
-	</bean>
-
 	<bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
@@ -33,45 +28,55 @@
 		</constructor-arg>
 	</bean>
 	<bean id="webExpressionVoter" class="org.springframework.security.web.access.expression.WebExpressionVoter">
-		<property name="expressionHandler" ref="webSecurityExpressionHandler" />
+		<property name="expressionHandler">
+			<bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+				<property name="permissionEvaluator">
+					<bean class="com.df.idm.authorization.RoleBasePermissionEvaluator" />
+				</property>
+			</bean>
+		</property>
 	</bean>
-	<bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
-		<property name="permissionEvaluator" ref="permissionEvaluator" />
-	</bean>
-	<bean id="permissionEvaluator" class="com.df.idm.authorization.RoleBasePermissionEvaluator" />
+
 	<bean id="FILTER_SECURITY_INTERCEPTOR" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
 		<property name="authenticationManager" ref="authenticationManager" />
 		<property name="accessDecisionManager" ref="webAccessDecisionManager" />
 		<property name="securityMetadataSource" ref="securityInterceptorMetadataSource" />
 	</bean>
 	<bean id="EXCEPTION_TRANSLATION_FILTER" class="org.springframework.security.web.access.ExceptionTranslationFilter">
-		<property name="authenticationEntryPoint" ref="authenticationEntryPoint" />
-		<property name="accessDeniedHandler" ref="accessDeniedHandler" />
-	</bean>
-	<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-		<property name="loginFormUrl" value="/auth/login.html" />
-	</bean>
-	<bean id="accessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
-		<property name="errorPage" value="/auth/accessDenied.html" />
+		<property name="authenticationEntryPoint">
+			<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+				<property name="loginFormUrl" value="/auth/login.html" />
+			</bean>
+		</property>
+		<property name="accessDeniedHandler">
+			<bean id="accessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+				<property name="errorPage" value="/auth/accessDenied.html" />
+			</bean>
+		</property>
 	</bean>
 	<bean id="ANONYMOUS_AUTHENTICATION_FILTER" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
 		<constructor-arg index="0" value="test" />
 		<property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS" />
 	</bean>
-	<bean id="ANTHENTICATION_FILTER" class="com.df.idm.authentication.MailOrCellPhoneAuthenticationFilter">
+	<bean id="ANTHENTICATION_FILTER" class="com.df.idm.authentication.http.filter.UserPropertyAuthenticationFilter">
 		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="userManagementService" ref="userManagementService" />
 		<property name="filterProcessesUrl" value="/auth/basic" />
-		<property name="authenticationFailureHandler" ref="authenticationFailureHandler" />
-		<property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
+		<property name="authenticationFailureHandler">
+			<bean id="authenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+				<property name="defaultFailureUrl" value="/auth/login.html" />
+				<property name="useForward" value="true" />
+			</bean>
+		</property>
+		<property name="authenticationSuccessHandler">
+			<bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+				<property name="defaultTargetUrl" value="/" />
+			</bean>
+		</property>
 		<property name="rememberMeServices" ref="rememberMeServices" />
 	</bean>
-	<bean id="authenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
-		<property name="defaultFailureUrl" value="/auth/login.html" />
-		<property name="useForward" value="true" />
-	</bean>
-	<bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-		<property name="defaultTargetUrl" value="/" />
-	</bean>
+
+
 	<bean id="LOCALE_CONTEXT_FILTER" class="com.df.http.filter.LocaleContextHolderFilter">
 		<property name="localeResolver">
 			<bean class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
@@ -94,26 +99,32 @@
 		<property name="rememberMeServices" ref="rememberMeServices" />
 		<property name="authenticationManager" ref="authenticationManager" />
 	</bean>
-	<bean id="DIRECT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.DirectAuthenticationFilter">
-		<property name="processUrl" value="/auth/direct" />
-		<property name="authenticationManager" ref="authenticationManager" />
-		<property name="objectMapper" ref="objectMapper" />
-	</bean>
 	<bean id="CHANNEL_FILTER" class="org.springframework.security.web.access.channel.ChannelProcessingFilter">
-		<property name="channelDecisionManager" ref="channelDecisionManager" />
+		<property name="channelDecisionManager">
+			<bean class="org.springframework.security.web.access.channel.ChannelDecisionManagerImpl">
+				<property name="channelProcessors">
+					<list>
+						<ref bean="secureChannelProcessor" />
+						<ref bean="insecureChannelProcessor" />
+					</list>
+				</property>
+			</bean>
+		</property>
 		<property name="securityMetadataSource" ref="channelMetadataSource" />
 	</bean>
-
 	<bean id="SECURITY_CONTEXT_FILTER" class="org.springframework.security.web.context.SecurityContextPersistenceFilter" />
 	<bean id="CSRF_FILTER" class="org.springframework.security.web.csrf.CsrfFilter">
-		<constructor-arg index="0" ref="csrfTokenRepository" />
-		<property name="accessDeniedHandler" ref="accessDeniedHandler" />
-	</bean>
-	<bean id="csrfTokenRepository" class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository">
+		<constructor-arg index="0">
+			<bean class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository" />
+		</constructor-arg>
+		<property name="accessDeniedHandler">
+			<bean class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+				<property name="errorPage" value="/auth/accessDenied.html" />
+			</bean>
+		</property>
 	</bean>
 	<sec:filter-security-metadata-source id="securityInterceptorMetadataSource"
 		use-expressions="true">
-		<sec:intercept-url pattern="/rs/tenant/sign" access="isAnonymous()" />
 		<sec:intercept-url pattern="/rs/user" method="POST" access="isAnonymous()" />
 		<sec:intercept-url pattern="/rs/**" method="GET" access="permitAll" />
 		<sec:intercept-url pattern="/rs/**" access="isAuthenticated()" />
@@ -121,7 +132,7 @@
 	<sec:filter-security-metadata-source id="channelMetadataSource">
 		<sec:intercept-url pattern="/secure/**" access="REQUIRES_SECURE_CHANNEL" />
 	</sec:filter-security-metadata-source>
-	<bean id="securityfilterChainProxy" class="org.springframework.security.web.FilterChainProxy">
+	<bean id="securityfilterChain" class="org.springframework.security.web.FilterChainProxy">
 		<sec:filter-chain-map path-type="ant">
 			<sec:filter-chain pattern="/**/*.jpg" filters="none" />
 			<sec:filter-chain pattern="/**/*.gif" filters="none" />
@@ -130,12 +141,10 @@
 			<sec:filter-chain pattern="/image/**" filters="none" />
 			<sec:filter-chain pattern="/**/*.js" filters="none" />
 			<sec:filter-chain pattern="/**/*.css" filters="none" />
-			<sec:filter-chain pattern="/auth/*.html" filters="none" />
-			<sec:filter-chain pattern="/auth/**"
-				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,LOGUT_FILTER,DIRECT_AUTHENTICATION_FILTER,TENANT_CONTEXT_CLEAR_FILTER" />
+			<sec:filter-chain pattern="/rs/auth/**"
+				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,LOGOUT_FILTER,ANTHENTICATION_FILTER" />
 			<sec:filter-chain pattern="/rs/**"
-				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER, REMEMBER_ME_FILTER, ANONYMOUS_AUTHENTICATION_FILTER,FILTER_SECURITY_INTERCEPTOR, EXCEPTION_TRANSLATION_FILTER,
-				TENANT_CONTEXT_CLEAR_FILTER" />
+				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER, REMEMBER_ME_FILTER, ANONYMOUS_AUTHENTICATION_FILTER, EXCEPTION_TRANSLATION_FILTER" />
 		</sec:filter-chain-map>
 	</bean>
 </beans>

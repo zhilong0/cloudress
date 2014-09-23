@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.df.idm.authentication.UserPropertyAuthenticationToken;
 import com.df.idm.authentication.http.AuthenticationRequest;
 import com.df.idm.exception.UserException;
 import com.df.idm.model.User;
@@ -63,22 +64,29 @@ public class UserResources {
 	@Path("/cellphone")
 	public User newUserByCellphone(AuthenticationRequest request) {
 		User newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword());
+		newUser.cleanPassword();
 		return newUser;
 	}
 
 	@PUT
 	@Path("/")
 	public User updateUser(User user) {
-		return userManagementService.updateUser(user);
+		User updatedUser = userManagementService.updateUser(user);
+		updatedUser.cleanPassword();
+		return updatedUser;
 	}
 
 	@GET
 	@Path("/")
 	public User getCurrentUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null) {
+		if (authentication != null && authentication instanceof UserPropertyAuthenticationToken) {
 			String name = authentication.getName();
-			return userManagementService.getUserByCode(name);
+			User found = userManagementService.getUserByCode(name);
+			if (found != null) {
+				found.cleanPassword();
+				return found;
+			}
 		}
 		return null;
 	}

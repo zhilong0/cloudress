@@ -43,6 +43,10 @@ public class UserPropertyAuthenticationFilter extends AbstractAuthenticationProc
 		this.postOnly = postOnly;
 	}
 
+	public void setUserManagementService(UserManagementService userManagementService) {
+		this.userManagementService = userManagementService;
+	}
+
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException,
 			ServletException {

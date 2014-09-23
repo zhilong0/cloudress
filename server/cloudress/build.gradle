@@ -10,7 +10,7 @@ eclipse{
 		file {
 			withXml {
                 def node = it.asNode()
-                node.appendNode('classpathentry', [kind: 'lib', path: '/speciality/artifacts', exported: false])
+                node.appendNode('classpathentry', [kind: 'lib', path: '/speciality/artifacts', exported: true])
             }
 		}
 	}

@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 
 @Embedded
-@Indexes(@Index(value = "externalId,provider", unique = true))
+@Indexes(@Index(value = "externalId,provider", unique = true, sparse = true))
 public class ExternalUserReference implements Serializable {
 
 	private static final long serialVersionUID = 1L;

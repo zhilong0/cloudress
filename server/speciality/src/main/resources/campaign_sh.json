@@ -1,21 +1,21 @@
 {
 	"region": {
-		"province": "ÉÏº£ÊÐ",
-		"city": "ÉÏº£ÊÐ"
+		"province": "",
+		"city": "ï¿½Ïºï¿½ï¿½ï¿½"
 	},
 	"imageBaseUri": "classpath:sh/campaign/images/",
 	"campaigns": [{
 		"sponsor": "i061134",
-		"title": "ÄÏ»ãË®ÃÛÌÒÍÅ¹º,8.5ÕÛ",
+		"title": "ï¿½Ï»ï¿½Ë®ï¿½ï¿½ï¿½ï¿½ï¿½Å¹ï¿½,8.5ï¿½ï¿½",
 		"publishDate": "2014-09-21 10:14:14 +0800",
 		"validFrom": "2014-09-21 10:14:14 +0800",
 		"validTo": "2014-09-25 10:14:14 +0800",
 		"contact": "xia pin",
 		"contactCellphone": "13621992125",
-		"content": "9ÔÂ27ºÅÔÚ³¿êÍÂ·1001ºÅSAPÃÅ¿Ú¼¯ºÏ",
+		"content": "9ï¿½ï¿½27ï¿½ï¿½ï¿½Ú³ï¿½ï¿½ï¿½Â·1001ï¿½ï¿½SAPï¿½Å¿Ú¼ï¿½ï¿½ï¿½",
 		"requireAssembly": true,
 		"assemblyLocation": {
-			"address": "³¿êÍÂ·1001ºÅ",
+			"address": "ï¿½ï¿½ï¿½ï¿½Â·1001ï¿½ï¿½",
 			"coordinate": {
 				"latitude": 30.143531690378,
 				"longitude": 120.26723497736,
@@ -30,6 +30,6 @@
 			"images": []
 		},
 		"cancelled": false,
-		"assemblyAddress": "³¿êÍÂ·1002ºÅ"
+		"assemblyAddress": "ï¿½ï¿½ï¿½ï¿½Â·1002ï¿½ï¿½"
 	}]
 }

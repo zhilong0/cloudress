@@ -79,6 +79,20 @@ public class UserManagementServiceImpl implements UserManagementService {
 	}
 
 	public User updateUser(User user) {
+		User found = this.getUserById(user.getId());
+		if (found == null) {
+			throw UserException.userIdNotFound(user.getId());
+		}
+		user.setCode(found.getCode());
+		user.setEmail(found.getEmail());
+		user.setCellphone(found.getCellphone());
+		user.setCreatedTime(found.getCreatedTime());
+		user.setDisabled(found.isDisabled());
+		user.setEmailVerified(found.isEmailVerified());
+		user.setExternalUserReference(found.getExternalUserReference());
+		user.setCellphoneVerified(found.isCellphoneVerified());
+		user.setLocked(found.isLocked());
+		user.setPassword(found.getPassword());
 		Set<ConstraintViolation<User>> violations = validator.validate(user, Default.class);
 		if (violations.size() != 0) {
 			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
