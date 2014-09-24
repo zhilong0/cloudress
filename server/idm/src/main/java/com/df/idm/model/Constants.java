@@ -12,13 +12,13 @@ public interface Constants {
 
 		public static final String NICK_NAME_PROPERTY = "code";
 
-		public static final String CELL_PHONE_PROPERTY = "cellPhone";
+		public static final String CELL_PHONE_PROPERTY = "cellphone";
 
 		public static final String PASSWORD_PROPERTY = "password";
 
-		public static final String EXTERNAL_USER_ID_PROPERTY = "externalId";
+		public static final String EXTERNAL_USER_ID_PROPERTY = "externalUserReference.externalId";
 
-		public static final String EXTERNAL_USER_PROVIDER_PROPERTY = "provider";
+		public static final String EXTERNAL_USER_PROVIDER_PROPERTY = "externalUserReference.provider";
 
 		public static final String AGE_PROPERTY = "age";
 

@@ -12,6 +12,7 @@ import org.mongodb.morphia.query.UpdateOperations;
 
 import com.df.idm.dao.Property;
 import com.df.idm.dao.UserDao;
+import com.df.idm.model.Constants;
 import com.df.idm.model.ExternalUserReference.Provider;
 import com.df.idm.model.User;
 import com.mongodb.MongoClient;
@@ -84,5 +85,17 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 			ops.set(p.getName(), p.getValue());
 		}
 		return this.getDatastore().update(new Key<User>(User.class, new ObjectId(userId)), ops).getUpdatedCount();
+	}
+
+	@Override
+	public boolean deleteUserById(String userId) {
+		return this.deleteById(new ObjectId(userId)).getN() >= 1;
+	}
+
+	@Override
+	public boolean deleteUserByCode(String code) {
+		Query<User> query = this.createQuery();
+		query.filter(Constants.USER.CODE_PROPERTY, code);
+		return this.deleteByQuery(query).getN() >= 1;
 	}
 }

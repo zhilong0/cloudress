@@ -8,9 +8,18 @@ public abstract class StringUtils extends org.springframework.util.StringUtils {
 
 	private static final String EMAIL_REGULAR_EXPRESSION = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
 
+	private static final String CELLPHONE_REGULAR_EXPRESSION = "^(13[\\d]{9}|15[\\d]{9}|18[\\d]{9})$";
+
 	public static boolean isValidEmail(String email) {
 		if (email != null) {
 			return Pattern.matches(EMAIL_REGULAR_EXPRESSION, email);
+		}
+		return false;
+	}
+
+	public static boolean isValidCellPhone(String cellphone) {
+		if (cellphone != null) {
+			return Pattern.matches(CELLPHONE_REGULAR_EXPRESSION, cellphone);
 		}
 		return false;
 	}

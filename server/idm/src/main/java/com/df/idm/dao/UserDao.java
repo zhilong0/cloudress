@@ -6,7 +6,7 @@ import com.df.idm.model.ExternalUserReference.Provider;
 
 public interface UserDao extends Constants {
 
-	User getUserById(String id);
+	User getUserById(String userId);
 
 	User getUserByCode(String code);
 
@@ -23,5 +23,9 @@ public interface UserDao extends Constants {
 	int updateUser(User user);
 
 	int updateUserProperties(String userId, Property<?>... properties);
+
+	boolean deleteUserById(String userId);
+
+	boolean deleteUserByCode(String code);
 
 }

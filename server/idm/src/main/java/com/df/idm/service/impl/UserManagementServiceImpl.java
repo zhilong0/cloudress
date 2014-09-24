@@ -148,7 +148,6 @@ public class UserManagementServiceImpl implements UserManagementService {
 		newUser.setCreatedTime(new Date());
 		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 		newUser.setEmailVerified(false);
-		newUser.setCellphoneVerified(false);
 		userDao.insertUser(newUser);
 		String token = registrationVerifier.generateEmailRegistrationToken(newUser);
 		messageNotifier.sendVerificationEmail(newUser, token);

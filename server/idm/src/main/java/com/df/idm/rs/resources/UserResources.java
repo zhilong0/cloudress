@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.df.common.utils.StringUtils;
 import com.df.idm.authentication.UserPropertyAuthenticationToken;
 import com.df.idm.authentication.http.AuthenticationRequest;
 import com.df.idm.exception.UserException;
@@ -48,6 +49,10 @@ public class UserResources {
 	@Path("/email")
 	public User newUserByEmail(AuthenticationRequest request) {
 		User newUser = userManagementService.createUserByEmail(request.getCode(), request.getPassword());
+		if (request.getNickName() != null) {
+			newUser.setNickName(request.getNickName());
+			userManagementService.updateUser(newUser);
+		}
 		newUser.cleanPassword();
 		return newUser;
 	}
@@ -56,6 +61,10 @@ public class UserResources {
 	@Path("/code")
 	public User newUserByCode(AuthenticationRequest request) {
 		User newUser = userManagementService.createUserByCode(request.getCode(), request.getPassword());
+		if (request.getNickName() != null) {
+			newUser.setNickName(request.getNickName());
+			userManagementService.updateUser(newUser);
+		}
 		newUser.cleanPassword();
 		return newUser;
 	}
@@ -64,6 +73,30 @@ public class UserResources {
 	@Path("/cellphone")
 	public User newUserByCellphone(AuthenticationRequest request) {
 		User newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword());
+		if (request.getNickName() != null) {
+			newUser.setNickName(request.getNickName());
+			userManagementService.updateUser(newUser);
+		}
+		newUser.cleanPassword();
+		return newUser;
+	}
+
+	@POST
+	@Path("/")
+	public User newUser(AuthenticationRequest request) {
+		String code = request.getCode();
+		User newUser = null;
+		if (StringUtils.isValidEmail(code)) {
+			newUser = userManagementService.createUserByEmail(request.getCode(), request.getPassword());
+		} else if (StringUtils.isValidCellPhone(code)) {
+			newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword());
+		} else {
+			newUser = userManagementService.createUserByCode(request.getCode(), request.getPassword());
+		}
+		if (request.getNickName() != null) {
+			newUser.setNickName(request.getNickName());
+			userManagementService.updateUser(newUser);
+		}
 		newUser.cleanPassword();
 		return newUser;
 	}

@@ -9,7 +9,7 @@ import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Reference;
 import org.springframework.security.core.GrantedAuthority;
 
-@Entity
+@Entity(value = "roles", noClassnameStored = true)
 public class Role implements GrantedAuthority {
 
 	private static final long serialVersionUID = 1L;
@@ -17,7 +17,7 @@ public class Role implements GrantedAuthority {
 	@Id
 	ObjectId id;
 
-	@Indexed(name="role_name_idx")
+	@Indexed(name="role_name_idx",unique=true)
 	private String name;
 
 	private String description;

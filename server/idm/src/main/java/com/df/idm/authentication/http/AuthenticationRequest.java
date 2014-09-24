@@ -7,14 +7,17 @@ public class AuthenticationRequest implements Serializable {
 
 	private String code;
 
+	private String nickName;
+
 	private String password;
 
 	AuthenticationRequest() {
 	}
 
-	public AuthenticationRequest(String code, String password) {
+	public AuthenticationRequest(String code, String password, String nickName) {
 		this.code = code;
 		this.password = password;
+		this.nickName = nickName;
 	}
 
 	public String getCode() {
@@ -23,6 +26,14 @@ public class AuthenticationRequest implements Serializable {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 
 }

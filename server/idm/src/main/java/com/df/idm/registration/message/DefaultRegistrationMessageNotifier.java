@@ -32,6 +32,8 @@ public class DefaultRegistrationMessageNotifier implements RegistrationMessageNo
 
 	private String emailVerificationTemplate = DEFAULT_EMAIL_VERIFICATION_TPL;
 
+	private String emailSubject = "Registration Email Confirmation";
+
 	private static final Logger logger = LoggerFactory.getLogger(DefaultRegistrationMessageNotifier.class);
 
 	@Override
@@ -40,7 +42,7 @@ public class DefaultRegistrationMessageNotifier implements RegistrationMessageNo
 		final SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(newUser.getEmail());
 		message.setFrom(emailContextProvider.getSentFrom());
-		message.setSubject("New User Email verification");
+		message.setSubject(emailSubject);
 		HashMap<String, String> parameters = new HashMap<String, String>();
 		parameters.put(tokenParameter, token);
 		String link = emailContextProvider.getHyperLink(false, verifyUrlPrefix, parameters);
@@ -87,4 +89,7 @@ public class DefaultRegistrationMessageNotifier implements RegistrationMessageNo
 		this.emailVerificationTemplate = emailVerificationTemplate;
 	}
 
+	public void setEmailSubject(String emailSubject) {
+		this.emailSubject = emailSubject;
+	}
 }
