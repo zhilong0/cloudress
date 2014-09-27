@@ -2,7 +2,12 @@ package com.df.spec.locality.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import com.df.blobstore.image.ImageAttributes;
 import com.df.blobstore.image.ImageKey;
@@ -11,6 +16,7 @@ import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.dao.SpecialityDao;
 import com.df.spec.locality.data.streamline.SpecialitySeasonalComparator;
 import com.df.spec.locality.exception.SpecialityWithCodeNotFoundException;
+import com.df.spec.locality.exception.validation.ValidationException;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
 import com.df.spec.locality.service.RegionService;
@@ -24,10 +30,13 @@ public class SpecialityServiceImpl implements SpecialityService {
 
 	private RegionService regionService;
 
-	public SpecialityServiceImpl(SpecialityDao specialityDao, RegionService regionService, ImageService imageService) {
+	private Validator validator;
+
+	public SpecialityServiceImpl(SpecialityDao specialityDao, RegionService regionService, ImageService imageService, Validator validator) {
 		this.specialityDao = specialityDao;
 		this.imageService = imageService;
 		this.regionService = regionService;
+		this.validator = validator;
 	}
 
 	public void setSpecialityDao(SpecialityDao specialityDao) {
@@ -39,8 +48,14 @@ public class SpecialityServiceImpl implements SpecialityService {
 	}
 
 	@Override
-	public void addSpeciality(Speciality speciality, String regionCode) {
-		Region region = regionService.getRegionByCode(regionCode, true);
+	public void addSpeciality(Speciality speciality) {
+		Set<ConstraintViolation<Speciality>> violations = validator.validate(speciality);
+		if (violations.size() != 0) {
+			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
+		}
+		Region region = regionService.getRegionByCode(speciality.getRegionCode(), true);
+		speciality.setCreateTime(new Date());
+		speciality.setChangedTime(null);
 		specialityDao.add(speciality, region);
 	}
 

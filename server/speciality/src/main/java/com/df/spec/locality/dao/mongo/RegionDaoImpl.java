@@ -76,6 +76,9 @@ public class RegionDaoImpl extends BasicDAO<Region, ObjectId> implements RegionD
 
 	@Override
 	public Region getRegionByCode(String regionCode) {
+		if (regionCode == null) {
+			return null;
+		}
 		Query<Region> query = this.createQuery();
 		query.filter(Constants.REGION.CODE_PROPERTY + " =", regionCode);
 		return this.findOne(query);

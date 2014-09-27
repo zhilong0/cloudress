@@ -6,7 +6,7 @@ import com.df.spec.locality.model.Speciality;
 
 public interface SpecialityService {
 
-	void addSpeciality(Speciality speciality, String regionCode);
+	void addSpeciality(Speciality speciality);
 
 	List<Speciality> getSpecialityListByRegionCode(String regionCode);
 

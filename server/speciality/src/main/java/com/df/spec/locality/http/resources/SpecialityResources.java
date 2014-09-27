@@ -3,6 +3,7 @@ package com.df.spec.locality.http.resources;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -53,11 +54,17 @@ public class SpecialityResources {
 		return speciality;
 	}
 
+	@POST
+	public Speciality addSpeciality(Speciality speciality) {
+		specialityService.addSpeciality(speciality);
+		return speciality;
+	}
+
 	protected void processImageLink(Speciality speciality) {
 		ImageSet imageSet = speciality.getImageSet();
 		for (ImageDetails image : imageSet.getImages()) {
 			String link = imageLinkCreator.createImageLink(new ImageKey(image.getImageId()), image.getAttributes());
-			if (speciality.getImage()== null) {
+			if (speciality.getImage() == null) {
 				speciality.setImage(link);
 			}
 			image.setImageLink(link);

@@ -25,16 +25,17 @@ public class SpecialityServiceTest extends SpecialityBaseTest {
 
 	@Autowired
 	private SpecialityDao specialityDao;
-
+	
 	@Test
 	public void testAddSpeciality() {
 		Region region = new Region("测试省", "测试市");
 		region.setCode("testre");
 		Speciality spec = new Speciality();
 		spec.setName("spec1");
+		spec.setRegionCode(region.getCode());
 		try {
 			regionService.addRegion(region);
-			specialityService.addSpeciality(spec, region.getCode());
+			specialityService.addSpeciality(spec);
 			TestCase.assertNotNull(specialityService.getSpecialityListByRegionCode(region.getCode()));
 		} finally {
 			if (spec.getCode() != null) {

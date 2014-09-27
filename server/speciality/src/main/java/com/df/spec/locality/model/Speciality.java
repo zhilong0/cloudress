@@ -1,8 +1,11 @@
 package com.df.spec.locality.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.bson.types.ObjectId;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
@@ -20,10 +23,13 @@ public class Speciality implements Serializable {
 	@Id
 	ObjectId code;
 
+	@NotEmpty(message = "{speciality.name.NotEmpty}")
 	private String name;
 
+	@Length(min = 16, message = "{speciality.description.Length}")
 	private String description;
 
+	@NotEmpty(message = "{speciality.regionCode.NotEmpty}")
 	private String regionCode;
 
 	private int rank;
@@ -36,6 +42,10 @@ public class Speciality implements Serializable {
 	private int startMonth;
 
 	private int endMonth;
+
+	private Date createTime;
+
+	private Date changedTime;
 
 	public String getCode() {
 		if (code != null) {
@@ -108,6 +118,22 @@ public class Speciality implements Serializable {
 
 	public void setEndMonth(int endMonth) {
 		this.endMonth = endMonth;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getChangedTime() {
+		return changedTime;
+	}
+
+	public void setChangedTime(Date changedTime) {
+		this.changedTime = changedTime;
 	}
 
 }
