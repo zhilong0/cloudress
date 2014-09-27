@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -23,6 +23,7 @@ import com.df.blobstore.image.ImageFormat;
 import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.ImageService;
 import com.df.blobstore.image.http.ImageOwnerHolder;
+import com.df.blobstore.image.http.ImageParams;
 import com.df.blobstore.image.http.exception.ImageServiceException;
 import com.google.common.io.BaseEncoding;
 
@@ -39,17 +40,17 @@ public class ImageResources {
 		this.imageService = imageService;
 	}
 
-	@PUT
-	public String addImage(String imageData, String imageName) {
+	@POST
+	public String addImage(ImageParams image) {
 		String owner = ImageOwnerHolder.getImageOwner();
 		byte[] imageBytes;
 		BaseEncoding base64 = BaseEncoding.base64();
 		try {
-			imageBytes = base64.decode(imageData);
+			imageBytes = base64.decode(image.getBase64());
 		} catch (IllegalArgumentException ex) {
 			throw ImageServiceException.InvalidBase64Encoding();
 		}
-		return imageService.uploadImage(new ByteArrayInputStream(imageBytes), owner, imageName).getKey();
+		return imageService.uploadImage(new ByteArrayInputStream(imageBytes), owner, image.getName()).getKey();
 	}
 
 	@DELETE
@@ -61,7 +62,7 @@ public class ImageResources {
 	@Path("/{imageId}")
 	public Response getImage(@PathParam("imageId") String imageId) {
 		int index = imageId.lastIndexOf(".");
-		if(index!=-1){
+		if (index != -1) {
 			imageId = imageId.substring(0, index);
 		}
 		Image image = imageService.fetchImage(new ImageKey(imageId));
