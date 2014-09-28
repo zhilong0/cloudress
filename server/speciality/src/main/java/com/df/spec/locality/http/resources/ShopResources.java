@@ -56,9 +56,10 @@ public class ShopResources {
 	}
 
 	@POST
-	@Path("/region/{regionCode}")
-	public void addShop(Shop shop, @PathParam(value = "regionCode") String regionCode) {
-		shopService.addShop(shop, regionCode);
+	@Path("/")
+	public Shop addShop(Shop shop) {
+		shopService.addShop(shop, shop.getRegionCode());
+		return shop;
 	}
 
 	@GET

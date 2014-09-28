@@ -1,7 +1,12 @@
 package com.df.spec.locality.service.impl;
 
 import java.io.ByteArrayInputStream;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.springframework.util.Assert;
 
@@ -11,6 +16,7 @@ import com.df.blobstore.image.ImageService;
 import com.df.spec.locality.dao.ShopDao;
 import com.df.spec.locality.exception.ShopErrorCode;
 import com.df.spec.locality.exception.SpecialityBaseException;
+import com.df.spec.locality.exception.validation.ValidationException;
 import com.df.spec.locality.geo.Coordinate;
 import com.df.spec.locality.geo.GeoService;
 import com.df.spec.locality.model.Region;
@@ -28,11 +34,18 @@ public class ShopServiceImpl implements ShopService {
 
 	private ImageService imageService;
 
-	public ShopServiceImpl(ShopDao shopDao, RegionService regionService, GeoService geoService, ImageService imageService) {
+	private Validator validator;
+
+	public ShopServiceImpl(ShopDao shopDao, RegionService regionService, GeoService geoService, ImageService imageService, Validator validator) {
 		this.shopDao = shopDao;
 		this.regionService = regionService;
 		this.geoService = geoService;
 		this.imageService = imageService;
+		this.validator = validator;
+	}
+
+	public void setValidator(Validator validator) {
+		this.validator = validator;
 	}
 
 	public void setShopDao(ShopDao shopDao) {
@@ -48,10 +61,12 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public void addShop(Shop newShop, String regionCode) {
-		Assert.notNull(newShop.getName());
-		Assert.notNull(newShop.getLocation());
-		Assert.notNull(newShop.getLocation().getAddress());
+	public Shop addShop(Shop newShop, String regionCode) {
+		newShop.setRegionCode(regionCode);
+		Set<ConstraintViolation<Shop>> violations = validator.validate(newShop);
+		if (violations.size() != 0) {
+			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
+		}
 		Region region = regionService.getRegionByCode(regionCode, true);
 		if (newShop.getLocation().getCoordinate() == null) {
 			String address = newShop.getLocation().getAddress();
@@ -61,7 +76,9 @@ public class ShopServiceImpl implements ShopService {
 			}
 			newShop.getLocation().setCoordinate(coordiate);
 		}
+		newShop.setCreateTime(new Date());
 		shopDao.addShop(newShop, region);
+		return newShop;
 	}
 
 	@Override

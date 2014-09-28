@@ -130,7 +130,10 @@
 	<sec:filter-security-metadata-source id="securityInterceptorMetadataSource"
 		use-expressions="true">
 		<sec:intercept-url pattern="/rs/users" method="POST" access="isAnonymous()" />
-		<sec:intercept-url pattern="/rs/**" access="isAuthenticated()" />
+		<sec:intercept-url pattern="/rs/auth/**" access="permitAll" />
+		<sec:intercept-url pattern="/rs/**" method="POST" access="isAuthenticated()" />
+		<sec:intercept-url pattern="/rs/**" method="DELETE" access="isAuthenticated()" />
+		<sec:intercept-url pattern="/rs/**" method="PUT" access="isAuthenticated()" />
 	</sec:filter-security-metadata-source>
 	<sec:filter-security-metadata-source id="channelMetadataSource">
 		<sec:intercept-url pattern="/secure/**" access="REQUIRES_SECURE_CHANNEL" />

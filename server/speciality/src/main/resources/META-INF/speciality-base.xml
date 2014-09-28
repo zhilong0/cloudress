@@ -18,10 +18,10 @@
 		<property name="credentials" ref="mongoCredentials" />
 		<property name="mongoClientOptions" ref="mongoClientOptions" />
 	</bean>
-	<bean id="morphia" class="com.df.common.morphia.MorphiaFactoryBean" />
+	<bean id="specialityMorphia" class="com.df.common.morphia.MorphiaFactoryBean" />
 	<bean id="specialityDataStore" class="com.df.common.morphia.DataStoreFactoryBean">
 		<property name="mongoClient" ref="mongoClient" />
-		<property name="morphia" ref="morphia" />
+		<property name="morphia" ref="specialityMorphia" />
 		<property name="dbName" value="speciality" />
 	</bean>
 	<bean id="specValidationMessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

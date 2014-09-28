@@ -2,12 +2,15 @@ package com.df.spec.locality.model;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.df.spec.locality.geo.Coordinate;
 
 public class Location implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty(message = "{shop.location.address.NotEmpty}")
 	private String address;
 
 	private Coordinate coordinate;

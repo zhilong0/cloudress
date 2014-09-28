@@ -18,18 +18,10 @@
 		<property name="credentials" ref="mongoCredentials" />
 		<property name="mongoClientOptions" ref="mongoClientOptions" />
 	</bean>
-	<bean id="morphia" class="com.df.common.morphia.MorphiaFactoryBean">
-		<property name="mapClasses">
-			<array value-type="java.lang.String">
-				<value>com.df.idm.model.User</value>
-				<value>com.df.idm.model.Role</value>
-				<value>com.df.idm.model.Permission</value>
-			</array>
-		</property>
-	</bean>
+	<bean id="idmMorphia" class="com.df.common.morphia.MorphiaFactoryBean" />
 	<bean id="idmDataStore" class="com.df.common.morphia.DataStoreFactoryBean">
 		<property name="mongoClient" ref="mongoClient" />
-		<property name="morphia" ref="morphia" />
+		<property name="morphia" ref="idmMorphia" />
 		<property name="dbName" value="idm" />
 	</bean>
 	<bean id="asyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
@@ -48,7 +40,7 @@
 				<prop key="mail.smtp.starttls.enable">true</prop>
 			</props>
 		</property>
-		<property name="defaultEncoding" value="utf-8"/>
+		<property name="defaultEncoding" value="utf-8" />
 	</bean>
 	<bean id="idmValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
 		<property name="validationMessageSource" ref="idmValidationMessageSource" />
@@ -60,6 +52,6 @@
 				<value>classpath:messages/idm_validation_messages</value>
 			</array>
 		</property>
-		<property name="defaultEncoding" value="utf-8"/>
+		<property name="defaultEncoding" value="utf-8" />
 	</bean>
 </beans>

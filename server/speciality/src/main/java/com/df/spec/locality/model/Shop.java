@@ -2,9 +2,13 @@ package com.df.spec.locality.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.bson.types.ObjectId;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -24,10 +28,13 @@ public class Shop implements Serializable {
 	@Id
 	private ObjectId shopCode;
 
+	@NotEmpty(message = "{shop.regionCode.NotEmpty}")
 	private String regionCode;
 
+	@NotNull(message = "{shop.location.NotNull}")
 	private Location location;
 
+	@NotEmpty(message = "{shop.name.NotEmpty}")
 	private String name;
 
 	private String description;
@@ -43,6 +50,8 @@ public class Shop implements Serializable {
 	private String businessHour;
 
 	private ImageSet imageSet = new ImageSet();
+
+	private Date createTime;
 
 	@Embedded
 	private List<Goods> goodsList = new ArrayList<Goods>();
@@ -61,6 +70,14 @@ public class Shop implements Serializable {
 		} else {
 			return null;
 		}
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	public void setCode(String shopCode) {

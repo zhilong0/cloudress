@@ -6,7 +6,7 @@ import com.df.spec.locality.model.Shop;
 
 public interface ShopService {
 
-	void addShop(Shop newShop, String regionCode);
+	Shop addShop(Shop newShop, String regionCode);
 
 	Shop getShopByCode(String shopCode, boolean throwException);
 

@@ -129,7 +129,7 @@ public class UserResources {
 
 	@GET
 	@Path("/list")
-	@PreAuthorize("hasRole('USER_LIST_READ')")
+	@PreAuthorize("hasPermission('SYS','USER_LIST_READ')")
 	public List<User> getUserList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
 		if (offset < 0) {
 			offset = 0;
