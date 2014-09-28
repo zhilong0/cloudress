@@ -7,6 +7,9 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security.xsd">
 	<sec:debug />
+	<sec:global-method-security pre-post-annotations="enabled">
+		<sec:expression-handler ref="methodSecurityExpressionHandler" />
+	</sec:global-method-security>
 	<bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
 		<property name="userDetailsService" ref="userObjectService" />
 		<property name="key" value="Oba.2247d" />
@@ -27,14 +30,15 @@
 			</list>
 		</constructor-arg>
 	</bean>
+	<bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="permissionEvaluator" />
+	</bean>
+	<bean id="methodSecurityExpressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="permissionEvaluator" />
+	</bean>
+	<bean id="permissionEvaluator" class="com.df.idm.authorization.RoleBasePermissionEvaluator" />
 	<bean id="webExpressionVoter" class="org.springframework.security.web.access.expression.WebExpressionVoter">
-		<property name="expressionHandler">
-			<bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
-				<property name="permissionEvaluator">
-					<bean class="com.df.idm.authorization.RoleBasePermissionEvaluator" />
-				</property>
-			</bean>
-		</property>
+		<property name="expressionHandler" ref="webSecurityExpressionHandler" />
 	</bean>
 
 	<bean id="FILTER_SECURITY_INTERCEPTOR" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
@@ -125,8 +129,7 @@
 	</bean>
 	<sec:filter-security-metadata-source id="securityInterceptorMetadataSource"
 		use-expressions="true">
-		<sec:intercept-url pattern="/rs/user" method="POST" access="isAnonymous()" />
-		<sec:intercept-url pattern="/rs/**" method="GET" access="permitAll" />
+		<sec:intercept-url pattern="/rs/users" method="POST" access="isAnonymous()" />
 		<sec:intercept-url pattern="/rs/**" access="isAuthenticated()" />
 	</sec:filter-security-metadata-source>
 	<sec:filter-security-metadata-source id="channelMetadataSource">
@@ -144,7 +147,7 @@
 			<sec:filter-chain pattern="/rs/auth/**"
 				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,LOGOUT_FILTER,ANTHENTICATION_FILTER" />
 			<sec:filter-chain pattern="/rs/**"
-				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER, REMEMBER_ME_FILTER, ANONYMOUS_AUTHENTICATION_FILTER, EXCEPTION_TRANSLATION_FILTER" />
+				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER, REMEMBER_ME_FILTER, ANONYMOUS_AUTHENTICATION_FILTER,FILTER_SECURITY_INTERCEPTOR, EXCEPTION_TRANSLATION_FILTER" />
 		</sec:filter-chain-map>
 	</bean>
 </beans>

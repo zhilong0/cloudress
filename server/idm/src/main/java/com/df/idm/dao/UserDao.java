@@ -1,5 +1,7 @@
 package com.df.idm.dao;
 
+import java.util.List;
+
 import com.df.idm.model.Constants;
 import com.df.idm.model.User;
 import com.df.idm.model.ExternalUserReference.Provider;
@@ -16,7 +18,7 @@ public interface UserDao extends Constants {
 
 	User getUserByExternalId(String externalId, Provider provider);
 
-	int updateUserPassword(String id, String newEncodedPassword);
+	int updateUserPassword(String userCode, String newEncodedPassword);
 
 	void insertUser(User user);
 
@@ -27,5 +29,7 @@ public interface UserDao extends Constants {
 	boolean deleteUserById(String userId);
 
 	boolean deleteUserByCode(String code);
+	
+	List<User> getUserList(int offset, int limit);
 
 }

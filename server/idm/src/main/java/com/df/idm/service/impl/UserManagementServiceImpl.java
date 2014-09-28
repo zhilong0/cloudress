@@ -1,6 +1,7 @@
 package com.df.idm.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -79,9 +80,14 @@ public class UserManagementServiceImpl implements UserManagementService {
 	}
 
 	public User updateUser(User user) {
-		User found = this.getUserById(user.getId());
+		User found = null;
+		if (user.getId() == null) {
+			found = this.getUserByCode(user.getCode());
+		} else {
+			found = this.getUserById(user.getId());
+		}
 		if (found == null) {
-			throw UserException.userIdNotFound(user.getId());
+			throw UserException.userCodeNotFound(user.getCode());
 		}
 		user.setCode(found.getCode());
 		user.setEmail(found.getEmail());
@@ -101,21 +107,32 @@ public class UserManagementServiceImpl implements UserManagementService {
 		if (updated == 0) {
 			throw UserException.userIdNotFound(user.getId());
 		}
-		return user;
+		
+		return this.getUserByCode(user.getCode());
 	}
 
-	public void updatePassword(String userId, String oldPassword, String newPassword) {
-		User user = userDao.getUserByCode(userId);
+	public void updatePassword(String userCode, String oldPassword, String newPassword) {
+		User user = userDao.getUserByCode(userCode);
 		if (user == null) {
-			throw UserException.userIdNotFound(userId);
+			throw UserException.userCodeNotFound(userCode);
 		}
 
 		String encodedOldPassword = passwordEncoder.encode(oldPassword);
 		if (!user.getPassword().equals(encodedOldPassword)) {
-			throw UserException.userPasswordNotMatch(userId);
+			throw UserException.userPasswordNotMatch(userCode);
 		}
 		String encodedPassword = passwordEncoder.encode(newPassword);
-		userDao.updateUserPassword(userId, encodedPassword);
+		userDao.updateUserPassword(userCode, encodedPassword);
+	}
+
+	public void updatePassword(String userCode, String newPassword) {
+		User user = userDao.getUserByCode(userCode); 
+		if (user == null) {
+			throw UserException.userCodeNotFound(userCode);
+		}
+
+		String encodedPassword = passwordEncoder.encode(newPassword);
+		userDao.updateUserPassword(userCode, encodedPassword);
 	}
 
 	@Override
@@ -290,5 +307,10 @@ public class UserManagementServiceImpl implements UserManagementService {
 		if (updated == 0) {
 			throw UserException.userIdNotFound(userId);
 		}
+	}
+
+	@Override
+	public List<User> getUserList(int offset, int limit) {
+		return userDao.getUserList(offset, limit);
 	}
 }

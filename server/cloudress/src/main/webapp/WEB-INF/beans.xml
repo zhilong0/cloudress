@@ -73,6 +73,50 @@
 		<constructor-arg index="0" ref="campaignService" />
 	</bean>
 	<bean id="provisionService" class="com.df.common.provision.ProvisionService" />
+	<bean id="permissionImporter" class="com.df.idm.provision.PermissionImporter">
+		<constructor-arg index="0" value="1" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="securityModelRepository" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_permissions.csv</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="roleImporter" class="com.df.idm.provision.RoleImporter">
+		<constructor-arg index="0" value="2" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="objectMapper" />
+		<constructor-arg index="3" ref="securityModelRepository" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_roles.json</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="userImporter" class="com.df.idm.provision.UserImporter">
+		<constructor-arg index="0" value="3" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="objectMapper" />
+		<constructor-arg index="3" ref="userManagementService" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_users.json</value>
+				<value>classpath:speciality_users.json</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="authorityAssignmentImporter" class="com.df.idm.provision.AuthorityAssignmentImporter">
+		<constructor-arg index="0" value="4" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="objectMapper" />
+		<constructor-arg index="3" ref="userAuthorityService" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_assignments.json</value>
+			</list>
+		</property>
+	</bean>
 	<bean id="regionImporter" class="com.df.spec.locality.provision.RegionImporter">
 		<constructor-arg index="0" value="1" />
 		<constructor-arg index="1" value="speciality" />

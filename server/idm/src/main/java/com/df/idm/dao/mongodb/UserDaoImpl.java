@@ -1,6 +1,7 @@
 package com.df.idm.dao.mongodb;
 
 import java.util.Date;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -51,10 +52,12 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 	}
 
 	@Override
-	public int updateUserPassword(String id, String newEncodedPassword) {
+	public int updateUserPassword(String userCode, String newEncodedPassword) {
 		UpdateOperations<User> ops = this.getDatastore().createUpdateOperations(User.class);
 		ops.set(USER.PASSWORD_PROPERTY, newEncodedPassword);
-		return this.getDatastore().update(new Key<User>(User.class, new ObjectId(id)), ops).getUpdatedCount();
+		Query<User> query = this.createQuery();
+		query.filter(Constants.USER.CODE_PROPERTY, userCode);
+		return this.getDatastore().update(query, ops).getUpdatedCount();
 	}
 
 	@Override
@@ -66,7 +69,7 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 	public int updateUser(User user) {
 		Query<User> query = this.createQuery();
 		user.setChangedTime(new Date());
-		query.filter(USER.ID_PROPERTY, new ObjectId(user.getId()));
+		query.filter(USER.CODE_PROPERTY, user.getCode());
 		return this.getDatastore().updateFirst(query, user, false).getUpdatedCount();
 	}
 
@@ -97,5 +100,14 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 		Query<User> query = this.createQuery();
 		query.filter(Constants.USER.CODE_PROPERTY, code);
 		return this.deleteByQuery(query).getN() >= 1;
+	}
+
+	@Override
+	public List<User> getUserList(int offset, int limit) {
+		Query<User> query = this.createQuery();
+		query.filter(Constants.USER.IS_DISABLED_PROPERTY, false);
+		query.offset(offset);
+		query.limit(limit);
+		return query.asList();
 	}
 }

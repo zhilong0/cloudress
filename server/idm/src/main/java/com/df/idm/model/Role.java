@@ -1,5 +1,6 @@
 package com.df.idm.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -17,23 +18,16 @@ public class Role implements GrantedAuthority {
 	@Id
 	ObjectId id;
 
-	@Indexed(name="role_name_idx",unique=true)
+	@Indexed(name = "role_name_idx", unique = true)
 	private String name;
 
 	private String description;
 
-	@Reference("permissions")
-	private List<Permission> permissions;
+	@Indexed
+	@Reference(value = "permissions", ignoreMissing = true, idOnly = true)
+	private List<Permission> permissions = new ArrayList<Permission>();
 
 	Role() {
-	}
-
-	public String getId() {
-		if (id != null) {
-			return id.toHexString();
-		} else {
-			return null;
-		}
 	}
 
 	public Role(String name) {
@@ -62,6 +56,10 @@ public class Role implements GrantedAuthority {
 
 	public void setPermissions(List<Permission> permissions) {
 		this.permissions = permissions;
+	}
+
+	public boolean removePermission(Permission permission) {
+		return this.permissions.remove(permission);
 	}
 
 	@Override

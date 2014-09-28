@@ -1,0 +1,12 @@
+[
+	{
+	 "name":"SECURITY_ADMIN",
+	 "description":"系统安全管理员",
+	 "permissions":[
+	 	{
+	 		"domain":"SYS",
+	 		"name":"USER_LIST_READ"
+	 	}
+	 ]
+	}
+]

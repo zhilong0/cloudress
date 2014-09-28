@@ -77,7 +77,7 @@ public class User implements Serializable {
 
 	private boolean isDisabled;
 
-	@Reference("user_role")
+	@Reference(value = "roles", idOnly = true, ignoreMissing =true)
 	private List<Role> roles = new ArrayList<Role>();
 
 	@Embedded
@@ -275,8 +275,13 @@ public class User implements Serializable {
 		}
 	}
 
-	public void removeRole(Role role) {
-		this.roles.remove(role);
+	public boolean removeRole(String roleName) {
+		for (Role role : roles) {
+			if (role.getName().equals(roleName)) {
+				return roles.remove(role);
+			}
+		}
+		return false;
 	}
 
 	public List<Role> getRoles() {

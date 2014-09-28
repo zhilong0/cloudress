@@ -1,5 +1,7 @@
 package com.df.idm.rs.resources;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
@@ -13,6 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -122,6 +125,23 @@ public class UserResources {
 			}
 		}
 		return null;
+	}
+
+	@GET
+	@Path("/list")
+	@PreAuthorize("hasRole('USER_LIST_READ')")
+	public List<User> getUserList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+		if (offset < 0) {
+			offset = 0;
+		}
+		if (limit <= 0) {
+			limit = 20;
+		}
+		List<User> users = userManagementService.getUserList(offset, limit);
+		for (User user : users) {
+			user.cleanPassword();
+		}
+		return users;
 	}
 
 	@GET

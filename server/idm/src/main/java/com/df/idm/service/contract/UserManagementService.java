@@ -1,6 +1,7 @@
 package com.df.idm.service.contract;
 
 import java.util.Date;
+import java.util.List;
 
 import com.df.idm.model.ExternalUserReference;
 import com.df.idm.model.User;
@@ -22,7 +23,9 @@ public interface UserManagementService {
 
 	boolean verifyCellphoneRegistrationToken(String cellphone, String token);
 
-	void updatePassword(String userId, String oldPassword, String newPassword);
+	void updatePassword(String userCode, String oldPassword, String newPassword);
+
+	void updatePassword(String userCode, String newPassword);
 
 	User getUserByExternalId(String externalId, Provider provider);
 
@@ -39,7 +42,9 @@ public interface UserManagementService {
 	void unLockUser(String userId);
 
 	void lockUser(String userId);
-	
+
 	void updateUserLastLogin(String userId, Date lastLoginDate);
+
+	List<User> getUserList(int offset, int limit);
 
 }

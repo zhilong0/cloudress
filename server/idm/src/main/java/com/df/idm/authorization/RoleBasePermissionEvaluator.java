@@ -50,8 +50,7 @@ public class RoleBasePermissionEvaluator implements PermissionEvaluator {
 		return false;
 	}
 
-	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType,
-	        Object permission) {
+	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
 		return hasPermission(authentication, null, permission);
 	}
 }

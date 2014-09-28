@@ -8,7 +8,16 @@
 		<constructor-arg index="0" ref="idmDataStore" />
 	</bean>
 	<bean id="roleDao" class="com.df.idm.dao.mongodb.RoleDaoImpl">
+		<constructor-arg index="0" ref="permissionDao" />
+		<constructor-arg index="1" ref="idmDataStore" />
+	</bean>
+	<bean id="permissionDao" class="com.df.idm.dao.mongodb.PermissionDaoImpl">
 		<constructor-arg index="0" ref="idmDataStore" />
+	</bean>
+	<bean id="securityModelRepository" class="com.df.idm.service.impl.SecurityModelRepositoryImpl">
+		<constructor-arg index="0" ref="idmValidator" />
+		<constructor-arg index="1" ref="roleDao" />
+		<constructor-arg index="2" ref="permissionDao" />
 	</bean>
 	<bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
 	<bean id="registrationVerifier" class="com.df.idm.registration.UserRegistrationTokenVerifierImpl" />
@@ -57,7 +66,8 @@
 		<property name="validator" ref="idmValidator" />
 	</bean>
 	<bean id="userAuthorityService" class="com.df.idm.service.impl.UserAuthorityServiceImpl">
-		<constructor-arg index="0" ref="userDao" />
+		<constructor-arg index="0" ref="userManagementService" />
+		<constructor-arg index="1" ref="securityModelRepository" />
 	</bean>
 	<bean id="userObjectService" class="com.df.idm.authentication.adapter.UserObjectServiceImpl">
 		<constructor-arg index="0" ref="userManagementService" />

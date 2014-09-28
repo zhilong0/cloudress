@@ -1,28 +1,48 @@
 package com.df.idm.service.impl;
 
-import com.df.idm.dao.UserDao;
 import com.df.idm.model.Role;
 import com.df.idm.model.User;
+import com.df.idm.service.contract.SecurityModelRepository;
 import com.df.idm.service.contract.UserAuthorityService;
+import com.df.idm.service.contract.UserManagementService;
 
 public class UserAuthorityServiceImpl implements UserAuthorityService {
 
-	private UserDao userDao;
+	private UserManagementService userManagementService;
 
-	public UserAuthorityServiceImpl(UserDao userDao) {
-		this.userDao = userDao;
+	private SecurityModelRepository securityModelRepository;
+
+	public UserAuthorityServiceImpl(UserManagementService userManagementService, SecurityModelRepository securityModelRepository) {
+		this.userManagementService = userManagementService;
+		this.securityModelRepository = securityModelRepository;
 	}
 
 	@Override
-	public void assign(User user, Role role) {
-		user.addRole(role);
-		userDao.updateUser(user);
+	public boolean assign(String userCode, String roleName) {
+		Role role = securityModelRepository.getRole(roleName);
+		User user = userManagementService.getUserByCode(userCode);
+		if (role != null && user != null) {
+			user.addRole(role);
+			userManagementService.updateUser(user);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
-	public void revoke(User user, Role role) {
-		user.removeRole(role);
-		userDao.updateUser(user);
+	public boolean revoke(String userCode, String roleName) {
+		User user = userManagementService.getUserByCode(userCode);
+		if (user == null) {
+			return false;
+		}
+		boolean hasRole = user.removeRole(roleName);
+		if (hasRole) {
+			userManagementService.updateUser(user);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

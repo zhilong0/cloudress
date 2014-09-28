@@ -2,6 +2,28 @@ package com.df.idm.model;
 
 public interface Constants {
 
+	public static interface PERMISSION {
+		public static final String ID_PROPERTY = "_id";
+
+		public static final String DOMAIN_PROPERTY = "domain";
+
+		public static final String NAME_PROPERTY = "name";
+
+		public static final String DESCRIPTION_PROPERTY = "description";
+	}
+
+	public static interface ROLE {
+
+		public static final String ID_PROPERTY = "_id";
+
+		public static final String NAME_PROPERTY = "name";
+
+		public static final String PERMISSIONS_PROPERTY = "permissions";
+
+		public static final String DESCRIPTION_PROPERTY = "description";
+
+	}
+
 	public static interface USER {
 
 		public static final String ID_PROPERTY = "_id";
