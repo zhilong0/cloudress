@@ -56,7 +56,13 @@ public class SpecialityServiceImpl implements SpecialityService {
 		Region region = regionService.getRegionByCode(speciality.getRegionCode(), true);
 		speciality.setCreateTime(new Date());
 		speciality.setChangedTime(null);
-		specialityDao.add(speciality, region);
+		if (speciality.getImage() != null) {
+			ImageAttributes imageAttributes = imageService.getImageAttributes(new ImageKey(speciality.getImage()));
+			if (imageAttributes != null) {
+				speciality.getImageSet().addImage(speciality.getImage(), imageAttributes);
+			}
+			specialityDao.add(speciality, region);
+		}
 	}
 
 	@Override
