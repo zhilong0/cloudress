@@ -11,7 +11,7 @@ public interface UserManagementService {
 
 	User createUserByEmail(String email, String password);
 
-	User createUserByCellphone(String cellphone, String password);
+	User createUserByCellphone(String cellphone, String password, String registrationToken);
 
 	User createUserByCode(String userCode, String password);
 
@@ -21,7 +21,7 @@ public interface UserManagementService {
 
 	User verifyEmailRegistrationToken(String token);
 
-	boolean verifyCellphoneRegistrationToken(String cellphone, String token);
+	void sendCellphoneRegistrationToken(String cellphone);
 
 	void updatePassword(String userCode, String oldPassword, String newPassword);
 

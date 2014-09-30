@@ -107,7 +107,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 		if (updated == 0) {
 			throw UserException.userIdNotFound(user.getId());
 		}
-		
+
 		return this.getUserByCode(user.getCode());
 	}
 
@@ -126,7 +126,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 	}
 
 	public void updatePassword(String userCode, String newPassword) {
-		User user = userDao.getUserByCode(userCode); 
+		User user = userDao.getUserByCode(userCode);
 		if (user == null) {
 			throw UserException.userCodeNotFound(userCode);
 		}
@@ -173,23 +173,28 @@ public class UserManagementServiceImpl implements UserManagementService {
 	}
 
 	@Override
-	public User createUserByCellphone(String cellphone, String password) {
+	public User createUserByCellphone(String cellphone, String password, String registrationToken) {
+		boolean isVerified = registrationVerifier.verifyCellphoneRegistrationToken(cellphone, registrationToken);
+		if (!isVerified) {
+			throw UserException.invalidCellphoneVerificationToken();
+		}
 		User newUser = User.newUserByCellphone(cellphone, password);
 		Set<ConstraintViolation<User>> violations = validator.validate(newUser, Default.class, CreateUser.class);
 		if (violations.size() != 0) {
 			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
 		}
 		User found = userDao.getUserByCellphone(cellphone);
-		if (found != null) {
+		if (found != null && found.isCellphoneVerified()) {
 			throw UserException.userCellphoneAlreadyExist(cellphone);
 		}
 		newUser.setCreatedTime(new Date());
 		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-		newUser.setEmailVerified(false);
-		newUser.setCellphoneVerified(false);
-		userDao.insertUser(newUser);
-		String token = registrationVerifier.generateCellphoneRegistrationToken(newUser);
-		messageNotifier.sendVerificationShortMessage(newUser, token);
+		newUser.setCellphoneVerified(true);
+		if (found == null) {
+			userDao.insertUser(newUser);
+		} else {
+			userDao.updateUser(newUser);
+		}
 		newUser.cleanPassword();
 		return newUser;
 	}
@@ -263,25 +268,6 @@ public class UserManagementServiceImpl implements UserManagementService {
 	}
 
 	@Override
-	public boolean verifyCellphoneRegistrationToken(String cellphone, String token) {
-		boolean isCellphoneVerified = registrationVerifier.verifyCellphoneRegistrationToken(cellphone, token);
-		if (!isCellphoneVerified) {
-			return false;
-		}
-		User found = userDao.getUserByCellphone(cellphone);
-		if (found == null) {
-			return false;
-		}
-
-		if (found.isCellphoneVerified()) {
-			return true;
-		}
-		found.setEmailVerified(true);
-		userDao.updateUserProperties(found.getId(), new Property<Boolean>(Constants.USER.CELL_PHONE_PROPERTY, true));
-		return true;
-	}
-
-	@Override
 	public void unLockUser(String userId) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_LOCKED_PROPERTY, false);
 		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGE_TIME_PROPERTY, new Date());
@@ -312,5 +298,12 @@ public class UserManagementServiceImpl implements UserManagementService {
 	@Override
 	public List<User> getUserList(int offset, int limit) {
 		return userDao.getUserList(offset, limit);
+	}
+
+	@Override
+	public void sendCellphoneRegistrationToken(String cellphone) {
+		User newUser = User.newUserByCellphone(cellphone, null);
+		String token = registrationVerifier.generateCellphoneRegistrationToken(newUser);
+		messageNotifier.sendVerificationShortMessage(newUser, token);
 	}
 }

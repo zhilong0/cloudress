@@ -129,7 +129,9 @@
 	</bean>
 	<sec:filter-security-metadata-source id="securityInterceptorMetadataSource"
 		use-expressions="true">
-		<sec:intercept-url pattern="/rs/users" method="POST" access="isAnonymous()" />
+		<sec:intercept-url pattern="/rs/users" method="POST" access="permitAll" />
+		<sec:intercept-url pattern="/rs/users/email/verify" method="POST" access="permitAll" />
+		<sec:intercept-url pattern="/rs/users/cellphone/verify" method="POST" access="permitAll" />
 		<sec:intercept-url pattern="/rs/auth/**" access="permitAll" />
 		<sec:intercept-url pattern="/rs/**" method="POST" access="isAuthenticated()" />
 		<sec:intercept-url pattern="/rs/**" method="DELETE" access="isAuthenticated()" />

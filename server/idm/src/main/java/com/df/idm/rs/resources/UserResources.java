@@ -1,9 +1,12 @@
 package com.df.idm.rs.resources;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Component;
 import com.df.common.utils.StringUtils;
 import com.df.idm.authentication.UserPropertyAuthenticationToken;
 import com.df.idm.authentication.http.AuthenticationRequest;
+import com.df.idm.exception.IdmException;
 import com.df.idm.exception.UserException;
 import com.df.idm.model.User;
 import com.df.idm.registration.EmailVerificationResultHandler;
@@ -75,13 +79,35 @@ public class UserResources {
 	@POST
 	@Path("/cellphone")
 	public User newUserByCellphone(AuthenticationRequest request) {
-		User newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword());
+		User newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword(), request.getPassword());
 		if (request.getNickName() != null) {
 			newUser.setNickName(request.getNickName());
 			userManagementService.updateUser(newUser);
 		}
 		newUser.cleanPassword();
 		return newUser;
+	}
+
+	@GET
+	@POST
+	@Path("/reg_token")
+	public void requestCellphoneRegistrationToken(@Context HttpServletRequest request, @QueryParam("cellphone") String cellphone) {
+		if (!StringUtils.isValidCellPhone(cellphone)) {
+			throw new IdmException(null, RequestParamsErrorCode.INVALID_CELLPHONE, "Invalid cellphone");
+		}
+		HttpSession session = request.getSession(true);
+		Object value = session.getAttribute("CELLPHONE_REGISTRATION_TOKEN_LAST_REQUEST");
+		if (value == null) {
+			userManagementService.sendCellphoneRegistrationToken(cellphone);
+			session.setAttribute("CELLPHONE_REGISTRATION_TOKEN_LAST_REQUEST", new Date().getTime());
+		} else {
+			long lastSend = (Long) value;
+			long now = new Date().getTime();
+			if (TimeUnit.MINUTES.toMillis(1) < (now - lastSend)) {
+				userManagementService.sendCellphoneRegistrationToken(cellphone);
+				session.setAttribute("CELLPHONE_REGISTRATION_TOKEN_LAST_REQUEST", new Date().getTime());
+			}
+		}
 	}
 
 	@POST
@@ -92,7 +118,7 @@ public class UserResources {
 		if (StringUtils.isValidEmail(code)) {
 			newUser = userManagementService.createUserByEmail(request.getCode(), request.getPassword());
 		} else if (StringUtils.isValidCellPhone(code)) {
-			newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword());
+			newUser = userManagementService.createUserByCellphone(request.getCode(), request.getPassword(), request.getPassword());
 		} else {
 			newUser = userManagementService.createUserByCode(request.getCode(), request.getPassword());
 		}
@@ -174,7 +200,7 @@ public class UserResources {
 
 	@GET
 	@Path("/email/verify")
-	public void emalRegistrationVerify(@Context HttpServletResponse response, @Context HttpServletRequest request, @QueryParam("token") String token)
+	public void emailRegistrationVerify(@Context HttpServletResponse response, @Context HttpServletRequest request, @QueryParam("token") String token)
 			throws Exception {
 		User user = userManagementService.verifyEmailRegistrationToken(token);
 		if (user != null) {

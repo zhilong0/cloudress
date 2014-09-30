@@ -67,14 +67,14 @@ public class UserImporter extends AbstractImporterBean implements ResourceLoader
 					if (StringUtils.isValidEmail(code)) {
 						userManagementService.createUserByEmail(code, user.getPassword());
 					} else if (StringUtils.isValidCellPhone(code)) {
-						userManagementService.createUserByCellphone(code, user.getPassword());
+						continue;
 					} else {
 						userManagementService.createUserByCode(code, user.getPassword());
 					}
 				} else {
 					found = userManagementService.updateUser(user);
 				}
-				userManagementService.updatePassword(found.getCode(),password);
+				userManagementService.updatePassword(found.getCode(), password);
 			}
 		}
 

@@ -49,17 +49,6 @@ public class UserManagementServiceTest extends IdmBaseTest {
 		}
 	}
 
-	@Test
-	public void testCreateUserWithCellphone() {
-		User newUser = null;
-		try {
-			newUser = ums.createUserByCellphone("13621992125", "123456");
-			TestCase.assertNotNull(ums.getUserByCellphone("13621992125"));
-		} finally {
-			userDao.deleteUserByCode(newUser.getCode());
-		}
-	}
-
 	@Test(expected = ValidationException.class)
 	public void testNewUserErrorEmailFormat() {
 		ums.createUserByEmail("dfdd343", "123456");

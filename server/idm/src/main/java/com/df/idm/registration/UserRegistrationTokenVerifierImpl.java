@@ -5,9 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.nio.charset.Charset;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -24,21 +24,31 @@ public class UserRegistrationTokenVerifierImpl implements UserRegistrationTokenV
 
 	private static final Charset utf8 = Charset.forName("utf-8");
 
-	private int validDuration = 60 * 24 * 3;
+	private int emailTokenValidDuration = 60 * 24 * 3;
 
-	private static final int CELLPHONE_REGISTRATION_RANDOM_LENGTH = 4;
+	private TokenStore tokenStore;
+
+	private static final int CELLPHONE_REGISTRATION_TOKEN_LENGTH = 6;
+
+	private int cellphoneTokenValidDuration = 5;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserRegistrationTokenVerifierImpl.class);
 
-	public UserRegistrationTokenVerifierImpl() {
+	public UserRegistrationTokenVerifierImpl(TokenStore tokenStore) {
+		this.tokenStore = tokenStore;
 	}
 
-	public UserRegistrationTokenVerifierImpl(DataMarshaller dataMarshaller) {
+	public UserRegistrationTokenVerifierImpl(TokenStore tokenStore, DataMarshaller dataMarshaller) {
+		this(tokenStore);
 		this.dataMarshaller = dataMarshaller;
 	}
 
-	public void setValidDuration(int duration) {
-		this.validDuration = duration;
+	public void setTokenStore(TokenStore tokenStore) {
+		this.tokenStore = tokenStore;
+	}
+
+	public void setEmailTokenValidDuration(int duration) {
+		this.emailTokenValidDuration = duration;
 	}
 
 	@Override
@@ -62,6 +72,15 @@ public class UserRegistrationTokenVerifierImpl implements UserRegistrationTokenV
 
 	@Override
 	public boolean verifyCellphoneRegistrationToken(String cellphone, String token) {
+		Token t = tokenStore.getToken(token);
+		if (t == null) {
+			return false;
+		} else {
+			if (cellphone.equals(t.getStick())) {
+				tokenStore.expire(token);
+				return !t.isExpired();
+			}
+		}
 		return false;
 	}
 
@@ -71,12 +90,8 @@ public class UserRegistrationTokenVerifierImpl implements UserRegistrationTokenV
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(bos);
 			byte[] email = newUser.getEmail().getBytes(utf8);
-			Calendar calendar = Calendar.getInstance();
-			Date validFrom = new Date();
-			calendar.setTime(validFrom);
-			calendar.add(Calendar.MINUTE, validDuration);
-			long validUntil = calendar.getTime().getTime();
-			dos.writeLong(validUntil);
+			long duration = TimeUnit.MINUTES.toMillis(emailTokenValidDuration);
+			dos.writeLong(new Date().getTime() + duration);
 			dos.write(email);
 			byte[] securedData = dataMarshaller.seal(bos.toByteArray());
 			return Base64.encodeBase64URLSafeString(securedData);
@@ -90,10 +105,14 @@ public class UserRegistrationTokenVerifierImpl implements UserRegistrationTokenV
 		String letters = "0123456789";
 		Random random = new Random(new Date().getTime());
 		String str = "";
-		for (int i = 0; i < CELLPHONE_REGISTRATION_RANDOM_LENGTH; i++) {
+		for (int i = 0; i < CELLPHONE_REGISTRATION_TOKEN_LENGTH; i++) {
 			int index = Math.abs(random.nextInt() % letters.length());
 			str += letters.substring(index, index + 1);
 		}
+		long duration = TimeUnit.MINUTES.toMillis(cellphoneTokenValidDuration);
+		Token token = new Token(str, new Date().getTime() + duration);
+		token.setStick(newUser.getCellphone());
+		this.tokenStore.save(token);
 		return str;
 	}
 }

@@ -50,9 +50,9 @@ public class AuthenticationServiceTest extends IdmBaseTest {
 	public void testAuthenticationProviderWithCellphoneAccount() {
 		String cellphone = "13974845501";
 		String password = "Oba.2247d";
-		User newUser = null;
+		User newUser = User.newUserByCellphone(cellphone, password);
 		try {
-			newUser = userManagementService.createUserByCellphone(cellphone, password);
+			userDao.insertUser(newUser);
 			UserPropertyAuthenticationToken authToken = new UserPropertyAuthenticationToken(cellphone, password);
 			Authentication authentication = authProvider.authenticate(authToken);
 			TestCase.assertTrue(authentication instanceof UserPropertyAuthenticationToken);

@@ -16,7 +16,9 @@
 		<property name="richMailSender" ref="richMailSender" />
 		<property name="taskExecutor" ref="asyncTaskExecutor" />
 		<property name="verifyUrlPrefix" value="/rs/users/email/verify" />
+		<property name="shortMessageSender" ref="shortMessageSender" />
 		<property name="emailSubject" value="礼尚往来注册确认邮件" />
+		<property name="shortMessageTemplateId" value="Csc5EEEcCkYu" />
 	</bean>
 	<bean id="emailVerificationResultHandler" class="com.df.idm.registration.ForwardVerificationResultHandler">
 		<property name="succeedUrl" value="/verify/success" />

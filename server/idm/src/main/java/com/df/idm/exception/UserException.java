@@ -20,6 +20,8 @@ public class UserException extends IdmException {
 
 	public static final String USER_CODE_ALREADY_EXIST = "U100009";
 
+	public static final String INVALID_CELLPHONE_VERIFICATION_TOKEN = "U100010";
+
 	public UserException(Throwable cause, String errorCode) {
 		super(cause, errorCode);
 	}
@@ -70,5 +72,10 @@ public class UserException extends IdmException {
 	public static UserException userCodeAlreadyExist(String userCode) {
 		String msg = "User wtih code %s is already exist";
 		return new UserException(USER_CODE_ALREADY_EXIST, msg, userCode);
+	}
+
+	public static UserException invalidCellphoneVerificationToken() {
+		String msg = "Invalid cellphone registration verification token";
+		return new UserException(INVALID_CELLPHONE_VERIFICATION_TOKEN, msg);
 	}
 }

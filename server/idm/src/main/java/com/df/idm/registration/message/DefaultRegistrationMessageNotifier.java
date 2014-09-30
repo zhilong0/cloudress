@@ -1,15 +1,18 @@
 package com.df.idm.registration.message;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.util.StringUtils;
 
 import com.df.common.mail.EmailContextProvider;
 import com.df.common.mail.RichMailSender;
+import com.df.common.sms.ShortMessageSender;
 import com.df.idm.model.User;
 
 public class DefaultRegistrationMessageNotifier implements RegistrationMessageNotifier {
@@ -26,6 +29,8 @@ public class DefaultRegistrationMessageNotifier implements RegistrationMessageNo
 
 	private EmailContextProvider emailContextProvider;
 
+	private ShortMessageSender shortMessageSender;
+
 	private String tokenParameter = DEFAULT_TOKEN_PARAMETER;
 
 	private String verifyUrlPrefix = DEFAULT_VERIFY_URL_PREFIX;
@@ -33,6 +38,10 @@ public class DefaultRegistrationMessageNotifier implements RegistrationMessageNo
 	private String emailVerificationTemplate = DEFAULT_EMAIL_VERIFICATION_TPL;
 
 	private String emailSubject = "Registration Email Confirmation";
+
+	private String shortMessageHead = "";
+
+	private String shortMessageTemplateId;
 
 	private static final Logger logger = LoggerFactory.getLogger(DefaultRegistrationMessageNotifier.class);
 
@@ -62,7 +71,22 @@ public class DefaultRegistrationMessageNotifier implements RegistrationMessageNo
 	}
 
 	@Override
-	public void sendVerificationShortMessage(User newUser, String token) {
+	public void sendVerificationShortMessage(final User newUser, String token) {
+		final Map<String, Object> variables = new LinkedHashMap<String, Object>();
+		if (!StringUtils.isEmpty(shortMessageHead)) {
+			variables.put("head", shortMessageHead);
+		}
+		variables.put("token", token);
+		taskExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					shortMessageSender.send(shortMessageTemplateId, new String[] { newUser.getCellphone() }, variables);
+				} catch (Throwable ex) {
+					logger.error("failed to send cellphone registration verify token to " + newUser.getCellphone(), ex);
+				}
+			}
+		});
 	}
 
 	public void setRichMailSender(RichMailSender sender) {
@@ -89,7 +113,19 @@ public class DefaultRegistrationMessageNotifier implements RegistrationMessageNo
 		this.emailVerificationTemplate = emailVerificationTemplate;
 	}
 
+	public void setShortMessageHead(String shortMessageHead) {
+		this.shortMessageHead = shortMessageHead;
+	}
+
 	public void setEmailSubject(String emailSubject) {
 		this.emailSubject = emailSubject;
+	}
+
+	public void setShortMessageSender(ShortMessageSender shortMessageSender) {
+		this.shortMessageSender = shortMessageSender;
+	}
+
+	public void setShortMessageTemplateId(String shortMessageTemplateId) {
+		this.shortMessageTemplateId = shortMessageTemplateId;
 	}
 }

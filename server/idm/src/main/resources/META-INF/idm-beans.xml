@@ -4,6 +4,9 @@
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<import resource="classpath:META-INF/idm-base.xml" />
+	<bean id="tokenStore" class="com.df.idm.registration.TokenStoreImpl">
+		<constructor-arg index="0" ref="idmDataStore" />
+	</bean>
 	<bean id="userDao" class="com.df.idm.dao.mongodb.UserDaoImpl">
 		<constructor-arg index="0" ref="idmDataStore" />
 	</bean>
@@ -20,7 +23,9 @@
 		<constructor-arg index="2" ref="permissionDao" />
 	</bean>
 	<bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
-	<bean id="registrationVerifier" class="com.df.idm.registration.UserRegistrationTokenVerifierImpl" />
+	<bean id="registrationVerifier" class="com.df.idm.registration.UserRegistrationTokenVerifierImpl">
+		<constructor-arg index="0" ref="tokenStore" />
+	</bean>
 	<bean id="emailContextProvider" class="com.df.common.mail.DefaultEmailContextProvider">
 		<property name="sentFrom" value="delicacy_fusion@163.com" />
 	</bean>
@@ -28,35 +33,11 @@
 		<constructor-arg index="0" ref="freemarkerConfiguration" />
 		<constructor-arg index="1" ref="mailSender" />
 	</bean>
-	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
-	<bean id="fmHtmlEscape" class="freemarker.template.utility.HtmlEscape" />
-	<bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
-		<property name="preferFileSystemAccess" value="false" />
-		<property name="templateLoaderPaths">
-			<list>
-				<value>classpath:/idm_fm</value>
-			</list>
-		</property>
-		<property name="freemarkerSettings">
-			<props>
-				<prop key="datetime_format">MM/dd/yyyy</prop>
-				<prop key="number_format">#</prop>
-				<prop key="whitespace_stripping">true</prop>
-				<prop key="default_encoding">UTF-8</prop>
-				<prop key="output_encoding">UTF-8</prop>
-			</props>
-		</property>
-		<property name="freemarkerVariables">
-			<map>
-				<entry key="xml_escape" value-ref="fmXmlEscape" />
-				<entry key="html_escape" value-ref="fmHtmlEscape" />
-			</map>
-		</property>
-	</bean>
 	<bean id="registrationMessageNotifier" class="com.df.idm.registration.message.DefaultRegistrationMessageNotifier">
 		<property name="emailContextProvider" ref="emailContextProvider" />
 		<property name="richMailSender" ref="richMailSender" />
 		<property name="taskExecutor" ref="asyncTaskExecutor" />
+		<property name="shortMessageSender" ref="shortMessageSender" />
 	</bean>
 	<bean id="userManagementService" class="com.df.idm.service.impl.UserManagementServiceImpl">
 		<constructor-arg index="0" ref="userDao" />
