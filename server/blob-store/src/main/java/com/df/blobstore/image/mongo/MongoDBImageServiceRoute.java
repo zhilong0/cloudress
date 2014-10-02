@@ -50,4 +50,14 @@ public class MongoDBImageServiceRoute implements ImageServiceRoute {
 		return imageAttributesLoader;
 	}
 
+	@Override
+	public BundleService getThumbnailBundleService(ImageKey imageKey, int width, int heigth) {
+		String cn = String.format("%s_%s_%d_%d", collectionName, "thumbnails", width, heigth);
+		return new MongoDBBundleService(db, cn);
+	}
+
+	@Override
+	public BundleKey resolveThumbnailBundleKey(ImageKey imageKey, int width, int heigth) {
+		return this.resolveBundleKey(imageKey);
+	}
 }

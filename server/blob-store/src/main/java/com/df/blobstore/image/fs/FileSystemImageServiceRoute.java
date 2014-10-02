@@ -156,4 +156,29 @@ public class FileSystemImageServiceRoute implements ImageServiceRoute, ImageAttr
 	public ImageAttributesLoader getImageAttributesLoader() {
 		return this;
 	}
+
+	@Override
+	public BundleService getThumbnailBundleService(ImageKey imageKey, int width, int heigth) {
+		return this.getBundleService(imageKey);
+	}
+
+	@Override
+	public BundleKey resolveThumbnailBundleKey(ImageKey imageKey, int width, int heigth) {
+		ImageAttributes attributes = this.loadImageAttributes(imageKey);
+		String owner = attributes.getOwner();
+		if (StringUtils.isEmpty(owner)) {
+			owner = ANONYMOUS_FOLDER;
+		}
+		String relativePath = "";
+		if (attributes.getCreatedDate() != null) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+			String dateStr = dateFormat.format(attributes.getCreatedDate());
+			relativePath += File.separator + dateStr;
+		}
+		relativePath += owner;
+		relativePath += File.separator + this.resolveImageUniqueId(imageKey);
+		relativePath += "_" + width + "_" + heigth;
+		relativePath += "." + attributes.getFormat().name().toLowerCase();
+		return new FileSystemBundleKey(relativePath);
+	}
 }

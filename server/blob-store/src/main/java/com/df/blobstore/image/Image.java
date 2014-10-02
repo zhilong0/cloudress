@@ -16,7 +16,7 @@ public class Image implements Blob {
 
 	private ImageAttributes imageAttributes;
 
-	private byte[] rawData;
+	private byte[] data;
 
 	private static final String NAME_DESC_NAME = "name";
 
@@ -33,18 +33,18 @@ public class Image implements Blob {
 	public Image() {
 	}
 
-	public Image(ImageAttributes imageMetadata) {
-		this.imageAttributes = imageMetadata;
+	public Image(ImageAttributes imageAttributes) {
+		this.imageAttributes = imageAttributes;
 	}
 
-	public Image(ImageAttributes imageMetadata, byte[] rawData) {
-		this.imageAttributes = imageMetadata;
-		this.rawData = rawData;
+	public Image(ImageAttributes imageAttributes, byte[] data) {
+		this.imageAttributes = imageAttributes;
+		this.data = data;
 	}
 
 	@Override
 	public BundleValue getBundleValue() {
-		if (rawData != null) {
+		if (data != null) {
 			return new ImageBundleValue();
 		} else {
 			return new BundleValue() {
@@ -70,22 +70,26 @@ public class Image implements Blob {
 		this.imageAttributes = imageAttributes;
 	}
 
+	public byte[] getData() {
+		return data;
+	}
+
 	class ImageBundleValue implements BundleValue {
 		@Override
 		public InputStream getDataInBundle() {
-			return new DataInputStream(new ByteArrayInputStream(rawData));
+			return new DataInputStream(new ByteArrayInputStream(data));
 		}
 
 		@Override
 		public int getSize() {
-			return rawData.length;
+			return data.length;
 		}
 	}
 
 	@Override
 	public void readBundleValue(InputStream input) throws IOException {
-		this.rawData = new byte[input.available()];
-		input.read(rawData);
+		this.data = new byte[input.available()];
+		input.read(data);
 	}
 
 	@Override

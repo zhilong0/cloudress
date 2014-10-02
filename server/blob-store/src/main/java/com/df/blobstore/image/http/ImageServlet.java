@@ -72,7 +72,14 @@ public abstract class ImageServlet extends HttpServlet {
 			InputStream in = null;
 			OutputStream out = null;
 			try {
-				Image image = imageService.fetchImage(imageKey);
+				int width = this.getImageWidth(req);
+				int heigth = this.getImageHeigth(req);
+				Image image = null;
+				if (width <= 0 || heigth <= 0) {
+					image = imageService.fetchImage(imageKey);
+				} else {
+					image = imageService.fetchImage(imageKey, width, heigth);
+				}
 				ImageFormat format = image.getImageAttributes().getFormat();
 				resp.setContentType(format.getMIMEType());
 				in = closer.register(image.getBundleValue().getDataInBundle());
@@ -135,6 +142,10 @@ public abstract class ImageServlet extends HttpServlet {
 	}
 
 	protected abstract ImageKey getImageKeyFromRequest(HttpServletRequest request);
+
+	protected abstract int getImageWidth(HttpServletRequest request);
+
+	protected abstract int getImageHeigth(HttpServletRequest request);
 
 	protected abstract String getOwnerFromRequest(HttpServletRequest request);
 

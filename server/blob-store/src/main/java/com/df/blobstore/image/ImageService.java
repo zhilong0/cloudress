@@ -10,6 +10,8 @@ public interface ImageService {
 
 	public Image fetchImage(ImageKey imageKey);
 
+	public Image fetchImage(ImageKey imageKey, int width, int heigth);
+
 	public ImageAttributes getImageAttributes(ImageKey imageKey);
 
 }

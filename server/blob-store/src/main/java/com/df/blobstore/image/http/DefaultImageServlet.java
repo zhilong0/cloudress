@@ -20,9 +20,9 @@ public class DefaultImageServlet extends ImageServlet {
 		if (pathInfo != null) {
 			String[] pathes = pathInfo.split("/");
 			if (pathes.length >= 2) {
-				if(pathes[1].lastIndexOf(".") ==-1){
+				if (pathes[1].lastIndexOf(".") == -1) {
 					return new ImageKey(pathes[1]);
-				}else{
+				} else {
 					return new ImageKey(pathes[1].substring(0, pathes[1].lastIndexOf(".")));
 				}
 			}
@@ -59,5 +59,23 @@ public class DefaultImageServlet extends ImageServlet {
 	@Override
 	protected String getImageNameFromRequest(HttpServletRequest request) {
 		return null;
+	}
+
+	@Override
+	protected int getImageWidth(HttpServletRequest request) {
+		try {
+			return Integer.parseInt(request.getParameter("width"));
+		} catch (NumberFormatException ex) {
+			return 0;
+		}
+	}
+
+	@Override
+	protected int getImageHeigth(HttpServletRequest request) {
+		try {
+			return Integer.parseInt(request.getParameter("heigth"));
+		} catch (NumberFormatException ex) {
+			return 0;
+		}
 	}
 }

@@ -72,25 +72,33 @@ public class ImageUtils {
 		ByteArrayOutputStream copy = new ByteArrayOutputStream();
 		ByteStreams.copy(in, copy);
 		byte[] bytes = copy.toByteArray();
-		ImageFormat format = guessImageFormat(bytes);
-		BufferedImage bufferedImage = createBufferedImage(bytes, format);
-		int width = bufferedImage.getWidth();
-		int height = bufferedImage.getHeight();
-		ImageAttributes attributes = new ImageAttributes(imageName, width, height, format);
-		attributes.setOwner(owner);
-		attributes.setCreatedDate(new Date());
-		ByteArrayOutputStream newBytes = new ByteArrayOutputStream();
-		ImageIO.setUseCache(false);
-		ImageIO.write(bufferedImage, format.name(), newBytes);
-		Image image = new Image(attributes, newBytes.toByteArray());
-		return image;
+		return createImage(bytes, owner, imageName);
 	}
 
 	public static Image createImage(byte[] bytes, String owner, String imageName) throws IOException {
 		if (bytes == null) {
 			throw new IllegalArgumentException("Parameter bytes must not be null");
 		}
+		ImageFormat format = guessImageFormat(bytes);
+		BufferedImage bufferedImage = createBufferedImage(bytes, format);
+		return createImage(bufferedImage, format, owner, imageName);
+	}
 
-		return createImage(new ByteArrayInputStream(bytes), owner, imageName);
+	public static Image createImage(BufferedImage bufferedImage, ImageFormat format, String owner, String imageName) throws IOException {
+		int width = bufferedImage.getWidth();
+		int height = bufferedImage.getHeight();
+		ImageAttributes attributes = new ImageAttributes(imageName, width, height, format);
+		attributes.setOwner(owner);
+		attributes.setCreatedDate(new Date());
+		Image image = new Image(attributes, dumpImage(bufferedImage, format));
+		return image;
+	}
+
+	public static byte[] dumpImage(BufferedImage bufferedImage, ImageFormat format) throws IOException {
+		ByteArrayOutputStream newBytes = new ByteArrayOutputStream();
+		ImageIO.setUseCache(false);
+		ImageIO.write(bufferedImage, format.name(), newBytes);
+		return newBytes.toByteArray();
+
 	}
 }
