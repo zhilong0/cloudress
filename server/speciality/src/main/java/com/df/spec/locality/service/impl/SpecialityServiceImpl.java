@@ -61,8 +61,8 @@ public class SpecialityServiceImpl implements SpecialityService {
 			if (imageAttributes != null) {
 				speciality.getImageSet().addImage(speciality.getImage(), imageAttributes);
 			}
-			specialityDao.add(speciality, region);
 		}
+		specialityDao.add(speciality, region);
 	}
 
 	@Override
