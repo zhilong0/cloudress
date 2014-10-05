@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -60,12 +61,17 @@ public class ImageResources {
 
 	@GET
 	@Path("/{imageId}")
-	public Response getImage(@PathParam("imageId") String imageId) {
+	public Response getImage(@PathParam("imageId") String imageId, @QueryParam("width") int width, @QueryParam("heigth") int heigth) {
 		int index = imageId.lastIndexOf(".");
 		if (index != -1) {
 			imageId = imageId.substring(0, index);
 		}
-		Image image = imageService.fetchImage(new ImageKey(imageId));
+		Image image = null;
+		if (width <= 0 || heigth <= 0) {
+			image = imageService.fetchImage(new ImageKey(imageId));
+		} else {
+			imageService.fetchImage(new ImageKey(imageId), width, heigth);
+		}
 		if (image == null) {
 			return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD_TYPE).build();
 		}
