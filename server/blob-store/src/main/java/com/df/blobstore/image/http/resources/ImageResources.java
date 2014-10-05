@@ -70,7 +70,7 @@ public class ImageResources {
 		if (width <= 0 || heigth <= 0) {
 			image = imageService.fetchImage(new ImageKey(imageId));
 		} else {
-			imageService.fetchImage(new ImageKey(imageId), width, heigth);
+			image = imageService.fetchImage(new ImageKey(imageId), width, heigth);
 		}
 		if (image == null) {
 			return Response.status(Status.NOT_FOUND).type(MediaType.WILDCARD_TYPE).build();
