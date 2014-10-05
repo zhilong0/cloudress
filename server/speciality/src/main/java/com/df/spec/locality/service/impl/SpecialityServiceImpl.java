@@ -67,11 +67,11 @@ public class SpecialityServiceImpl implements SpecialityService {
 
 	@Override
 	public String uploadSpecialityImage(String specialityCode, byte[] imageData, String imageName) {
-		ImageKey key = imageService.uploadImage(new ByteArrayInputStream(imageData), null, imageName);
 		Speciality found = specialityDao.getSpecialityByCode(specialityCode);
 		if (found == null) {
 			throw new SpecialityWithCodeNotFoundException(null, specialityCode);
 		}
+		ImageKey key = imageService.uploadImage(new ByteArrayInputStream(imageData), null, imageName);
 		ImageAttributes imageAttributes = imageService.getImageAttributes(key);
 		specialityDao.addImage(specialityCode, new ImageDetails(key.getKey(), imageAttributes));
 		return key.getKey();
