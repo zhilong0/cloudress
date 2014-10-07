@@ -68,9 +68,9 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 		updateOperations.set(Constants.SPECIALITY.END_MONTH, speciality.getEndMonth());
 		updateOperations.set(Constants.SPECIALITY.IMAGE_SET, speciality.getImageSet());
 		if (speciality.getApproval() != null) {
-			updateOperations.set(Constants.SPECIALITY.APPROVED_BY, speciality.getApproval());
+			updateOperations.set(Constants.SPECIALITY.APPROVAL, speciality.getApproval());
 		} else {
-			updateOperations.unset(Constants.SPECIALITY.APPROVED_BY);
+			updateOperations.unset(Constants.SPECIALITY.APPROVAL);
 		}
 
 		return this.update(query, updateOperations).getUpdatedCount() > 0;

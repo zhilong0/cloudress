@@ -77,6 +77,8 @@ public class Constants {
 		public static final String CREATED_BY = "createdBy";
 
 		public static final String CREATED_TIME = "createdTime";
+		
+		public static final String APPROVAL = "approval";
 
 	}
 
