@@ -11,10 +11,11 @@ import com.df.spec.locality.dao.SpecialityDao;
 import com.df.spec.locality.data.streamline.SpecialitySeasonalComparator;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
+import com.df.spec.locality.service.impl.PermitAllOperationPermissionEvaluator;
+import com.df.spec.locality.service.impl.SpecialityServiceImpl;
 
 public class SpecialityServiceTest extends SpecialityBaseTest {
 
-	@Autowired
 	private SpecialityService specialityService;
 
 	@Autowired
@@ -25,13 +26,22 @@ public class SpecialityServiceTest extends SpecialityBaseTest {
 
 	@Autowired
 	private SpecialityDao specialityDao;
-	
+
+	@Autowired
+	public void setSpecialityService(SpecialityService specialityService) {
+		this.specialityService = specialityService;
+		if (specialityService instanceof SpecialityServiceImpl) {
+			((SpecialityServiceImpl) specialityService).setServiceOperationPermissionEvaluator(new PermitAllOperationPermissionEvaluator());
+		}
+	}
+
 	@Test
 	public void testAddSpeciality() {
 		Region region = new Region("测试省", "测试市");
 		region.setCode("testre");
 		Speciality spec = new Speciality();
 		spec.setName("spec1");
+		spec.setCreatedBy("administrator");
 		spec.setRegionCode(region.getCode());
 		try {
 			regionService.addRegion(region);

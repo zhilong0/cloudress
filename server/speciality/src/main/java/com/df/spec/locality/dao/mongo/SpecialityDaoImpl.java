@@ -1,6 +1,7 @@
 package com.df.spec.locality.dao.mongo;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -16,6 +17,7 @@ import com.df.spec.locality.exception.SpecialityAlreadyExistException;
 import com.df.spec.locality.model.Constants;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
+import com.df.spec.locality.model.Approval.Status;
 import com.google.common.collect.Lists;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
@@ -65,6 +67,12 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 		updateOperations.set(Constants.SPECIALITY.START_MONTH, speciality.getStartMonth());
 		updateOperations.set(Constants.SPECIALITY.END_MONTH, speciality.getEndMonth());
 		updateOperations.set(Constants.SPECIALITY.IMAGE_SET, speciality.getImageSet());
+		if (speciality.getApproval() != null) {
+			updateOperations.set(Constants.SPECIALITY.APPROVED_BY, speciality.getApproval());
+		} else {
+			updateOperations.unset(Constants.SPECIALITY.APPROVED_BY);
+		}
+
 		return this.update(query, updateOperations).getUpdatedCount() > 0;
 	}
 
@@ -103,13 +111,18 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 
 	@Override
 	public Speciality getSpecialityByCode(String specialityCode) {
-		return this.get(new ObjectId(specialityCode));
+		if (ObjectId.isValid(specialityCode)) {
+			return this.get(new ObjectId(specialityCode));
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public List<Speciality> getSpecialityListByRegionCode(String regionCode) {
 		Query<Speciality> query = this.createQuery();
 		query.filter(Constants.SPECIALITY.REGION_CODE + " =", regionCode);
+		query.filter(Constants.SPECIALITY.STATUS + " =", Status.APPROVED);
 		query.order("-" + Constants.SPECIALITY.RANK);
 		return Lists.newArrayList(this.find(query));
 	}
@@ -120,5 +133,32 @@ public class SpecialityDaoImpl extends BasicDAO<Speciality, ObjectId> implements
 		query.filter(Constants.SPECIALITY.REGION_CODE + " =", regionCode);
 		query.filter(Constants.SPECIALITY.NAME + " =", specialityName);
 		return this.findOne(query);
+	}
+
+	@Override
+	public boolean update(String specialityCode, Properties properties) {
+		if (properties.size() == 0) {
+			return false;
+		}
+		Query<Speciality> query = this.createQuery();
+		query.filter(Constants.SPECIALITY.CODE, new ObjectId(specialityCode));
+		UpdateOperations<Speciality> updateOperations = this.createUpdateOperations();
+		for (Object key : properties.keySet()) {
+			Object value = properties.get(key);
+			if (value == null) {
+				updateOperations.unset(key.toString());
+			} else {
+				updateOperations.set(key.toString(), value);
+			}
+		}
+		return this.update(query, updateOperations).getUpdatedCount() > 0;
+	}
+
+	@Override
+	public List<Speciality> getSpecialityListByCreatedBy(String createdBy) {
+		Query<Speciality> query = this.createQuery();
+		query.filter(Constants.SPECIALITY.CREATED_BY + " =", createdBy);
+		query.order("-" + Constants.SPECIALITY.CREATED_TIME);
+		return Lists.newArrayList(this.find(query));
 	}
 }

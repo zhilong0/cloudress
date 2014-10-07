@@ -87,6 +87,7 @@
 		<property name="resourceNames">
 			<list value-type="java.lang.String">
 				<value>classpath:idm_permissions.csv</value>
+				<value>classpath:speciality_permissions.csv</value>
 			</list>
 		</property>
 	</bean>
@@ -98,6 +99,7 @@
 		<property name="resourceNames">
 			<list value-type="java.lang.String">
 				<value>classpath:idm_roles.json</value>
+				<value>classpath:speciality_roles.json</value>
 			</list>
 		</property>
 	</bean>
@@ -121,6 +123,7 @@
 		<property name="resourceNames">
 			<list value-type="java.lang.String">
 				<value>classpath:idm_assignments.json</value>
+				<value>classpath:speciality_assignments.json</value>
 			</list>
 		</property>
 	</bean>

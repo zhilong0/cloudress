@@ -10,12 +10,22 @@ public class UserProfile implements Serializable {
 
 	private String id;
 
+	private String code;
+
 	private String realName;
 
 	private String headThumbnail;
 
 	@JsonIgnore
 	private String cellPhone;
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	public String getId() {
 		return id;

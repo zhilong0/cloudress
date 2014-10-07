@@ -21,6 +21,8 @@ import com.df.spec.locality.model.Speciality;
 import com.df.spec.locality.provision.SpecialitySource.SpecialityInfo;
 import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.SpecialityService;
+import com.df.spec.locality.service.impl.PermitAllOperationPermissionEvaluator;
+import com.df.spec.locality.service.impl.SpecialityServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SpecialityImporter extends AbstractImporterBean implements ResourceLoaderAware {
@@ -36,6 +38,8 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 	private List<String> resourceNames;
 
 	private ResourceLoader resourceLoader;
+
+	private String createdBy = "administrator";
 
 	private static final Logger logger = LoggerFactory.getLogger(SpecialityImporter.class);
 
@@ -59,6 +63,10 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 		this.objectMapper = objectMapper;
 	}
 
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
 	@Override
 	public void execute(ProvisionContext context) throws Exception {
 		Assert.notNull(regionService);
@@ -75,6 +83,9 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 	}
 
 	protected void importData(SpecialitySource source) {
+		if (specialityService instanceof SpecialityServiceImpl) {
+			((SpecialityServiceImpl) specialityService).setServiceOperationPermissionEvaluator(new PermitAllOperationPermissionEvaluator());
+		}
 		Region region = source.getRegion();
 		Region found = regionService.findRegion(region.getProvince(), region.getCity(), region.getDistrict());
 		if (found == null) {
@@ -91,14 +102,15 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 					spec.setRank(speciality.getRank());
 					spec.setStartMonth(speciality.getStartMonth());
 					spec.setEndMonth(speciality.getEndMonth());
-					spec.setRegionCode(found.getCode()); 
+					spec.setRegionCode(found.getCode());
+					spec.setCreatedBy(createdBy);
 					specialityService.addSpeciality(spec);
 				} else {
 					logger.info("speciality {} in region {} already exist,update it", spec.getName(), found);
 					spec.setDescription(speciality.getDescription());
 					spec.setRank(speciality.getRank());
-					spec.setStartMonth(speciality.getStartMonth()); 
-					spec.setEndMonth(speciality.getEndMonth()); 
+					spec.setStartMonth(speciality.getStartMonth());
+					spec.setEndMonth(speciality.getEndMonth());
 					specialityService.update(spec);
 				}
 

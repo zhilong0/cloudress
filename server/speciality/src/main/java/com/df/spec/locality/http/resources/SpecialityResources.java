@@ -8,6 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.df.blobstore.image.ImageKey;
@@ -45,8 +48,16 @@ public class SpecialityResources {
 	}
 
 	@GET
+	@Path("/mine")
+	@PreAuthorize("isAuthenticated()")
+	public List<Speciality> getMySpecialities() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return specialityService.getMySpecialities(authentication.getName());
+	}
+
+	@GET
 	@Path("/code/{specialityCode}")
-	public Speciality getSpecialitiesByCode(@PathParam(value = "specialityCode") String specialityCode) {
+	public Speciality getSpecialitiesByCode(@PathParam("specialityCode") String specialityCode) {
 		Speciality speciality = specialityService.getSpecialityByCode(specialityCode);
 		if (speciality != null) {
 			processImageLink(speciality);
@@ -55,9 +66,28 @@ public class SpecialityResources {
 	}
 
 	@POST
+	@PreAuthorize("isAuthenticated()")
 	public Speciality addSpeciality(Speciality speciality) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		speciality.setCreatedBy(authentication.getName());
 		specialityService.addSpeciality(speciality);
 		return speciality;
+	}
+
+	@POST
+	@Path("/code/{specialityCode}/reject")
+	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
+	public boolean rejectSpeciality(@PathParam("specialityCode") String specialityCode, String rejectReason) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return specialityService.rejectSpeciality(specialityCode, authentication.getName(), rejectReason);
+	}
+
+	@POST
+	@Path("/code/{specialityCode}/approve")
+	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
+	public boolean approveSpeciality(@PathParam("specialityCode") String specialityCode) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return specialityService.approveSpeciality(specialityCode, authentication.getName());
 	}
 
 	protected void processImageLink(Speciality speciality) {

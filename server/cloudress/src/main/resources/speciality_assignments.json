@@ -1,0 +1,10 @@
+ [
+	{
+	 "code":"administrator",
+	 "roles":[
+	     {
+	        "name":"SPECIALITY_ADMIN"
+	     }
+	 ]
+	}
+]

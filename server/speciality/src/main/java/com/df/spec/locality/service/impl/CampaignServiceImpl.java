@@ -61,7 +61,7 @@ public class CampaignServiceImpl implements CampaignService {
 	@Override
 	public Campaign createCampaign(Campaign campaign, UserProfile user) {
 		Region region = regionService.getRegionByCode(campaign.getRegionCode(), true);
-		campaign.setSponsor(user.getId());
+		campaign.setSponsor(user.getCode());
 		campaign.getParticipants().clear();
 		if (campaign.isRequireAssembly()) {
 			if (campaign.getContact() == null) {
@@ -130,18 +130,18 @@ public class CampaignServiceImpl implements CampaignService {
 			String msg = "Cannot join a campaign which is cancelled";
 			throw new SpecialityBaseException(CampaignErrorCode.CAMPAIGN_IS_CALCEELD, msg);
 		}
-		ParticipantJournal journal = campaignDao.getCampaignParticipantJournal(campaignId, user.getId());
+		ParticipantJournal journal = campaignDao.getCampaignParticipantJournal(campaignId, user.getCode());
 		if (journal != null && journal.getDepartCount() >= 3) {
 			String msg = "You have ever joined and departed the campaign for over three times";
 			throw new SpecialityBaseException(CampaignErrorCode.CAMPAIGN_DEPART_EXCEED_LIMIT, msg);
 		}
-		if (campaign.getParticipant(user.getId()) == null) {
+		if (campaign.getParticipant(user.getCode()) == null) {
 			int participantLimit = campaign.getParticipantLimit();
 			if (participantLimit > 0 && campaign.getParticipants().size() >= participantLimit) {
 				String msg = "Exceed participant limit";
 				throw new SpecialityBaseException(CampaignErrorCode.EXCEED_PARTICIPANT_LIMIT, msg);
 			}
-			campaign.addParticipant(new Participant(user.getId()));
+			campaign.addParticipant(new Participant(user.getCode()));
 			return campaignDao.update(campaign);
 		} else {
 			return true;
@@ -151,10 +151,10 @@ public class CampaignServiceImpl implements CampaignService {
 	@Override
 	public boolean departCampaign(String campaignId, UserProfile user) {
 		Campaign campaign = this.getCampaignById(campaignId, true);
-		if (campaign.getParticipant(user.getId()) != null) {
-			campaign.removeParticipant(user.getId());
+		if (campaign.getParticipant(user.getCode()) != null) {
+			campaign.removeParticipant(user.getCode());
 			if (campaignDao.update(campaign)) {
-				ParticipantJournal journal = campaignDao.getParticipantJournal(campaignId, user.getId());
+				ParticipantJournal journal = campaignDao.getParticipantJournal(campaignId, user.getCode());
 				if (journal == null) {
 					journal = new ParticipantJournal();
 					journal.setCampaignId(campaignId);
@@ -172,7 +172,7 @@ public class CampaignServiceImpl implements CampaignService {
 	@Override
 	public void cancellCampaign(String campaignId, UserProfile user) {
 		Campaign campaign = this.getCampaignById(campaignId, true);
-		if (campaign.getSponsor().equals(user.getId())) {
+		if (campaign.getSponsor().equals(user.getCode())) {
 			campaign.setCancelled(true);
 			campaignDao.update(campaign);
 		} else {

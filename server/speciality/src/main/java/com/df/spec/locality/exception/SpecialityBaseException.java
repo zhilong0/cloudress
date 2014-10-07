@@ -19,8 +19,12 @@ public class SpecialityBaseException extends BaseException {
 	}
 
 	public SpecialityBaseException(Throwable cause, String errorCode) {
-		this(cause);
+		super(cause, errorCode);
 		this.errorCode = errorCode;
+	}
+
+	public SpecialityBaseException(String errorCode) {
+		this(null, errorCode);
 	}
 
 	public String getErrorCode() {

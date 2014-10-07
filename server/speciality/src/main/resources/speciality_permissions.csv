@@ -1,0 +1,4 @@
+domain,name,description
+SPECIALITY,MASTER_DATA_IMPORT,添加或者导入系统主数据权限
+SPECIALITY,MASTER_DATA_EDIT,更改系统主数据权限
+SPECIALITY,MASTER_DATA_APPROVAL,批准外部用户添加的主数据入库

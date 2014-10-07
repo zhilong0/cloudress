@@ -8,7 +8,13 @@ public interface SpecialityService {
 
 	void addSpeciality(Speciality speciality);
 
+	boolean approveSpeciality(String specialityCode, String approver);
+
+	boolean rejectSpeciality(String specialityCode, String approver, String rejectReason);
+
 	List<Speciality> getSpecialityListByRegionCode(String regionCode);
+	
+	List<Speciality> getMySpecialities(String userCode);
 
 	String uploadSpecialityImage(String specialityCode, byte[] imageData, String imageName);
 

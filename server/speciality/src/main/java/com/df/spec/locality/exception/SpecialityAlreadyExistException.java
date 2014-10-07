@@ -6,8 +6,6 @@ public class SpecialityAlreadyExistException extends SpecialityBaseException {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String DUPLICATE_REGION_ERROR = "RG100001";
-
 	private static final String MESSAGE_FMT = "Speciality %s in region %s already exist";
 
 	private String specialityName;
@@ -17,6 +15,7 @@ public class SpecialityAlreadyExistException extends SpecialityBaseException {
 	public SpecialityAlreadyExistException(Throwable cause, String specialityName, Region region) {
 		super(cause, MESSAGE_FMT, specialityName, region.toString());
 		this.specialityName = specialityName;
+		this.setErrorCode(SpecialityErrorCode.SPECIALITY_IN_REGION_ALREADY_EXIST);
 	}
 
 	public String getSpecialityName() {

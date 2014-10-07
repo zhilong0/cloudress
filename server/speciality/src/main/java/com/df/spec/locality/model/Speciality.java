@@ -6,12 +6,14 @@ import java.util.Date;
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Transient;
 
+import com.df.spec.locality.model.Approval.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity(value = "specialities", noClassnameStored = true)
@@ -43,9 +45,14 @@ public class Speciality implements Serializable {
 
 	private int endMonth;
 
-	private Date createTime;
+	private Date createdTime;
 
 	private Date changedTime;
+
+	private String createdBy;
+
+	@Embedded
+	private Approval approval;
 
 	public String getCode() {
 		if (code != null) {
@@ -120,12 +127,12 @@ public class Speciality implements Serializable {
 		this.endMonth = endMonth;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
+	public Date getCreatedTime() {
+		return createdTime;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
 	}
 
 	public Date getChangedTime() {
@@ -136,4 +143,30 @@ public class Speciality implements Serializable {
 		this.changedTime = changedTime;
 	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Approval getApproval() {
+		return approval;
+	}
+
+	public void approve(String approver) {
+		this.approval = new Approval();
+		this.approval.setApprovedBy(approver);
+		this.approval.setApprovedTime(new Date());
+		this.approval.setStatus(Status.APPROVED);
+	}
+
+	public void reject(String approver, String rejectReason) {
+		this.approval = new Approval();
+		this.approval.setApprovedBy(approver);
+		this.approval.setApprovedTime(new Date());
+		this.approval.setStatus(Status.REJECTED);
+		this.approval.setRejectReason(rejectReason);
+	}
 }

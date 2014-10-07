@@ -11,6 +11,7 @@ import javax.ws.rs.QueryParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -76,7 +77,7 @@ public class CampaignResources {
 		if (limit <= 0) {
 			limit = 20;
 		}
-		return campaignService.getParticipantCampaignList(loadUserProfile().getId());
+		return campaignService.getParticipantCampaignList(loadUserProfile().getCode());
 	}
 
 	@GET
@@ -95,6 +96,7 @@ public class CampaignResources {
 
 	@POST
 	@Path("/{regionCode}/0")
+	@PreAuthorize("isAuthenticated()")
 	public Campaign createCampaign(@PathParam("regionCode") String regionCode, SpecialityGroupPurcharse campaign) {
 		campaign.setRegionCode(regionCode);
 		return campaignService.createCampaign(campaign, loadUserProfile());
@@ -112,7 +114,7 @@ public class CampaignResources {
 			UserObject details = (UserObject) uauth.getDetails();
 			if (details != null) {
 				UserProfile user = new UserProfile();
-				user.setId(details.getCode());
+				user.setCode(details.getCode());
 				user.setCellPhone(details.getCellphone());
 				if (details.getUsername() == null) {
 					user.setRealName(details.getCode());
@@ -124,6 +126,5 @@ public class CampaignResources {
 				return null;
 			}
 		}
-
 	}
 }

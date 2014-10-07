@@ -14,6 +14,18 @@ public class Constants {
 
 	}
 
+	public static interface APPROVABLE {
+
+		public static final String APPROVED_BY = "approval.approvedBy";
+
+		public static final String APPROVED_TIME = "approval.approvedTime";
+
+		public static final String STATUS = "approval.status";
+
+		public static final String REJECT_REASON = "approval.rejectReason";
+
+	}
+
 	public static interface SHOP {
 
 		public static final String CODE = "code";
@@ -44,7 +56,7 @@ public class Constants {
 
 	}
 
-	public static interface SPECIALITY {
+	public static interface SPECIALITY extends APPROVABLE {
 
 		public static final String CODE = "_id";
 
@@ -61,6 +73,10 @@ public class Constants {
 		public static final String START_MONTH = "startMonth";
 
 		public static final String END_MONTH = "endMonth";
+
+		public static final String CREATED_BY = "createdBy";
+
+		public static final String CREATED_TIME = "createdTime";
 
 	}
 
@@ -137,7 +153,7 @@ public class Constants {
 		public static final String TYPE = "type";
 
 		public static final String CONTENT = "desc";
-		
+
 		public static final String APPLY_DEADLINE = "applyDeadline";
 
 		public static final String IMAGE_SET = "imageSet";

@@ -87,7 +87,7 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 	public void testCreateCampaign() {
 		Region region = new Region("shanghai", "shanghai");
 		UserProfile user = new UserProfile();
-		user.setId("i061134");
+		user.setCode("i061134");
 		user.setCellPhone("13621992125");
 		user.setRealName("xia pin");
 		Campaign campaign = new SpecialityGroupPurcharse();
@@ -106,7 +106,7 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 			regionDao.addRegion(region);
 			campaign.setRegionCode(region.getCode());
 			campaignService.createCampaign(campaign, user);
-			List<Campaign> founds = campaignService.getPublishedCampaignList(user.getId());
+			List<Campaign> founds = campaignService.getPublishedCampaignList(user.getCode());
 			TestCase.assertTrue(founds.size() == 1);
 		} finally {
 			regionDao.deleteRegion(region);
@@ -119,7 +119,7 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 	@Test
 	public void testUpdateCampaign() {
 		UserProfile user = new UserProfile();
-		user.setId("i061134");
+		user.setCode("i061134");
 		user.setCellPhone("13621992125");
 		user.setRealName("xia pin");
 		Campaign campaign = new SpecialityGroupPurcharse();
@@ -145,11 +145,11 @@ public class CampaignServiceTest extends SpecialityBaseTest {
 			regionDao.addRegion(region);
 			campaign.setRegionCode(region.getCode());
 			campaignService.createCampaign(campaign, user);
-			List<Campaign> founds = campaignService.getPublishedCampaignList(user.getId());
+			List<Campaign> founds = campaignService.getPublishedCampaignList(user.getCode());
 			TestCase.assertTrue(founds.size() == 1);
 			campaign.location(new Location("晨晖路1002号", null));
 			campaignService.updateCampaign(campaign, user);
-			founds = campaignService.getPublishedCampaignList(user.getId());
+			founds = campaignService.getPublishedCampaignList(user.getCode());
 			TestCase.assertTrue(founds.size() == 1);
 			Campaign found = founds.get(0);
 			TestCase.assertNotNull(found.getLastModified());

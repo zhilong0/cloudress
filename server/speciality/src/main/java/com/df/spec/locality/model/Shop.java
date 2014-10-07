@@ -26,7 +26,7 @@ public class Shop implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private ObjectId shopCode;
+	private ObjectId code;
 
 	@NotEmpty(message = "{shop.regionCode.NotEmpty}")
 	private String regionCode;
@@ -65,8 +65,8 @@ public class Shop implements Serializable {
 	}
 
 	public String getCode() {
-		if (shopCode != null) {
-			return shopCode.toHexString();
+		if (code != null) {
+			return code.toHexString();
 		} else {
 			return null;
 		}
@@ -81,7 +81,7 @@ public class Shop implements Serializable {
 	}
 
 	public void setCode(String shopCode) {
-		this.shopCode = new ObjectId(shopCode);
+		this.code = new ObjectId(shopCode);
 	}
 
 	public String getRegionCode() {
