@@ -92,7 +92,7 @@ public class SpecialityResources {
 	}
 
 	@POST
-	@Path("/code/{specialityCode}/reject")
+	@Path("/{specialityCode}/reject")
 	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean rejectSpeciality(@PathParam("specialityCode") String specialityCode, String rejectReason) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -101,7 +101,7 @@ public class SpecialityResources {
 	}
 
 	@POST
-	@Path("/code/{specialityCode}/approve")
+	@Path("/{specialityCode}/approve")
 	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean approveSpeciality(@PathParam("specialityCode") String specialityCode) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
