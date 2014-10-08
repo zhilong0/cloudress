@@ -16,13 +16,13 @@ public class Constants {
 
 	public static interface APPROVABLE {
 
-		public static final String APPROVED_BY = "approval.approvedBy";
+		public static final String APPROVED_BY = "approvedBy";
 
-		public static final String APPROVED_TIME = "approval.approvedTime";
+		public static final String APPROVED_TIME = "approvedTime";
 
-		public static final String STATUS = "approval.status";
+		public static final String STATUS = "status";
 
-		public static final String REJECT_REASON = "approval.rejectReason";
+		public static final String REJECT_REASON = "rejectReason";
 
 	}
 
@@ -77,7 +77,7 @@ public class Constants {
 		public static final String CREATED_BY = "createdBy";
 
 		public static final String CREATED_TIME = "createdTime";
-		
+
 		public static final String APPROVAL = "approval";
 
 	}

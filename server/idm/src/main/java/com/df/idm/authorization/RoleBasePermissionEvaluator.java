@@ -29,10 +29,11 @@ public class RoleBasePermissionEvaluator implements PermissionEvaluator {
 							} else if (permission instanceof String) {
 								if (((String) permission).equalsIgnoreCase(per.getName())) {
 									if (targetDomainObject != null) {
-										return per.getDomain().equalsIgnoreCase(targetDomainObject.toString());
+										if (per.getDomain().equalsIgnoreCase(targetDomainObject.toString())) {
+											return true;
+										}
 									}
 								}
-								return false;
 							}
 						}
 					}

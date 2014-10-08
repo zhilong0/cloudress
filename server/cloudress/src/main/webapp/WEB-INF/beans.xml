@@ -58,6 +58,8 @@
 	</bean>
 	<bean id="specialityResource" class="com.df.spec.locality.http.resources.SpecialityResources">
 		<property name="specialityService" ref="specialityService" />
+		<property name="regionService" ref="regionService" />
+		<property name="approvableService" ref="approvableService" />
 		<property name="imageLinkCreator" ref="imageLinkCreator" />
 	</bean>
 	<bean id="geoResource" class="com.df.spec.locality.http.resources.GeoResources">

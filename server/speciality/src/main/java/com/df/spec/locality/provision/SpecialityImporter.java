@@ -1,6 +1,7 @@
 package com.df.spec.locality.provision;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,10 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 
 import com.df.common.provision.AbstractImporterBean;
 import com.df.common.provision.ProvisionContext;
+import com.df.idm.authentication.UserPropertyAuthenticationToken;
+import com.df.idm.model.Permission;
+import com.df.idm.model.Role;
 import com.df.spec.locality.exception.RegionErrorCode;
 import com.df.spec.locality.exception.SpecialityBaseException;
 import com.df.spec.locality.model.ImageSet;
@@ -21,8 +28,7 @@ import com.df.spec.locality.model.Speciality;
 import com.df.spec.locality.provision.SpecialitySource.SpecialityInfo;
 import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.SpecialityService;
-import com.df.spec.locality.service.impl.PermitAllOperationPermissionEvaluator;
-import com.df.spec.locality.service.impl.SpecialityServiceImpl;
+import com.df.spec.locality.service.impl.OperationPermissionEvaluatorImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SpecialityImporter extends AbstractImporterBean implements ResourceLoaderAware {
@@ -82,10 +88,20 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 		}
 	}
 
+	protected Authentication mockAuthentication() {
+		List<Role> roles = new ArrayList<Role>();
+		Role role = new Role("dummy");
+		List<Permission> permissions = new ArrayList<Permission>();
+		permissions.add(new Permission(OperationPermissionEvaluatorImpl.DOMAIN_NAME, OperationPermissionEvaluatorImpl.MASTER_DATA_IMPORT));
+		role.setPermissions(permissions);
+		roles.add(role);
+		return new UserPropertyAuthenticationToken(createdBy, roles);
+	}
+
 	protected void importData(SpecialitySource source) {
-		if (specialityService instanceof SpecialityServiceImpl) {
-			((SpecialityServiceImpl) specialityService).setServiceOperationPermissionEvaluator(new PermitAllOperationPermissionEvaluator());
-		}
+		SecurityContext context = SecurityContextHolder.createEmptyContext();
+		context.setAuthentication(mockAuthentication());
+		SecurityContextHolder.setContext(context); 
 		Region region = source.getRegion();
 		Region found = regionService.findRegion(region.getProvince(), region.getCity(), region.getDistrict());
 		if (found == null) {
@@ -102,9 +118,8 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 					spec.setRank(speciality.getRank());
 					spec.setStartMonth(speciality.getStartMonth());
 					spec.setEndMonth(speciality.getEndMonth());
-					spec.setRegionCode(found.getCode());
 					spec.setCreatedBy(createdBy);
-					specialityService.addSpeciality(spec);
+					specialityService.addSpeciality(spec, found);
 				} else {
 					logger.info("speciality {} in region {} already exist,update it", spec.getName(), found);
 					spec.setDescription(speciality.getDescription());

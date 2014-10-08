@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -16,15 +15,10 @@ import com.df.blobstore.image.ImageService;
 import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.dao.SpecialityDao;
 import com.df.spec.locality.data.streamline.SpecialitySeasonalComparator;
-import com.df.spec.locality.exception.SpecialityBaseException;
-import com.df.spec.locality.exception.SpecialityErrorCode;
 import com.df.spec.locality.exception.SpecialityWithCodeNotFoundException;
 import com.df.spec.locality.exception.validation.ValidationException;
-import com.df.spec.locality.model.Constants;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
-import com.df.spec.locality.model.Approval.Status;
-import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.OperationPermissionEvaluator;
 import com.df.spec.locality.service.SpecialityService;
 
@@ -34,17 +28,13 @@ public class SpecialityServiceImpl implements SpecialityService {
 
 	private ImageService imageService;
 
-	private RegionService regionService;
-
 	private Validator validator;
 
 	private OperationPermissionEvaluator permissionEvaluator;
 
-	public SpecialityServiceImpl(SpecialityDao specialityDao, RegionService regionService, ImageService imageService,
-			OperationPermissionEvaluator permissionEvaluator, Validator validator) {
+	public SpecialityServiceImpl(SpecialityDao specialityDao, ImageService imageService, OperationPermissionEvaluator permissionEvaluator, Validator validator) {
 		this.specialityDao = specialityDao;
 		this.imageService = imageService;
-		this.regionService = regionService;
 		this.permissionEvaluator = permissionEvaluator;
 		this.validator = validator;
 	}
@@ -61,13 +51,17 @@ public class SpecialityServiceImpl implements SpecialityService {
 		this.imageService = imageService;
 	}
 
+	public void setValidator(Validator validator) {
+		this.validator = validator;
+	}
+
 	@Override
-	public void addSpeciality(Speciality speciality) {
+	public void addSpeciality(Speciality speciality, Region region) {
+		speciality.setRegionCode(region.getCode()); 
 		Set<ConstraintViolation<Speciality>> violations = validator.validate(speciality);
 		if (violations.size() != 0) {
 			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
 		}
-		Region region = regionService.getRegionByCode(speciality.getRegionCode(), true);
 		speciality.setCreatedTime(new Date());
 		speciality.setChangedTime(null);
 		if (speciality.getImage() != null) {
@@ -76,13 +70,10 @@ public class SpecialityServiceImpl implements SpecialityService {
 				speciality.getImageSet().addImage(speciality.getImage(), imageAttributes);
 			}
 		}
-		if (permissionEvaluator.canAddShop(speciality.getCreatedBy())) {
+		if (permissionEvaluator.canAddSpeciality(speciality.getCreatedBy())) {
 			speciality.approve(speciality.getCreatedBy());
-		} else if (speciality.getApproval() != null) {
-			speciality.getApproval().setApprovedBy(null);
-			speciality.getApproval().setApprovedTime(null);
-			speciality.getApproval().setStatus(null);
-			speciality.getApproval().setRejectReason(null);
+		} else {
+			speciality.reset();
 		}
 		specialityDao.add(speciality, region);
 	}
@@ -114,8 +105,12 @@ public class SpecialityServiceImpl implements SpecialityService {
 	}
 
 	@Override
-	public Speciality getSpecialityByCode(String specialityCode) {
-		return specialityDao.getSpecialityByCode(specialityCode);
+	public Speciality getSpecialityByCode(String specialityCode, boolean throwException) {
+		Speciality found = specialityDao.getSpecialityByCode(specialityCode);
+		if (found == null && throwException) {
+			throw new SpecialityWithCodeNotFoundException(null, specialityCode);
+		}
+		return found;
 	}
 
 	public Speciality findSpeciality(String regionCode, String specialityName) {
@@ -125,34 +120,6 @@ public class SpecialityServiceImpl implements SpecialityService {
 	@Override
 	public boolean update(Speciality spec) {
 		return specialityDao.update(spec);
-	}
-
-	@Override
-	public boolean approveSpeciality(String specialityCode, String approver) {
-		if (permissionEvaluator.canApproveSpeciality(approver)) {
-			Properties p = new Properties();
-			p.put(Constants.SPECIALITY.APPROVED_BY, approver);
-			p.put(Constants.SPECIALITY.APPROVED_TIME, new Date());
-			p.put(Constants.SPECIALITY.STATUS, Status.APPROVED);
-			p.put(Constants.SPECIALITY.REJECT_REASON, null);
-			return specialityDao.update(specialityCode, p);
-		} else {
-			throw new SpecialityBaseException(SpecialityErrorCode.NO_APPROVAL_PERMISSION);
-		}
-	}
-
-	@Override
-	public boolean rejectSpeciality(String specialityCode, String approver, String rejectReason) {
-		if (permissionEvaluator.canApproveSpeciality(approver)) {
-			Properties p = new Properties();
-			p.put(Constants.SPECIALITY.APPROVED_BY, approver);
-			p.put(Constants.SPECIALITY.APPROVED_TIME, new Date());
-			p.put(Constants.SPECIALITY.STATUS, Status.REJECTED);
-			p.put(Constants.SPECIALITY.REJECT_REASON, rejectReason);
-			return specialityDao.update(specialityCode, p);
-		} else {
-			throw new SpecialityBaseException(SpecialityErrorCode.NO_APPROVAL_PERMISSION);
-		}
 	}
 
 	@Override

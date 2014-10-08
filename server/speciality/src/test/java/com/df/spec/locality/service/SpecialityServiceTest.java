@@ -45,7 +45,7 @@ public class SpecialityServiceTest extends SpecialityBaseTest {
 		spec.setRegionCode(region.getCode());
 		try {
 			regionService.addRegion(region);
-			specialityService.addSpeciality(spec);
+			specialityService.addSpeciality(spec, region);
 			TestCase.assertNotNull(specialityService.getSpecialityListByRegionCode(region.getCode()));
 		} finally {
 			if (spec.getCode() != null) {

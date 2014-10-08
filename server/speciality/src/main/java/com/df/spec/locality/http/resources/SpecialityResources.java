@@ -17,7 +17,10 @@ import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.http.ImageDetails;
 import com.df.blobstore.image.http.ImageLinkCreator;
 import com.df.spec.locality.model.ImageSet;
+import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
+import com.df.spec.locality.service.ApprovableService;
+import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.SpecialityService;
 
 @Path("/specialities")
@@ -27,10 +30,22 @@ public class SpecialityResources {
 
 	private SpecialityService specialityService;
 
+	private RegionService regionService;
+
+	private ApprovableService approvableService;
+
 	private ImageLinkCreator imageLinkCreator;
 
 	public void setSpecialityService(SpecialityService specialityService) {
 		this.specialityService = specialityService;
+	}
+
+	public void setRegionService(RegionService regionService) {
+		this.regionService = regionService;
+	}
+
+	public void setApprovableService(ApprovableService approvableService) {
+		this.approvableService = approvableService;
 	}
 
 	public void setImageLinkCreator(ImageLinkCreator imageLinkCreator) {
@@ -58,7 +73,7 @@ public class SpecialityResources {
 	@GET
 	@Path("/code/{specialityCode}")
 	public Speciality getSpecialitiesByCode(@PathParam("specialityCode") String specialityCode) {
-		Speciality speciality = specialityService.getSpecialityByCode(specialityCode);
+		Speciality speciality = specialityService.getSpecialityByCode(specialityCode, true);
 		if (speciality != null) {
 			processImageLink(speciality);
 		}
@@ -70,7 +85,9 @@ public class SpecialityResources {
 	public Speciality addSpeciality(Speciality speciality) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		speciality.setCreatedBy(authentication.getName());
-		specialityService.addSpeciality(speciality);
+		String regionCode = speciality.getRegionCode();
+		Region region = regionService.getRegionByCode(regionCode, true);
+		specialityService.addSpeciality(speciality, region);
 		return speciality;
 	}
 
@@ -79,7 +96,8 @@ public class SpecialityResources {
 	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean rejectSpeciality(@PathParam("specialityCode") String specialityCode, String rejectReason) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return specialityService.rejectSpeciality(specialityCode, authentication.getName(), rejectReason);
+		Speciality speciality = specialityService.getSpecialityByCode(specialityCode, true);
+		return approvableService.reject(speciality, authentication.getName(), rejectReason);
 	}
 
 	@POST
@@ -87,7 +105,8 @@ public class SpecialityResources {
 	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean approveSpeciality(@PathParam("specialityCode") String specialityCode) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return specialityService.approveSpeciality(specialityCode, authentication.getName());
+		Speciality speciality = specialityService.getSpecialityByCode(specialityCode, true);
+		return approvableService.approve(speciality, authentication.getName());
 	}
 
 	protected void processImageLink(Speciality speciality) {

@@ -13,13 +13,13 @@ public class OperationPermissionEvaluatorImpl implements OperationPermissionEval
 
 	private PermissionEvaluator permissionEvaluator;
 
-	private static final String DOMAIN_NAME = "SPECIALITY";
+	public static final String DOMAIN_NAME = "SPECIALITY";
 
-	private static final String MASTER_DATA_IMPORT = "MASTER_DATA_IMPORT";
+	public static final String MASTER_DATA_IMPORT = "MASTER_DATA_IMPORT";
 
-	private static final String MASTER_DATA_APPROVAL = "MASTER_DATA_APPROVAL";
+	public static final String MASTER_DATA_APPROVAL = "MASTER_DATA_APPROVAL";
 
-	private static final String MASTER_DATA_EDIT = "MASTER_DATA_EDIT";
+	public static final String MASTER_DATA_EDIT = "MASTER_DATA_EDIT";
 
 	public OperationPermissionEvaluatorImpl(PermissionEvaluator permissionEvaluator) {
 		this.permissionEvaluator = permissionEvaluator;
