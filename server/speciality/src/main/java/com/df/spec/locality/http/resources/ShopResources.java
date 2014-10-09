@@ -114,7 +114,7 @@ public class ShopResources {
 	}
 
 	@GET
-	@Path("/waits")
+	@Path("/to_be_approved")
 	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public List<Shop> getShopWaitList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
 		if (offset < 0) {

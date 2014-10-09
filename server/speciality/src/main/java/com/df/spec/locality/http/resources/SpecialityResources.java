@@ -75,7 +75,7 @@ public class SpecialityResources {
 	}
 
 	@GET
-	@Path("/waits")
+	@Path("/to_be_approved")
 	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public List<Speciality> getWaitList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
 		if (offset < 0) {
