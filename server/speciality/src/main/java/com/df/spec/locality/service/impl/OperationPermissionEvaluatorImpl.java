@@ -32,7 +32,7 @@ public class OperationPermissionEvaluatorImpl implements OperationPermissionEval
 	}
 
 	@Override
-	public boolean canApproveSpeciality(String userCode) {
+	public boolean canApprove(String userCode) {
 		Authentication authentication = this.getAuthentication(userCode);
 		return permissionEvaluator.hasPermission(authentication, DOMAIN_NAME, MASTER_DATA_APPROVAL);
 	}
@@ -41,12 +41,6 @@ public class OperationPermissionEvaluatorImpl implements OperationPermissionEval
 	public boolean canAddShop(String userCode) {
 		Authentication authentication = this.getAuthentication(userCode);
 		return permissionEvaluator.hasPermission(authentication, DOMAIN_NAME, MASTER_DATA_IMPORT);
-	}
-
-	@Override
-	public boolean canApproveShop(String userCode) {
-		Authentication authentication = this.getAuthentication(userCode);
-		return permissionEvaluator.hasPermission(authentication, DOMAIN_NAME, MASTER_DATA_APPROVAL);
 	}
 
 	protected Authentication getAuthentication(String userCode) {

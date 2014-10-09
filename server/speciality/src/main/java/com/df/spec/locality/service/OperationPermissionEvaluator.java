@@ -9,12 +9,10 @@ public interface OperationPermissionEvaluator {
 
 	boolean canEditSpeciality(String userCode, Speciality speciality);
 
-	boolean canApproveSpeciality(String userCode);
+	boolean canApprove(String userCode);
 
 	boolean canAddShop(String userCode);
 
 	boolean canEditShop(String userCode, Shop shop);
-
-	boolean canApproveShop(String userCode);
 
 }

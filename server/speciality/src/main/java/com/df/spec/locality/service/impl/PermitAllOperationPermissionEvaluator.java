@@ -17,7 +17,7 @@ public class PermitAllOperationPermissionEvaluator implements OperationPermissio
 	}
 
 	@Override
-	public boolean canApproveSpeciality(String userCode) {
+	public boolean canApprove(String userCode) {
 		return true;
 	}
 
@@ -28,11 +28,6 @@ public class PermitAllOperationPermissionEvaluator implements OperationPermissio
 
 	@Override
 	public boolean canEditShop(String userCode, Shop shop) {
-		return true;
-	}
-
-	@Override
-	public boolean canApproveShop(String userCode) {
 		return true;
 	}
 
