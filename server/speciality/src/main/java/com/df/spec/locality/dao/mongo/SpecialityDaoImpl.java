@@ -134,4 +134,9 @@ public class SpecialityDaoImpl extends BaseDao<Speciality, ObjectId> implements 
 		query.order("-" + Constants.SPECIALITY.CREATED_TIME);
 		return Lists.newArrayList(this.find(query));
 	}
+
+	@Override
+	public List<Speciality> getWaitList(int offset, int limit) {
+		return this.getWaitList(Speciality.class, offset, limit);
+	}
 }

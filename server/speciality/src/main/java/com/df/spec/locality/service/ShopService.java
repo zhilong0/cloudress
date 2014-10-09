@@ -6,11 +6,13 @@ import com.df.spec.locality.model.Shop;
 
 public interface ShopService {
 
-	Shop addShop(Shop newShop, String regionCode);
+	Shop addShop(Shop newShop);
 
 	Shop getShopByCode(String shopCode, boolean throwException);
 
 	List<Shop> getShopListSellSpeciality(String specialityCode);
+
+	List<Shop> getMyShops(String userCode);
 
 	Shop findShop(String shopName, String address);
 
@@ -19,5 +21,7 @@ public interface ShopService {
 	String uploadShopImage(String shopCode, byte[] imageData, String imageName);
 
 	void deleteShopImage(String shopCode, String imageId);
+
+	List<Shop> getWaitList(int offset, int limit);
 
 }

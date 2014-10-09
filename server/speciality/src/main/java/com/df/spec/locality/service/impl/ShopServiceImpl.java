@@ -21,6 +21,7 @@ import com.df.spec.locality.geo.Coordinate;
 import com.df.spec.locality.geo.GeoService;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
+import com.df.spec.locality.service.OperationPermissionEvaluator;
 import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.ShopService;
 
@@ -36,12 +37,20 @@ public class ShopServiceImpl implements ShopService {
 
 	private Validator validator;
 
-	public ShopServiceImpl(ShopDao shopDao, RegionService regionService, GeoService geoService, ImageService imageService, Validator validator) {
+	private OperationPermissionEvaluator permissionEvaluator;
+
+	public ShopServiceImpl(ShopDao shopDao, RegionService regionService, GeoService geoService, ImageService imageService,
+			OperationPermissionEvaluator permissionEvaluator, Validator validator) {
 		this.shopDao = shopDao;
 		this.regionService = regionService;
 		this.geoService = geoService;
 		this.imageService = imageService;
 		this.validator = validator;
+		this.permissionEvaluator = permissionEvaluator;
+	}
+
+	public void setServiceOperationPermissionEvaluator(OperationPermissionEvaluator serviceOperationPermissionEvaluator) {
+		this.permissionEvaluator = serviceOperationPermissionEvaluator;
 	}
 
 	public void setValidator(Validator validator) {
@@ -61,13 +70,12 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public Shop addShop(Shop newShop, String regionCode) {
-		newShop.setRegionCode(regionCode);
+	public Shop addShop(Shop newShop) {
 		Set<ConstraintViolation<Shop>> violations = validator.validate(newShop);
 		if (violations.size() != 0) {
 			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
 		}
-		Region region = regionService.getRegionByCode(regionCode, true);
+		Region region = regionService.getRegionByCode(newShop.getRegionCode(), true);
 		if (newShop.getLocation().getCoordinate() == null) {
 			String address = newShop.getLocation().getAddress();
 			Coordinate coordiate = geoService.lookupCoordinate(address, region);
@@ -76,7 +84,12 @@ public class ShopServiceImpl implements ShopService {
 			}
 			newShop.getLocation().setCoordinate(coordiate);
 		}
-		newShop.setCreateTime(new Date());
+		newShop.setCreatedTime(new Date());
+		if (permissionEvaluator.canAddShop(newShop.getCreatedBy())) {
+			newShop.approve(newShop.getCreatedBy());
+		} else {
+			newShop.reset();
+		}
 		shopDao.addShop(newShop, region);
 		return newShop;
 	}
@@ -134,5 +147,15 @@ public class ShopServiceImpl implements ShopService {
 		Shop found = this.getShopByCode(shopCode, true);
 		found.getImageSet().removeImage(imageId);
 		shopDao.update(found);
+	}
+
+	@Override
+	public List<Shop> getWaitList(int offset, int limit) {
+		return shopDao.getWaitList(offset, limit);
+	}
+
+	@Override
+	public List<Shop> getMyShops(String userCode) {
+		return shopDao.getShopListByCreatedBy(userCode);
 	}
 }

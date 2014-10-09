@@ -6,7 +6,6 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -14,15 +13,17 @@ import org.springframework.util.Assert;
 
 import com.df.spec.locality.dao.ShopDao;
 import com.df.spec.locality.exception.DuplicateShopException;
+import com.df.spec.locality.model.Approvable.Status;
 import com.df.spec.locality.model.Constants;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 
-public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
+public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 
 	public ShopDaoImpl(Datastore ds) {
 		super(ds);
@@ -62,6 +63,7 @@ public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
 	public List<Shop> getShopByRegion(String regionCode) {
 		Query<Shop> query = this.createQuery();
 		query.filter(Constants.SHOP.REGION_CODE + " =", regionCode);
+		query.filter(Constants.SHOP.STATUS + " =", Status.APPROVED);
 		QueryResults<Shop> result = this.find(query);
 		return ImmutableList.copyOf(result.iterator());
 	}
@@ -118,6 +120,19 @@ public class ShopDaoImpl extends BasicDAO<Shop, ObjectId> implements ShopDao {
 		}
 		updateOperations.set(Constants.SHOP.IMAGESET, shop.getImageSet());
 		this.update(query, updateOperations);
+	}
+
+	@Override
+	public List<Shop> getWaitList(int offset, int limit) {
+		return this.getWaitList(Shop.class, offset, limit);
+	}
+
+	@Override
+	public List<Shop> getShopListByCreatedBy(String createdBy) {
+		Query<Shop> query = this.createQuery();
+		query.filter(Constants.SHOP.CREATED_BY + " =", createdBy);
+		query.order("-" + Constants.SPECIALITY.CREATED_TIME);
+		return Lists.newArrayList(this.find(query));
 	}
 
 }

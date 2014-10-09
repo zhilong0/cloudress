@@ -26,4 +26,5 @@ public interface SpecialityDao {
 
 	Speciality findSpeciality(String regionCode, String specialityName);
 
+	List<Speciality> getWaitList(int offset, int limit);
 }

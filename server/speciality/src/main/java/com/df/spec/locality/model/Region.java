@@ -22,8 +22,6 @@ public class Region implements Serializable {
 
 	private String district;
 
-	private String image;
-
 	Region() {
 	}
 
@@ -64,14 +62,6 @@ public class Region implements Serializable {
 
 	public void setDistrict(String district) {
 		this.district = district;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
 	}
 
 	public String getCode() {

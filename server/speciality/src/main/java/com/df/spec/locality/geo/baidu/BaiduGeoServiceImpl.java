@@ -59,12 +59,15 @@ public class BaiduGeoServiceImpl implements GeoService {
 	public Coordinate lookupCoordinate(String address, Region filter) {
 		String url = GEO_URL + "?address={address}&output=json&ak={ak}&city={city}";
 		String normalizedAddress = address;
-		if (filter.getDistrict() == null && !address.startsWith(filter.getCity())) {
-			normalizedAddress = filter.getCity() + address;
-		} else if (filter.getDistrict() != null && !address.startsWith(filter.getDistrict())) {
-			normalizedAddress = filter.getDistrict() + address;
+		if (filter != null) {
+			if (filter.getDistrict() == null && !address.startsWith(filter.getCity())) {
+				normalizedAddress = filter.getCity() + address;
+			} else if (filter.getDistrict() != null && !address.startsWith(filter.getDistrict())) {
+				normalizedAddress = filter.getDistrict() + address;
+			}
 		}
-		ResponseEntity<BaiduGeoResponse> entity = restTemplate.getForEntity(url, BaiduGeoResponse.class, normalizedAddress, this.ak, filter.getCity());
+		String city = filter == null ? "" : filter.getCity();
+		ResponseEntity<BaiduGeoResponse> entity = restTemplate.getForEntity(url, BaiduGeoResponse.class, normalizedAddress, this.ak, city);
 		if (entity.getStatusCode() == HttpStatus.OK) {
 			BaiduGeoResponse response = entity.getBody();
 			if (response.status == 0) {

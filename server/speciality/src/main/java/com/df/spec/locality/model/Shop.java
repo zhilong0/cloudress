@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity(value = "shops", noClassnameStored = true)
 @Indexes(@Index(value = "name,location.address", unique = true))
-public class Shop implements Serializable {
+public class Shop extends Approvable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,8 @@ public class Shop implements Serializable {
 
 	private String description;
 
-	private String shopOwner;
+	@NotEmpty(message = "{shop.createdBy.NotEmpty}")
+	private String createdBy;
 
 	private float score;
 
@@ -51,7 +52,7 @@ public class Shop implements Serializable {
 
 	private ImageSet imageSet = new ImageSet();
 
-	private Date createTime;
+	private Date createdTime;
 
 	@Embedded
 	private List<Goods> goodsList = new ArrayList<Goods>();
@@ -72,12 +73,12 @@ public class Shop implements Serializable {
 		}
 	}
 
-	public Date getCreateTime() {
-		return createTime;
+	public Date getCreatedTime() {
+		return createdTime;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
 	}
 
 	public void setCode(String shopCode) {
@@ -117,12 +118,12 @@ public class Shop implements Serializable {
 		this.description = description;
 	}
 
-	public String getShopOwner() {
-		return shopOwner;
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setShopOwner(String shopOwner) {
-		this.shopOwner = shopOwner;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	@JsonProperty(value = "rank")

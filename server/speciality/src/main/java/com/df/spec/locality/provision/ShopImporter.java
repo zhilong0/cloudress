@@ -2,6 +2,7 @@ package com.df.spec.locality.provision;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,10 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 
 import com.df.common.provision.AbstractImporterBean;
 import com.df.common.provision.ProvisionContext;
+import com.df.idm.authentication.UserPropertyAuthenticationToken;
+import com.df.idm.model.Permission;
+import com.df.idm.model.Role;
 import com.df.spec.locality.exception.RegionErrorCode;
 import com.df.spec.locality.exception.SpecialityBaseException;
 import com.df.spec.locality.model.Goods;
@@ -26,6 +33,7 @@ import com.df.spec.locality.provision.ShopSource.ShopInfo;
 import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.ShopService;
 import com.df.spec.locality.service.SpecialityService;
+import com.df.spec.locality.service.impl.OperationPermissionEvaluatorImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ShopImporter extends AbstractImporterBean implements ResourceLoaderAware {
@@ -45,6 +53,8 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 	@Autowired
 	private SpecialityService specialityService;
 
+	private String createdBy = "administrator";
+
 	private static final Logger logger = LoggerFactory.getLogger(ShopImporter.class);
 
 	public ShopImporter(int order, String groupName) {
@@ -59,12 +69,26 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 		this.regionService = regionService;
 	}
 
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
 	public void setSpecialityService(SpecialityService specialityService) {
 		this.specialityService = specialityService;
 	}
 
 	public void setResourceNames(List<String> resourceNames) {
 		this.resourceNames = resourceNames;
+	}
+
+	protected Authentication mockAuthentication() {
+		List<Role> roles = new ArrayList<Role>();
+		Role role = new Role("dummy");
+		List<Permission> permissions = new ArrayList<Permission>();
+		permissions.add(new Permission(OperationPermissionEvaluatorImpl.DOMAIN_NAME, OperationPermissionEvaluatorImpl.MASTER_DATA_IMPORT));
+		role.setPermissions(permissions);
+		roles.add(role);
+		return new UserPropertyAuthenticationToken(createdBy, roles);
 	}
 
 	@Override
@@ -89,6 +113,9 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 	}
 
 	protected void importData(ShopSource shopSource) {
+		SecurityContext context = SecurityContextHolder.createEmptyContext();
+		context.setAuthentication(mockAuthentication());
+		SecurityContextHolder.setContext(context);
 		Region reg = shopSource.getRegion();
 		Region region = regionService.findRegion(reg.getProvince(), reg.getCity(), reg.getDistrict());
 		if (region == null) {
@@ -105,7 +132,8 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 				shop.setTelephone(shopInfo.getTelephone());
 				shop.setDescription(shopInfo.getDescription());
 				shop.setBusinessHour(shopInfo.getBusinessHour());
-				shopService.addShop(shop, region.getCode());
+				shop.setCreatedBy(createdBy);
+				shopService.addShop(shop);
 			} else {
 				shop.getLocation().setAddress(shopInfo.getAddress());
 				shop.setDescription(shopInfo.getDescription());

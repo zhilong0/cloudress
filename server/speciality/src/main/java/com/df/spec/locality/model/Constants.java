@@ -26,9 +26,9 @@ public class Constants {
 
 	}
 
-	public static interface SHOP {
+	public static interface SHOP extends APPROVABLE {
 
-		public static final String CODE = "code";
+		public static final String CODE = "_id";
 
 		public static final String NAME = "name";
 
@@ -47,6 +47,10 @@ public class Constants {
 		public static final String TEL = "telephone";
 
 		public static final String CONTACT = "contact";
+
+		public static final String CREATED_BY = "createdBy";
+
+		public static final String CREATED_TIME = "createdTime";
 
 		public static final String BUSINESS_HOUR = "businessHour";
 

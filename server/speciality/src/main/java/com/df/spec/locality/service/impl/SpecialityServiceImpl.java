@@ -127,4 +127,9 @@ public class SpecialityServiceImpl implements SpecialityService {
 		return specialityDao.getSpecialityListByCreatedBy(userCode);
 	}
 
+	@Override
+	public List<Speciality> getWaitList(int offset, int limit) {
+		return specialityDao.getWaitList(offset, limit); 
+	}
+
 }

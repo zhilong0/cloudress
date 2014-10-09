@@ -1,9 +1,9 @@
 package com.df.spec.locality.dao.mongo;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.mapping.Mapper;
@@ -46,25 +46,11 @@ public class BaseDao<T, K> extends BasicDAO<T, K> {
 		return this.update(query, updateOperations).getUpdatedCount();
 	}
 
-	public <AT extends Approvable> boolean approve(AT object, String approver) {
-		Key<AT> key = this.getDs().getMapper().getKey(object);
-		@SuppressWarnings("unchecked")
-		UpdateOperations<AT> updateOperations = (UpdateOperations<AT>) this.getDatastore().createUpdateOperations(object.getClass());
-		updateOperations.set(Constants.APPROVABLE.APPROVED_BY, object.getApprovedBy());
-		updateOperations.set(Constants.SPECIALITY.APPROVED_TIME, object.getApprovedTime());
-		updateOperations.set(Constants.SPECIALITY.STATUS, Status.APPROVED);
-		updateOperations.unset(Constants.SPECIALITY.REJECT_REASON);
-		return this.getDatastore().update(key, updateOperations).getUpdatedExisting();
-	}
-
-	public <AT extends Approvable> boolean reject(AT object, String approver, String rejectReason) {
-		Key<AT> key = this.getDs().getMapper().getKey(object);
-		@SuppressWarnings("unchecked")
-		UpdateOperations<AT> updateOperations = (UpdateOperations<AT>) this.getDatastore().createUpdateOperations(object.getClass());
-		updateOperations.set(Constants.APPROVABLE.APPROVED_BY, object.getApprovedBy());
-		updateOperations.set(Constants.SPECIALITY.APPROVED_TIME, object.getApprovedTime());
-		updateOperations.set(Constants.SPECIALITY.STATUS, Status.REJECTED);
-		updateOperations.set(Constants.SPECIALITY.REJECT_REASON, rejectReason);
-		return this.getDatastore().update(key, updateOperations).getUpdatedExisting();
+	public <AT extends Approvable> List<AT> getWaitList(Class<AT> type, int offset, int limit) {
+		Query<AT> query = this.getDatastore().createQuery(type);
+		query.filter(Constants.APPROVABLE.STATUS, Status.WAIT_FOR_APPROVE);
+		query.offset(offset);
+		query.limit(limit);
+		return query.asList();
 	}
 }

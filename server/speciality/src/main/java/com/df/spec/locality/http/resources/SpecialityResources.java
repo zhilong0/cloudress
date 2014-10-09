@@ -7,11 +7,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.http.ImageDetails;
@@ -25,15 +26,18 @@ import com.df.spec.locality.service.SpecialityService;
 
 @Path("/specialities")
 @Produces("application/json;charset=UTF-8")
-@Component
 public class SpecialityResources {
 
+	@Autowired
 	private SpecialityService specialityService;
 
+	@Autowired
 	private RegionService regionService;
 
+	@Autowired
 	private ApprovableService approvableService;
 
+	@Autowired
 	private ImageLinkCreator imageLinkCreator;
 
 	public void setSpecialityService(SpecialityService specialityService) {
@@ -68,6 +72,19 @@ public class SpecialityResources {
 	public List<Speciality> getMySpecialities() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return specialityService.getMySpecialities(authentication.getName());
+	}
+
+	@GET
+	@Path("/waits")
+	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
+	public List<Speciality> getWaitList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+		if (offset < 0) {
+			offset = 0;
+		}
+		if (limit <= 0) {
+			limit = 20;
+		}
+		return specialityService.getWaitList(offset, limit);
 	}
 
 	@GET
