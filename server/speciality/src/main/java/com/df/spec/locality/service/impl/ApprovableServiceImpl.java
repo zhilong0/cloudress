@@ -58,8 +58,8 @@ public class ApprovableServiceImpl implements ApprovableService {
 		UpdateOperations<Approvable> updateOperations = (UpdateOperations<Approvable>) this.getDatastore().createUpdateOperations(approvable.getClass());
 		updateOperations.set(Constants.APPROVABLE.APPROVED_BY, approvable.getApprovedBy());
 		updateOperations.set(Constants.SPECIALITY.APPROVED_TIME, approvable.getApprovedTime());
-		updateOperations.set(Constants.SPECIALITY.STATUS, Status.APPROVED);
-		updateOperations.unset(Constants.SPECIALITY.REJECT_REASON);
+		updateOperations.set(Constants.SPECIALITY.STATUS, approvable.getStatus());
+		updateOperations.set(Constants.SPECIALITY.REJECT_REASON, approvable.getRejectReason());
 		return this.getDatastore().update(approvable, updateOperations).getUpdatedExisting();
 	}
 
