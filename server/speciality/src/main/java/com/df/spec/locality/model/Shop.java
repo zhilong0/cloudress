@@ -14,6 +14,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.Transient;
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -53,6 +54,11 @@ public class Shop extends Approvable implements Serializable {
 	private ImageSet imageSet = new ImageSet();
 
 	private Date createdTime;
+
+	private Date changedTime;
+
+	@Transient
+	private String image;
 
 	@Embedded
 	private List<Goods> goodsList = new ArrayList<Goods>();
@@ -135,6 +141,7 @@ public class Shop extends Approvable implements Serializable {
 		this.score = score;
 	}
 
+	@JsonProperty(value = "products")
 	public List<Goods> getGoodsList() {
 		return goodsList;
 	}
@@ -169,6 +176,22 @@ public class Shop extends Approvable implements Serializable {
 
 	public void setContact(String contact) {
 		this.contact = contact;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Date getChangedTime() {
+		return changedTime;
+	}
+
+	public void setChangedTime(Date changedTime) {
+		this.changedTime = changedTime;
 	}
 
 	@JsonIgnore

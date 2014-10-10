@@ -85,6 +85,13 @@ public class ShopServiceImpl implements ShopService {
 			newShop.getLocation().setCoordinate(coordiate);
 		}
 		newShop.setCreatedTime(new Date());
+		newShop.setChangedTime(null);
+		if (newShop.getImage() != null) {
+			ImageAttributes imageAttributes = imageService.getImageAttributes(new ImageKey(newShop.getImage()));
+			if (imageAttributes != null) {
+				newShop.getImageSet().addImage(newShop.getImage(), imageAttributes);
+			}
+		}
 		if (permissionEvaluator.canAddShop(newShop.getCreatedBy())) {
 			newShop.approve(newShop.getCreatedBy());
 		} else {

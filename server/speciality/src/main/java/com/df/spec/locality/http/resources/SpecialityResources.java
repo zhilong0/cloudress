@@ -133,6 +133,8 @@ public class SpecialityResources {
 
 	protected void processImageLink(Speciality speciality) {
 		ImageSet imageSet = speciality.getImageSet();
+		// set the image from the first image in the image set
+		speciality.setImage(null);
 		for (ImageDetails image : imageSet.getImages()) {
 			String link = imageLinkCreator.createImageLink(new ImageKey(image.getImageId()), image.getAttributes());
 			if (speciality.getImage() == null) {

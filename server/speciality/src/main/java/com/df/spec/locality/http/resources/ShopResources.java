@@ -183,8 +183,13 @@ public class ShopResources {
 
 	protected void processImageLink(Shop shop) {
 		ImageSet imageSet = shop.getImageSet();
+		// set the image from the first image in the image set
+		shop.setImage(null);
 		for (ImageDetails image : imageSet.getImages()) {
 			String link = imageLinkCreator.createImageLink(new ImageKey(image.getImageId()), image.getAttributes());
+			if (shop.getImage() == null) {
+				shop.setImage(link);
+			}
 			image.setImageLink(link);
 		}
 	}
