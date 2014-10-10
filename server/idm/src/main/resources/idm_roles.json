@@ -6,6 +6,9 @@
 	 	{
 	 		"domain":"SYS",
 	 		"name":"USER_LIST_READ"
+	 	},{
+	 		"domain":"SYS",
+	 		"name":"USER_ACCOUNT_EDIT"
 	 	}
 	 ]
 	}

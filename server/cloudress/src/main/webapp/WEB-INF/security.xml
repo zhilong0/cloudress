@@ -48,14 +48,10 @@
 	</bean>
 	<bean id="EXCEPTION_TRANSLATION_FILTER" class="org.springframework.security.web.access.ExceptionTranslationFilter">
 		<property name="authenticationEntryPoint">
-			<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-				<property name="loginFormUrl" value="/auth/login.html" />
-			</bean>
+			<bean class="com.df.idm.authentication.Http401UnauthorizededEntryPoint" />
 		</property>
 		<property name="accessDeniedHandler">
-			<bean id="accessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
-				<property name="errorPage" value="/auth/accessDenied.html" />
-			</bean>
+			<bean class="org.springframework.security.web.access.AccessDeniedHandlerImpl" />
 		</property>
 	</bean>
 	<bean id="ANONYMOUS_AUTHENTICATION_FILTER" class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
@@ -67,7 +63,7 @@
 		<property name="userManagementService" ref="userManagementService" />
 		<property name="filterProcessesUrl" value="/auth/basic" />
 		<property name="authenticationFailureHandler">
-			<bean id="authenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+			<bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
 				<property name="defaultFailureUrl" value="/auth/login.html" />
 				<property name="useForward" value="true" />
 			</bean>

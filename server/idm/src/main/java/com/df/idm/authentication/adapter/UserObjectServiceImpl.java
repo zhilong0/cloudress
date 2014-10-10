@@ -22,25 +22,6 @@ public class UserObjectServiceImpl implements UserObjectService {
 	}
 
 	@Override
-	public UserObject loadUserByEmail(String emailOrTelehone) {
-		User user = userManagementService.getUserByEmail(emailOrTelehone);
-		if (user == null) {
-			throw new UserNotFoundException(String.format("User with mail %s is not found", emailOrTelehone));
-		}
-		return new UserObject(user);
-	}
-
-	@Override
-	public UserObject loadUserByCellphone(String cellPhone) {
-		User user = userManagementService.getUserByCellphone(cellPhone);
-		if (user == null) {
-			throw new UserNotFoundException(String.format("User with cell phone %s is not found", cellPhone));
-		}
-		return new UserObject(user);
-
-	}
-
-	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 		User user = userManagementService.getUserByCode(userName);
 		if (user == null) {

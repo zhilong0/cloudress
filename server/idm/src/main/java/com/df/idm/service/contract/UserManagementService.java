@@ -39,6 +39,8 @@ public interface UserManagementService {
 
 	void disableUser(String userId);
 
+	void enableUser(String userId);
+
 	void unLockUser(String userId);
 
 	void lockUser(String userId);

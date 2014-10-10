@@ -50,9 +50,9 @@ public interface Constants {
 
 		public static final String LAST_NAME_PROPERTY = "lastName";
 
-		public static final String CREATE_TIME_PROPERTY = "createdTime";
+		public static final String CREATED_TIME_PROPERTY = "createdTime";
 
-		public static final String CHANGE_TIME_PROPERTY = "changeTime";
+		public static final String CHANGED_TIME_PROPERTY = "changedTime";
 
 		public static final String LAST_LOGIN_PROPERTY = "lastLogin";
 

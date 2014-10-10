@@ -1,81 +1,45 @@
 package com.df.idm.authentication.adapter;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.df.idm.model.ExternalUserReference;
-import com.df.idm.model.Role;
 import com.df.idm.model.User;
 
 public class UserObject implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
-	private String userId;
-
-	private String code;
-
-	private String email;
-
-	private String cellphone;
-
-	private ExternalUserReference externalUserReference;
-
-	private boolean isLocked;
-
-	private String password;
-
-	private List<Role> roles;
-
-	private String userName;
+	private User user;
 
 	public UserObject(User user) {
-		this.code = user.getCode();
-		this.email = user.getEmail();
-		this.cellphone = user.getCellphone();
-		this.externalUserReference = user.getExternalUserReference();
-		this.isLocked = user.isLocked();
-		this.password = user.getPassword();
-		this.roles = user.getRoles();
-		this.userId = user.getId();
-		if (user.getFirstName() == null) {
-			if (user.getLastName() != null) {
-				this.userName = user.getLastName();
-			}
-		} else {
-			if (user.getLastName() == null) {
-				this.userName = user.getFirstName();
-			} else {
-				this.userName = user.getFirstName() + user.getLastName();
-			}
-		}
+		this.user = user;
 	}
 
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return roles;
+		return user.getRoles();
 	}
 
 	public String getPassword() {
-		return this.password;
+		return user.getPassword();
 	}
 
 	public String getEmail() {
-		return this.email;
+		return user.getEmail();
 	}
 
 	public String getCellphone() {
-		return this.cellphone;
+		return user.getCellphone();
 	}
 
 	public String getCode() {
-		return code;
+		return user.getCode();
 	}
 
 	public ExternalUserReference getExternalUserReference() {
-		return externalUserReference;
+		return user.getExternalUserReference();
 	}
 
 	public boolean isAccountNonExpired() {
@@ -83,7 +47,7 @@ public class UserObject implements UserDetails {
 	}
 
 	public boolean isAccountNonLocked() {
-		return !this.isLocked;
+		return !user.isLocked();
 	}
 
 	public boolean isCredentialsNonExpired() {
@@ -91,19 +55,27 @@ public class UserObject implements UserDetails {
 	}
 
 	public boolean isEnabled() {
-		return true;
+		return !user.isDisabled();
 	}
 
 	public String getUsername() {
-		return this.userName;
+		return user.getCode();
 	}
 
 	public String getUserId() {
-		return this.userId;
+		return user.getId();
 	}
 
 	public UserObject eraseCredential() {
-		this.password = null;
+		user.cleanPassword();
 		return this;
+	}
+
+	public String getFirstName() {
+		return user.getFirstName();
+	}
+
+	public String getLastName() {
+		return user.getLastName();
 	}
 }

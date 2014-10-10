@@ -116,10 +116,10 @@ public class CampaignResources {
 				UserProfile user = new UserProfile();
 				user.setCode(details.getCode());
 				user.setCellPhone(details.getCellphone());
-				if (details.getUsername() == null) {
+				if (details.getFirstName() == null || details.getLastName() == null) {
 					user.setRealName(details.getCode());
 				} else {
-					user.setRealName(details.getUsername());
+					user.setRealName(details.getFirstName() + details.getLastName());
 				}
 				return user;
 			} else {

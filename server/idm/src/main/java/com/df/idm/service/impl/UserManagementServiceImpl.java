@@ -240,7 +240,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 	@Override
 	public void disableUser(String userId) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_DISABLED_PROPERTY, true);
-		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGE_TIME_PROPERTY, new Date());
+		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
 		int updated = userDao.updateUserProperties(userId, p1, p2);
 		if (updated == 0) {
 			throw UserException.userIdNotFound(userId);
@@ -270,7 +270,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 	@Override
 	public void unLockUser(String userId) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_LOCKED_PROPERTY, false);
-		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGE_TIME_PROPERTY, new Date());
+		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
 		int updated = userDao.updateUserProperties(userId, p1, p2);
 		if (updated == 0) {
 			throw UserException.userIdNotFound(userId);
@@ -280,7 +280,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 	@Override
 	public void lockUser(String userId) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_LOCKED_PROPERTY, true);
-		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGE_TIME_PROPERTY, new Date());
+		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
 		int updated = userDao.updateUserProperties(userId, p1, p2);
 		if (updated == 0) {
 			throw UserException.userIdNotFound(userId);
@@ -305,5 +305,15 @@ public class UserManagementServiceImpl implements UserManagementService {
 		User newUser = User.newUserByCellphone(cellphone, null);
 		String token = registrationVerifier.generateCellphoneRegistrationToken(newUser);
 		messageNotifier.sendVerificationShortMessage(newUser, token);
+	}
+
+	@Override
+	public void enableUser(String userId) {
+		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_DISABLED_PROPERTY, false);
+		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
+		int updated = userDao.updateUserProperties(userId, p1, p2);
+		if (updated == 0) {
+			throw UserException.userIdNotFound(userId);
+		}
 	}
 }

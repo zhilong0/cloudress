@@ -1,2 +1,3 @@
 domain,name,description
 SYS,USER_LIST_READ,读取用户列表
+SYS,USER_ACCOUNT_EDIT,用户管理

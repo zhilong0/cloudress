@@ -76,7 +76,7 @@ public class SpecialityResources {
 
 	@GET
 	@Path("/to_be_approved")
-	@PreAuthorize("hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public List<Speciality> getWaitList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
 		if (offset < 0) {
 			offset = 0;
@@ -84,7 +84,11 @@ public class SpecialityResources {
 		if (limit <= 0) {
 			limit = 20;
 		}
-		return specialityService.getWaitList(offset, limit);
+		List<Speciality> specialities = specialityService.getWaitList(offset, limit);
+		for (Speciality speciality : specialities) {
+			processImageLink(speciality);
+		}
+		return specialities;
 	}
 
 	@GET
@@ -110,7 +114,7 @@ public class SpecialityResources {
 
 	@POST
 	@Path("/{specialityCode}/reject")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_APPROVAL') ")
 	public boolean rejectSpeciality(@PathParam("specialityCode") String specialityCode, String rejectReason) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Speciality speciality = specialityService.getSpecialityByCode(specialityCode, true);
@@ -119,7 +123,7 @@ public class SpecialityResources {
 
 	@POST
 	@Path("/{specialityCode}/approve")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean approveSpeciality(@PathParam("specialityCode") String specialityCode) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Speciality speciality = specialityService.getSpecialityByCode(specialityCode, true);

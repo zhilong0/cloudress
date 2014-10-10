@@ -25,7 +25,7 @@ public abstract class UserObjectAuthenticationProvider implements Authentication
 
 	private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
-	private UserObjectChecker preAuthenticationChecks;
+	private UserObjectChecker preAuthenticationChecks = new AccountStatusUserObjectChecker();
 
 	private UserObjectChecker postAuthenticationChecks;
 

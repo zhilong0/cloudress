@@ -138,6 +138,34 @@ public class UserResources {
 		return updatedUser;
 	}
 
+	@POST
+	@Path("/id/{userId}/unlock")
+	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
+	public void unlock(@PathParam("userId") String userId) {
+		userManagementService.unLockUser(userId);
+	}
+
+	@POST
+	@Path("/id/{userId}/lock")
+	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
+	public void lock(@PathParam("userId") String userId) {
+		userManagementService.lockUser(userId);
+	}
+
+	@POST
+	@Path("/id/{userId}/disable")
+	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
+	public void disable(@PathParam("userId") String userId) {
+		userManagementService.disableUser(userId);
+	}
+
+	@POST
+	@Path("/id/{userId}/enable")
+	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
+	public void enable(@PathParam("userId") String userId) {
+		userManagementService.enableUser(userId);
+	}
+
 	@GET
 	@Path("/")
 	public User getCurrentUser() {
