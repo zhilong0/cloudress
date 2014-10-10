@@ -109,6 +109,7 @@ public class SpecialityResources {
 		String regionCode = speciality.getRegionCode();
 		Region region = regionService.getRegionByCode(regionCode, true);
 		specialityService.addSpeciality(speciality, region);
+		processImageLink(speciality);
 		return speciality;
 	}
 
