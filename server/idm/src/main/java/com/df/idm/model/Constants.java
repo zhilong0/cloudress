@@ -14,7 +14,7 @@ public interface Constants {
 
 	public static interface ROLE {
 
-		public static final String NAME_PROPERTY = "_id";
+		public static final String NAME_PROPERTY = "name";
 
 		public static final String PERMISSIONS_PROPERTY = "permissions";
 
