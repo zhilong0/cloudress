@@ -1,0 +1,24 @@
+[
+	{
+	 "name":"ADMIN",
+	 "description":"系统管理员",
+	 "permissions":[
+	 	{
+	 		"domain":"SYS",
+	 		"name":"USER_LIST_READ"
+	 	},{
+	 		"domain":"SYS",
+	 		"name":"USER_ACCOUNT_EDIT"
+	 	},{
+	 		"domain":"SPECIALITY",
+	 		"name":"MASTER_DATA_IMPORT"
+	 	},{
+	 		"domain":"SPECIALITY",
+	 		"name":"MASTER_DATA_EDIT"
+	 	},{
+	 		"domain":"SPECIALITY",
+	 		"name":"MASTER_DATA_APPROVAL"
+	 	}
+	 ]
+	}
+]

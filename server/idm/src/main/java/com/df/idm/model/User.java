@@ -45,7 +45,7 @@ public class User implements Serializable {
 
 	@Size(message = "{user.cellPhone.Size}", max = 20)
 	@NotEmpty(message = "{user.cellPhone.NotEmpty}", groups = { CreateUserByCellPhone.class })
-	@Indexed(name = "user_cellphone_idx")
+	@Indexed(name = "user_cellphone_idx", unique = true, sparse = true)
 	private String cellphone;
 
 	private String imageId;
@@ -55,7 +55,7 @@ public class User implements Serializable {
 	@Email(message = "{user.email.Email}")
 	@NotEmpty(message = "{user.email.NotEmpty}", groups = { CreateUserByEmail.class })
 	@Size(message = "{user.email.Size}", max = 128)
-	@Indexed(name = "user_email_idx")
+	@Indexed(name = "user_email_idx", unique = true, sparse = true)
 	private String email;
 
 	@NotEmpty(message = "{user.code.NotEmpty}")
@@ -77,7 +77,7 @@ public class User implements Serializable {
 
 	private boolean isDisabled;
 
-	@Reference(value = "roles", idOnly = true, ignoreMissing =true)
+	@Reference(value = "roles", idOnly = true, ignoreMissing = true)
 	private List<Role> roles = new ArrayList<Role>();
 
 	@Embedded

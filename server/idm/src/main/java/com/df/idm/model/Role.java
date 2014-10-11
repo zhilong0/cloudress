@@ -3,7 +3,6 @@ package com.df.idm.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
@@ -16,9 +15,6 @@ public class Role implements GrantedAuthority {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	ObjectId id;
-
-	@Indexed(name = "role_name_idx", unique = true)
 	private String name;
 
 	private String description;

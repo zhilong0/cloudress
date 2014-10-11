@@ -144,7 +144,7 @@ public class ShopResources {
 
 	@POST
 	@Path("/{shopCode}/reject")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean rejectShop(@PathParam("shopCode") String shopCode, String rejectReason) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Shop shop = shopService.getShopByCode(shopCode, true);
@@ -153,7 +153,7 @@ public class ShopResources {
 
 	@POST
 	@Path("/{shopCode}/approve")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean approveShop(@PathParam("shopCode") String shopCode) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Shop shop = shopService.getShopByCode(shopCode, true);

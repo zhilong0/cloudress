@@ -14,9 +14,7 @@ public interface Constants {
 
 	public static interface ROLE {
 
-		public static final String ID_PROPERTY = "_id";
-
-		public static final String NAME_PROPERTY = "name";
+		public static final String NAME_PROPERTY = "_id";
 
 		public static final String PERMISSIONS_PROPERTY = "permissions";
 
@@ -32,7 +30,7 @@ public interface Constants {
 
 		public static final String CODE_PROPERTY = "code";
 
-		public static final String NICK_NAME_PROPERTY = "code";
+		public static final String NICK_NAME_PROPERTY = "nickName";
 
 		public static final String CELL_PHONE_PROPERTY = "cellphone";
 

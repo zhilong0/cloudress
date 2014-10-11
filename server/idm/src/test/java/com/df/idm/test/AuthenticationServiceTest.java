@@ -47,27 +47,6 @@ public class AuthenticationServiceTest extends IdmBaseTest {
 	}
 
 	@Test
-	public void testAuthenticationProviderWithCellphoneAccount() {
-		String cellphone = "13974845501";
-		String password = "Oba.2247d";
-		User newUser = User.newUserByCellphone(cellphone, password);
-		try {
-			userDao.insertUser(newUser);
-			UserPropertyAuthenticationToken authToken = new UserPropertyAuthenticationToken(cellphone, password);
-			Authentication authentication = authProvider.authenticate(authToken);
-			TestCase.assertTrue(authentication instanceof UserPropertyAuthenticationToken);
-			UserPropertyAuthenticationToken token = (UserPropertyAuthenticationToken) authentication;
-			TestCase.assertEquals(token.getDetails().getClass(), UserObject.class);
-			UserObject userObject = (UserObject) token.getDetails();
-			TestCase.assertEquals(userObject.getCellphone(), cellphone);
-		} finally {
-			if (newUser != null && newUser.getId() != null) {
-				userDao.deleteUserById(newUser.getId());
-			}
-		}
-	}
-
-	@Test
 	public void testAuthenticationProviderWithIncorrectAccount() {
 		String code = "sala223";
 		String password = "Oba.2247d";
