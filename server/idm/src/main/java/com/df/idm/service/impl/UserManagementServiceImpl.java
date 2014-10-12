@@ -238,12 +238,12 @@ public class UserManagementServiceImpl implements UserManagementService {
 	}
 
 	@Override
-	public void disableUser(String userId) {
+	public void disableUser(String userCode) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_DISABLED_PROPERTY, true);
 		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
-		int updated = userDao.updateUserProperties(userId, p1, p2);
+		int updated = userDao.updateUserProperties(userCode, p1, p2);
 		if (updated == 0) {
-			throw UserException.userIdNotFound(userId);
+			throw UserException.userCodeNotFound(userCode);
 		}
 	}
 
@@ -262,36 +262,36 @@ public class UserManagementServiceImpl implements UserManagementService {
 			return found;
 		}
 		found.setEmailVerified(true);
-		userDao.updateUserProperties(found.getId(), new Property<Boolean>(Constants.USER.IS_EMAIL_VERIFIED_PROPERTY, true));
+		userDao.updateUserProperties(found.getCode(), new Property<Boolean>(Constants.USER.IS_EMAIL_VERIFIED_PROPERTY, true));
 		found.cleanPassword();
 		return found;
 	}
 
 	@Override
-	public void unLockUser(String userId) {
+	public void unLockUser(String userCode) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_LOCKED_PROPERTY, false);
 		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
-		int updated = userDao.updateUserProperties(userId, p1, p2);
+		int updated = userDao.updateUserProperties(userCode, p1, p2);
 		if (updated == 0) {
-			throw UserException.userIdNotFound(userId);
+			throw UserException.userCodeNotFound(userCode);
 		}
 	}
 
 	@Override
-	public void lockUser(String userId) {
+	public void lockUser(String userCode) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_LOCKED_PROPERTY, true);
 		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
-		int updated = userDao.updateUserProperties(userId, p1, p2);
+		int updated = userDao.updateUserProperties(userCode, p1, p2);
 		if (updated == 0) {
-			throw UserException.userIdNotFound(userId);
+			throw UserException.userCodeNotFound(userCode);
 		}
 	}
 
 	@Override
-	public void updateUserLastLogin(String userId, Date lastLoginDate) {
-		int updated = userDao.updateUserProperties(userId, new Property<Date>(Constants.USER.LAST_LOGIN_PROPERTY, lastLoginDate));
+	public void updateUserLastLogin(String userCode, Date lastLoginDate) {
+		int updated = userDao.updateUserProperties(userCode, new Property<Date>(Constants.USER.LAST_LOGIN_PROPERTY, lastLoginDate));
 		if (updated == 0) {
-			throw UserException.userIdNotFound(userId);
+			throw UserException.userCodeNotFound(userCode);
 		}
 	}
 
@@ -308,12 +308,12 @@ public class UserManagementServiceImpl implements UserManagementService {
 	}
 
 	@Override
-	public void enableUser(String userId) {
+	public void enableUser(String userCode) {
 		Property<Boolean> p1 = new Property<Boolean>(Constants.USER.IS_DISABLED_PROPERTY, false);
 		Property<Date> p2 = new Property<Date>(Constants.USER.CHANGED_TIME_PROPERTY, new Date());
-		int updated = userDao.updateUserProperties(userId, p1, p2);
+		int updated = userDao.updateUserProperties(userCode, p1, p2);
 		if (updated == 0) {
-			throw UserException.userIdNotFound(userId);
+			throw UserException.userCodeNotFound(userCode);
 		}
 	}
 }

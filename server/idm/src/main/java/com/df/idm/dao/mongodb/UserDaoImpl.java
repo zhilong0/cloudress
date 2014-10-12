@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
@@ -79,7 +78,9 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 	}
 
 	@Override
-	public int updateUserProperties(String userId, Property<?>... properties) {
+	public int updateUserProperties(String userCode, Property<?>... properties) {
+		Query<User> query = this.createQuery();
+		query.filter(Constants.USER.CODE_PROPERTY, userCode);
 		if (properties == null || properties.length == 0) {
 			return 0;
 		}
@@ -87,7 +88,7 @@ public class UserDaoImpl extends BasicDAO<User, ObjectId> implements UserDao {
 		for (Property<?> p : properties) {
 			ops.set(p.getName(), p.getValue());
 		}
-		return this.getDatastore().update(new Key<User>(User.class, new ObjectId(userId)), ops).getUpdatedCount();
+		return this.getDatastore().update(query, ops).getUpdatedCount();
 	}
 
 	@Override

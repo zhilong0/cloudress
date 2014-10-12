@@ -10,6 +10,8 @@ import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Reference;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity(value = "roles", noClassnameStored = true)
 public class Role implements GrantedAuthority {
 
@@ -63,6 +65,7 @@ public class Role implements GrantedAuthority {
 	}
 
 	@Override
+	@JsonIgnore
 	public String getAuthority() {
 		return this.getName();
 	}

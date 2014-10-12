@@ -16,7 +16,12 @@
 	</bean>
 	<bean id="secureChannelProcessor" class="org.springframework.security.web.access.channel.SecureChannelProcessor" />
 	<bean id="insecureChannelProcessor" class="org.springframework.security.web.access.channel.InsecureChannelProcessor" />
+	<bean id="successAuthenticationListener" class="com.df.idm.authentication.UserSuccessAuthenticationListener">
+		<constructor-arg index="0" ref="userManagementService" />
+	</bean>
+	<bean id="authenticationEventPublisher" class="org.springframework.security.authentication.DefaultAuthenticationEventPublisher" />
 	<bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="authenticationEventPublisher" ref="authenticationEventPublisher" />
 		<property name="providers">
 			<list>
 				<ref bean="basicAuthenticationProvider" />
@@ -60,7 +65,6 @@
 	</bean>
 	<bean id="ANTHENTICATION_FILTER" class="com.df.idm.authentication.http.filter.UserPropertyAuthenticationFilter">
 		<property name="authenticationManager" ref="authenticationManager" />
-		<property name="userManagementService" ref="userManagementService" />
 		<property name="filterProcessesUrl" value="/auth/basic" />
 		<property name="authenticationFailureHandler">
 			<bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">

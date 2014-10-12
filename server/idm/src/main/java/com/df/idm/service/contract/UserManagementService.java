@@ -37,15 +37,15 @@ public interface UserManagementService {
 
 	User getUserByCellphone(String cellphone);
 
-	void disableUser(String userId);
+	void disableUser(String userCode);
 
-	void enableUser(String userId);
+	void enableUser(String userCode);
 
-	void unLockUser(String userId);
+	void unLockUser(String userCode);
 
-	void lockUser(String userId);
+	void lockUser(String userCode);
 
-	void updateUserLastLogin(String userId, Date lastLoginDate);
+	void updateUserLastLogin(String userCode, Date lastLoginDate);
 
 	List<User> getUserList(int offset, int limit);
 

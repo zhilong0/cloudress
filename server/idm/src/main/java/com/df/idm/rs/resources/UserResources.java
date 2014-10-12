@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -139,31 +138,31 @@ public class UserResources {
 	}
 
 	@POST
-	@Path("/id/{userId}/unlock")
+	@Path("/code/{userCode}/unlock")
 	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
-	public void unlock(@PathParam("userId") String userId) {
-		userManagementService.unLockUser(userId);
+	public void unlock(@PathParam("userCode") String userCode) {
+		userManagementService.unLockUser(userCode);
 	}
 
 	@POST
-	@Path("/id/{userId}/lock")
+	@Path("/code/{userCode}/lock")
 	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
-	public void lock(@PathParam("userId") String userId) {
-		userManagementService.lockUser(userId);
+	public void lock(@PathParam("userCode") String userCode) {
+		userManagementService.lockUser(userCode);
 	}
 
 	@POST
-	@Path("/id/{userId}/disable")
+	@Path("/code/{userCode}/disable")
 	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
-	public void disable(@PathParam("userId") String userId) {
-		userManagementService.disableUser(userId);
+	public void disable(@PathParam("userCode") String userCode) {
+		userManagementService.disableUser(userCode);
 	}
 
 	@POST
-	@Path("/id/{userId}/enable")
+	@Path("/code/{userCode}/enable")
 	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
-	public void enable(@PathParam("userId") String userId) {
-		userManagementService.enableUser(userId);
+	public void enable(@PathParam("userCode") String userCode) {
+		userManagementService.enableUser(userCode);
 	}
 
 	@GET
@@ -207,12 +206,6 @@ public class UserResources {
 			return found;
 		}
 		throw UserException.userIdNotFound(userId);
-	}
-
-	@DELETE
-	@Path("/id/{id}")
-	public void disableUserById(@PathParam("id") String userId) {
-		userManagementService.disableUser(userId);
 	}
 
 	@GET
