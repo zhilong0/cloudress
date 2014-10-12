@@ -78,7 +78,7 @@ public class PermissionImporter extends AbstractImporterBean implements Resource
 				if (!modelRepository.hasPermission(permission)) {
 					modelRepository.addPermission(permission);
 				} else {
-					logger.debug("permission {} already exist, update description");
+					logger.debug("permission {} already exist, update description", permission);
 					modelRepository.updatePermissionDescription(permission);
 				}
 			}
