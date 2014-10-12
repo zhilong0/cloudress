@@ -110,7 +110,6 @@
 		<constructor-arg index="0" value="3" />
 		<constructor-arg index="1" value="idm" />
 		<constructor-arg index="2" ref="objectMapper" />
-		<constructor-arg index="3" ref="userManagementService" />
 		<property name="resourceNames">
 			<list value-type="java.lang.String">
 				<value>classpath:idm_users.json</value>

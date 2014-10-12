@@ -3,6 +3,7 @@ package com.df.idm.model;
 public interface Constants {
 
 	public static interface PERMISSION {
+
 		public static final String ID_PROPERTY = "_id";
 
 		public static final String DOMAIN_PROPERTY = "domain";

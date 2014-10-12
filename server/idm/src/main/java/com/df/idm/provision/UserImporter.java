@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -22,15 +23,15 @@ public class UserImporter extends AbstractImporterBean implements ResourceLoader
 
 	private ResourceLoader resourceLoader;
 
+	@Autowired
 	private UserManagementService userManagementService;
 
 	private ObjectMapper objectMapper;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserImporter.class);
 
-	public UserImporter(int order, String groupName, ObjectMapper objectMapper, UserManagementService userManagementService) {
+	public UserImporter(int order, String groupName, ObjectMapper objectMapper) {
 		super(order, groupName);
-		this.userManagementService = userManagementService;
 		this.objectMapper = objectMapper;
 	}
 
@@ -65,11 +66,11 @@ public class UserImporter extends AbstractImporterBean implements ResourceLoader
 				User found = userManagementService.getUserByCode(user.getCode());
 				if (found == null) {
 					if (StringUtils.isValidEmail(code)) {
-						userManagementService.createUserByEmail(code, user.getPassword());
+						found = userManagementService.createUserByEmail(code, user.getPassword());
 					} else if (StringUtils.isValidCellPhone(code)) {
 						continue;
 					} else {
-						userManagementService.createUserByCode(code, user.getPassword());
+						found = userManagementService.createUserByCode(code, user.getPassword());
 					}
 				} else {
 					found = userManagementService.updateUser(user);
