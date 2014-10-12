@@ -1,11 +1,10 @@
 sourceSets {
     test {
         resources {
-            srcDir 'src/test/resources'
+            srcDirs 'src/test/resources','artifacts'
         }
     }
 }
-
 
 dependencies {
 	compile project(':common')

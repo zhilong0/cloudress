@@ -1,8 +1,5 @@
 {
-	"region": {
-		"province": "上海市",
-		"city": "上海市"
-	},
+	"regionCode":"sh",
 	"imageBaseUri": "classpath:sh/speciality/images/",
 	"specialities": [{
 		"images": ["pic0.jpg"],

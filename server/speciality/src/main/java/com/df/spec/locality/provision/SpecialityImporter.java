@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -20,8 +21,6 @@ import com.df.common.provision.ProvisionContext;
 import com.df.idm.authentication.UserPropertyAuthenticationToken;
 import com.df.idm.model.Permission;
 import com.df.idm.model.Role;
-import com.df.spec.locality.exception.RegionErrorCode;
-import com.df.spec.locality.exception.SpecialityBaseException;
 import com.df.spec.locality.model.ImageSet;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Speciality;
@@ -31,7 +30,7 @@ import com.df.spec.locality.service.SpecialityService;
 import com.df.spec.locality.service.impl.OperationPermissionEvaluatorImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SpecialityImporter extends AbstractImporterBean implements ResourceLoaderAware {
+public class SpecialityImporter extends AbstractImporterBean implements InitializingBean, ResourceLoaderAware {
 
 	@Autowired
 	private SpecialityService specialityService;
@@ -75,16 +74,17 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 
 	@Override
 	public void execute(ProvisionContext context) throws Exception {
-		Assert.notNull(regionService);
-		Assert.notNull(specialityService);
-		Assert.notNull(objectMapper);
 		if (resourceNames == null || resourceNames.size() == 0) {
 			return;
 		}
 		for (String resourceName : resourceNames) {
-			Resource resource = resourceLoader.getResource(resourceName);
-			SpecialitySource source = objectMapper.readValue(resource.getInputStream(), SpecialitySource.class);
-			this.importData(source);
+			try {
+				Resource resource = resourceLoader.getResource(resourceName);
+				SpecialitySource source = objectMapper.readValue(resource.getInputStream(), SpecialitySource.class);
+				this.importData(source);
+			} catch (Throwable ex) {
+				logger.error("Failed to import speciality from resource " + resourceName, ex);
+			}
 		}
 	}
 
@@ -101,48 +101,44 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 	protected void importData(SpecialitySource source) {
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 		context.setAuthentication(mockAuthentication());
-		SecurityContextHolder.setContext(context); 
-		Region region = source.getRegion();
-		Region found = regionService.findRegion(region.getProvince(), region.getCity(), region.getDistrict());
-		if (found == null) {
-			throw new SpecialityBaseException(RegionErrorCode.REGION_NOT_FOUND_ERROR, "region %s is not found", region);
-		} else {
-			String imageBaseUri = source.getImageBaseUri();
-			List<SpecialityInfo> specialities = source.getSpecialities();
-			for (SpecialityInfo speciality : specialities) {
-				Speciality spec = specialityService.findSpeciality(found.getCode(), speciality.getName());
-				if (spec == null) {
-					spec = new Speciality();
-					spec.setName(speciality.getName());
-					spec.setDescription(speciality.getDescription());
-					spec.setRank(speciality.getRank());
-					spec.setStartMonth(speciality.getStartMonth());
-					spec.setEndMonth(speciality.getEndMonth());
-					spec.setCreatedBy(createdBy);
-					specialityService.addSpeciality(spec, found);
-				} else {
-					logger.info("speciality {} in region {} already exist,update it", spec.getName(), found);
-					spec.setDescription(speciality.getDescription());
-					spec.setRank(speciality.getRank());
-					spec.setStartMonth(speciality.getStartMonth());
-					spec.setEndMonth(speciality.getEndMonth());
-					specialityService.update(spec);
-				}
+		SecurityContextHolder.setContext(context);
+		Region found = regionService.getRegionByCode(source.getRegionCode(), true);
 
-				String[] images = speciality.getImages();
-				ImageSet imageSet = spec.getImageSet();
-				for (String image : images) {
-					try {
-						ImageSource imageSource = new ImageSource(imageBaseUri, image);
-						String imageName = imageSource.getImageName();
-						if (imageSet.hasImageWithName(imageName)) {
-							continue;
-						}
-						specialityService.uploadSpecialityImage(spec.getCode(), imageSource.readToBytes(), imageName);
-					} catch (IOException ex) {
-						String msg = "Cannot import image %s for speciality %s";
-						logger.warn(String.format(msg, image, spec.getName()), ex);
+		String imageBaseUri = source.getImageBaseUri();
+		List<SpecialityInfo> specialities = source.getSpecialities();
+		for (SpecialityInfo speciality : specialities) {
+			Speciality spec = specialityService.findSpeciality(found.getCode(), speciality.getName());
+			if (spec == null) {
+				spec = new Speciality();
+				spec.setName(speciality.getName());
+				spec.setDescription(speciality.getDescription());
+				spec.setRank(speciality.getRank());
+				spec.setStartMonth(speciality.getStartMonth());
+				spec.setEndMonth(speciality.getEndMonth());
+				spec.setCreatedBy(createdBy);
+				specialityService.addSpeciality(spec, found);
+			} else {
+				logger.info("speciality {} in region {} already exist,update it", spec.getName(), found);
+				spec.setDescription(speciality.getDescription());
+				spec.setRank(speciality.getRank());
+				spec.setStartMonth(speciality.getStartMonth());
+				spec.setEndMonth(speciality.getEndMonth());
+				specialityService.update(spec);
+			}
+
+			String[] images = speciality.getImages();
+			ImageSet imageSet = spec.getImageSet();
+			for (String image : images) {
+				try {
+					ImageSource imageSource = new ImageSource(imageBaseUri, image);
+					String imageName = imageSource.getImageName();
+					if (imageSet.hasImageWithName(imageName)) {
+						continue;
 					}
+					specialityService.uploadSpecialityImage(spec.getCode(), imageSource.readToBytes(), imageName);
+				} catch (IOException ex) {
+					String msg = "Cannot import image %s for speciality %s";
+					logger.warn(String.format(msg, image, spec.getName()), ex);
 				}
 			}
 		}
@@ -151,6 +147,14 @@ public class SpecialityImporter extends AbstractImporterBean implements Resource
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.notNull(regionService, "regionServie must be set");
+		Assert.notNull(specialityService, "specialityService must be set");
+		Assert.notNull(objectMapper, "objectMapper must be set");
+		Assert.notNull(resourceLoader, "resourceLoader must be set");
 	}
 
 }

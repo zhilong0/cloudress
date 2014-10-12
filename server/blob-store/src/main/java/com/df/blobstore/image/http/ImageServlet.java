@@ -75,7 +75,7 @@ public abstract class ImageServlet extends HttpServlet {
 				int width = this.getImageWidth(req);
 				int heigth = this.getImageHeigth(req);
 				Image image = null;
-				if (width <= 0 || heigth <= 0) {
+				if (width <= 0 || heigth < 0) {
 					image = imageService.fetchImage(imageKey);
 				} else {
 					image = imageService.fetchImage(imageKey, width, heigth);

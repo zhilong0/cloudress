@@ -2,26 +2,6 @@ apply plugin: 'war'
 
 webAppDirName = "src/main/webapp"
 
-configurations {
-}
-
-eclipse{
-    classpath{
-		file {
-			withXml {
-                def node = it.asNode()
-                node.appendNode('classpathentry', [kind: 'lib', path: '/speciality/artifacts', exported: true])
-            }
-		}
-	}
-	wtp {
-	 	facet {
-    	 	facet name:'jst.web', version:'3.0'
-         	facet name:'java', version:'1.6'
-		}
-	}
-}
-
 dependencies {
 	compile project(':common')
 	compile project(':idm')
@@ -37,7 +17,19 @@ dependencies {
 	compile "org.jboss.resteasy:resteasy-jackson2-provider:3.0.8.Final"
 }
 
+eclipse{
+	wtp {
+	 	facet {
+    	 	facet name:'jst.web', version:'3.0'
+         	facet name:'java', version:'1.6'
+		}
+	}
+}
+
 war {
+    classpath = classpath.filter { File file -> 
+		!file.name.startsWith('javax.servlet-api') || !file.name.startsWith('javax.el-api')  
+	} 
 	def demoArtifacts = new File(project(':speciality').libsDir,"speciality_artifacts-"+version+".jar")
 	classpath demoArtifacts
 }

@@ -3,22 +3,20 @@ package com.df.spec.locality.provision;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.df.spec.locality.model.Region;
-
 public class SpecialitySource {
 
-	private Region region;
+	private String regionCode;
 
 	private String imageBaseUri;
 
 	private List<SpecialityInfo> specialities = new ArrayList<SpecialityInfo>();
 
-	public Region getRegion() {
-		return region;
+	public String getRegionCode() {
+		return regionCode;
 	}
 
-	public void setRegion(Region region) {
-		this.region = region;
+	public void setRegionCode(String regionCode) {
+		this.regionCode = regionCode;
 	}
 
 	public String getImageBaseUri() {
