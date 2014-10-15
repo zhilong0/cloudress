@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:sec="http://www.springframework.org/schema/security"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security.xsd">
 	<sec:debug />
@@ -79,8 +81,6 @@
 		</property>
 		<property name="rememberMeServices" ref="rememberMeServices" />
 	</bean>
-
-
 	<bean id="LOCALE_CONTEXT_FILTER" class="com.df.http.filter.LocaleContextHolderFilter">
 		<property name="localeResolver">
 			<bean class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
@@ -127,6 +127,34 @@
 			</bean>
 		</property>
 	</bean>
+	<bean id="sinaOAuthClientContext" scope="session" class="org.springframework.security.oauth2.client.DefaultOAuth2ClientContext">
+		<constructor-arg index="0" ref="accessTokenRequest" />
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="accessTokenRequest" scope="request" class="org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest">
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="sinaOAuthResource" class="org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails">
+		<property name="clientId" value="1318036310" />
+		<property name="clientSecret" value="1bd12cbd47c392ebf8e49fbe88782d1a" />
+		<property name="accessTokenUri" value="https://api.weibo.com/oauth2/access_token" />
+		<property name="userAuthorizationUri" value="https://open.weibo.cn/oauth2/authorize" />
+		<property name="grantType" value="authorization_code" />
+		<property name="clientAuthenticationScheme" value="query" />
+		<property name="preEstablishedRedirectUri" value="http://www.longertec.com/cloudress/sina/oauth2" />
+	</bean>
+	<bean id="OAUTH2_CLIENT_CONTEXT_FILTER" class="org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter" />
+	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.DefaultOAuth2ClientAuthenticationFilter">
+		<constructor-arg index="0" value="/sina/oauth2" />
+		<property name="userManagementService" ref="userManagementService" />
+		<property name="resourceInterface">
+			<bean class="com.df.idm.authentication.oauth2.sina.SinaOAuth2ResourceInterface">
+				<constructor-arg index="0" ref="sinaOAuthResource" />
+				<constructor-arg index="1" ref="sinaOAuthClientContext" />
+				<property name="userDetailsUri" value="https://api.weibo.com/2/users/show.json"/>
+			</bean>
+		</property>
+	</bean>
 	<sec:filter-security-metadata-source id="securityInterceptorMetadataSource"
 		use-expressions="true">
 		<sec:intercept-url pattern="/rs/users" method="POST" access="permitAll" />
@@ -149,8 +177,10 @@
 			<sec:filter-chain pattern="/image/**" filters="none" />
 			<sec:filter-chain pattern="/**/*.js" filters="none" />
 			<sec:filter-chain pattern="/**/*.css" filters="none" />
+			<sec:filter-chain pattern="/sina/oauth2"
+				filters="SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,OAUTH2_CLIENT_CONTEXT_FILTER,SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" />
 			<sec:filter-chain pattern="/rs/auth/**"
-				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,LOGOUT_FILTER,ANTHENTICATION_FILTER" />
+				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,LOGOUT_FILTER" />
 			<sec:filter-chain pattern="/rs/**"
 				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER, REMEMBER_ME_FILTER, ANONYMOUS_AUTHENTICATION_FILTER,FILTER_SECURITY_INTERCEPTOR, EXCEPTION_TRANSLATION_FILTER" />
 		</sec:filter-chain-map>

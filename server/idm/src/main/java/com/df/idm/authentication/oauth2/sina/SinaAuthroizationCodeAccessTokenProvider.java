@@ -1,6 +1,7 @@
 package com.df.idm.authentication.oauth2.sina;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,10 +17,14 @@ import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 
 public class SinaAuthroizationCodeAccessTokenProvider extends AuthorizationCodeAccessTokenProvider {
 
+	public SinaAuthroizationCodeAccessTokenProvider() {
+		this.setMessageConverters(new ArrayList<HttpMessageConverter<?>>());
+	}
+
 	@Override
 	public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
-		super.setMessageConverters(messageConverters);
 		messageConverters.add(new SinaOAuth2AccessTokenMessageConverter());
+		super.setMessageConverters(messageConverters);
 	}
 
 	@Override

@@ -140,7 +140,7 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 				shop.setDescription(shopInfo.getDescription());
 				shop.setBusinessHour(shopInfo.getBusinessHour());
 				shop.setCreatedBy(createdBy);
-				shopService.addShop(shop);
+				shop = shopService.addShop(shop);
 			} else {
 				shop.getLocation().setAddress(shopInfo.getAddress());
 				shop.setDescription(shopInfo.getDescription());
@@ -155,8 +155,12 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 				for (GoodsInfo goodsInfo : goodsList) {
 					Speciality speciality = specialityService.findSpeciality(region.getCode(), goodsInfo.getSpecialityName());
 					if (speciality != null) {
-						Goods goods = new Goods(speciality.getCode());
-						shopService.addGoods(shop.getCode(), goods);
+						if (!shop.getSellingSpecialities().contains(speciality.getCode())) {
+							Goods goods = new Goods(speciality.getCode());
+							shopService.addGoods(shop.getCode(), goods);
+						} else {
+							logger.debug("speciality {} is already in shop {} selling list", speciality.getName(), shop.getName());
+						}
 					} else {
 						logger.warn("Specaility {} does not exist in region {}", goodsInfo.getSpecialityName(), region);
 					}

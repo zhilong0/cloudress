@@ -128,6 +128,9 @@ public class ShopResources {
 	@Path("/{shopCode}/products")
 	@PreAuthorize("isAuthenticated()")
 	public void deleteGoods(String shopCode, @QueryParam("productId") String goodsId) {
+		if (goodsId == null) {
+			return;
+		}
 		shopService.deleteGoods(shopCode, goodsId);
 	}
 
