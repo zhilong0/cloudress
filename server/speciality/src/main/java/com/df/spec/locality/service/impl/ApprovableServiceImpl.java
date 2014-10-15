@@ -39,7 +39,7 @@ public class ApprovableServiceImpl implements ApprovableService {
 		if (!operationPermissionEvaluator.canApprove(approver)) {
 			throw new PermissionDeniedException();
 		}
-		approvable.approve(approver);
+		approvable.approved(approver);
 		@SuppressWarnings("unchecked")
 		UpdateOperations<Approvable> updateOperations = (UpdateOperations<Approvable>) this.getDatastore().createUpdateOperations(approvable.getClass());
 		updateOperations.set(Constants.APPROVABLE.APPROVED_BY, approvable.getApprovedBy());
@@ -53,7 +53,7 @@ public class ApprovableServiceImpl implements ApprovableService {
 		if (!operationPermissionEvaluator.canApprove(approver)) {
 			throw new PermissionDeniedException();
 		}
-		approvable.reject(approver, rejectReason);
+		approvable.rejected(approver, rejectReason);
 		@SuppressWarnings("unchecked")
 		UpdateOperations<Approvable> updateOperations = (UpdateOperations<Approvable>) this.getDatastore().createUpdateOperations(approvable.getClass());
 		updateOperations.set(Constants.APPROVABLE.APPROVED_BY, approvable.getApprovedBy());

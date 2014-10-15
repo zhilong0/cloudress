@@ -30,6 +30,7 @@
 				<property name="httpClientConnectionManager">
 					<bean class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" />
 				</property>
+				<property name="proxy" ref="proxy"/>
 			</bean>
 		</constructor-arg>
 		<property name="connectTimeout" value="5000" />
@@ -69,9 +70,8 @@
 		<constructor-arg index="0" ref="shopDao" />
 		<constructor-arg index="1" ref="regionService" />
 		<constructor-arg index="2" ref="geoService" />
-		<constructor-arg index="3" ref="imageService" />
-		<constructor-arg index="4" ref="operationPermissionEvaluator" />
-		<constructor-arg index="5" ref="specValidator" />
+		<constructor-arg index="3" ref="operationPermissionEvaluator" />
+		<constructor-arg index="4" ref="specValidator" />
 	</bean>
 	<bean id="supplierService" class="com.df.spec.locality.service.impl.SupplierServiceImpl">
 		<constructor-arg index="0" ref="shopService" />

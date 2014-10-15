@@ -39,20 +39,20 @@ public abstract class Approvable implements Serializable {
 		this.rejectReason = rejectReason;
 	}
 
-	public void approve(String approver) {
+	public void approved(String approver) {
 		this.approvedBy = approver;
 		this.approvedTime = new Date();
 		this.status = Status.APPROVED;
 	}
 
-	public void reject(String approver, String rejectReason) {
+	public void rejected(String approver, String rejectReason) {
 		this.approvedBy = approver;
 		this.approvedTime = new Date();
 		this.status = Status.APPROVED;
 		this.rejectReason = rejectReason;
 	}
 
-	public void reset() {
+	public void waitToApprove() {
 		this.approvedBy = null;
 		this.approvedTime = null;
 		this.status = Status.WAIT_FOR_APPROVE;

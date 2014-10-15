@@ -2,6 +2,7 @@ package com.df.spec.locality.service;
 
 import java.util.List;
 
+import com.df.spec.locality.model.Goods;
 import com.df.spec.locality.model.Shop;
 
 public interface ShopService {
@@ -12,16 +13,24 @@ public interface ShopService {
 
 	List<Shop> getShopListSellSpeciality(String specialityCode);
 
+	List<Shop> getShopListInRegion(String regionCode, int offset, int limit);
+
 	List<Shop> getMyShops(String userCode);
 
-	Shop findShop(String shopName, String address);
+	Shop find(String shopName, String address);
 
-	void updateShop(Shop shop);
+	void update(Shop shop);
 
-	String uploadShopImage(String shopCode, byte[] imageData, String imageName);
+	void disable(String shopCode);
 
-	void deleteShopImage(String shopCode, String imageId);
+	void enable(String shopCode);
 
-	List<Shop> getWaitList(int offset, int limit);
+	List<Shop> getWaitToApproveShopList(int offset, int limit);
+
+	Goods addGoods(String shopCode, Goods goods);
+
+	boolean deleteGoods(String shopCode, String goodsId);
+
+	List<Goods> getGoodsList(String shopCode);
 
 }

@@ -1,5 +1,6 @@
 package com.df.spec.locality.provision;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 
+import com.df.blobstore.image.ImageKey;
+import com.df.blobstore.image.ImageService;
+import com.df.blobstore.image.http.ImageDetails;
 import com.df.common.provision.AbstractImporterBean;
 import com.df.common.provision.ProvisionContext;
 import com.df.idm.authentication.UserPropertyAuthenticationToken;
@@ -40,6 +44,9 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 
 	@Autowired
 	private ShopService shopService;
+
+	@Autowired
+	private ImageService imageService;
 
 	private List<String> resourceNames;
 
@@ -123,7 +130,7 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 		}
 
 		for (ShopInfo shopInfo : shopSource.getShops()) {
-			Shop shop = shopService.findShop(shopInfo.getName(), shopInfo.getAddress());
+			Shop shop = shopService.find(shopInfo.getName(), shopInfo.getAddress());
 
 			if (shop == null) {
 				shop = new Shop(shopInfo.getName(), shopInfo.getAddress());
@@ -140,7 +147,7 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 				shop.setContact(shopInfo.getContact());
 				shop.setTelephone(shopInfo.getTelephone());
 				shop.setBusinessHour(shopInfo.getBusinessHour());
-				shopService.updateShop(shop);
+				shopService.update(shop);
 			}
 
 			List<GoodsInfo> goodsList = shopInfo.getGoodsList();
@@ -148,12 +155,12 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 				for (GoodsInfo goodsInfo : goodsList) {
 					Speciality speciality = specialityService.findSpeciality(region.getCode(), goodsInfo.getSpecialityName());
 					if (speciality != null) {
-						shop.addGoods(new Goods(speciality.getCode()));
+						Goods goods = new Goods(speciality.getCode());
+						shopService.addGoods(shop.getCode(), goods);
 					} else {
 						logger.warn("Specaility {} does not exist in region {}", goodsInfo.getSpecialityName(), region);
 					}
 				}
-				shopService.updateShop(shop);
 			}
 
 			String[] images = shopInfo.getImages();
@@ -165,7 +172,10 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 					if (imageSet.hasImageWithName(imageName)) {
 						continue;
 					}
-					shopService.uploadShopImage(shop.getCode(), imageSource.readToBytes(), imageName);
+
+					ImageKey key = imageService.uploadImage(new ByteArrayInputStream(imageSource.readToBytes()), null, imageName);
+					shop.getImageSet().addImage(new ImageDetails(key.getKey(), imageService.getImageAttributes(key)));
+					shopService.update(shop);
 				} catch (IOException ex) {
 					String msg = "Cannot import image %s for shop %s";
 					logger.warn(String.format(msg, image, shop.getName()), ex);

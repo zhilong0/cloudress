@@ -2,6 +2,7 @@ package com.df.spec.locality.http.resources;
 
 import java.util.List;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.df.blobstore.image.ImageAttributes;
+import com.df.blobstore.image.ImageAttributesLoader;
 import com.df.blobstore.image.ImageKey;
 import com.df.blobstore.image.http.ImageDetails;
 import com.df.blobstore.image.http.ImageLinkCreator;
@@ -22,6 +25,7 @@ import com.df.spec.locality.geo.GeoService;
 import com.df.spec.locality.model.Comment;
 import com.df.spec.locality.model.CommentObject;
 import com.df.spec.locality.model.Constants;
+import com.df.spec.locality.model.Goods;
 import com.df.spec.locality.model.ImageSet;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
@@ -36,6 +40,9 @@ public class ShopResources {
 
 	@Autowired
 	private ShopService shopService;
+
+	@Autowired
+	private ImageAttributesLoader imageAttributeLoader;
 
 	@Autowired
 	private ImageLinkCreator imageLinkCreator;
@@ -98,15 +105,52 @@ public class ShopResources {
 			region = regionService.findRegion(region.getProvince(), region.getCity(), region.getDistrict());
 			shop.setRegionCode(region.getCode());
 		}
+		shop.getImageSet().clear();
+		if (shop.getImage() != null) {
+			ImageAttributes ia = imageAttributeLoader.loadImageAttributes(new ImageKey(shop.getImage()));
+			if (ia != null) {
+				shop.getImageSet().addImage(new ImageDetails(shop.getImage(), ia));
+			}
+		}
 		shop.setCreatedBy(authentication.getName());
 		shopService.addShop(shop);
 		return shop;
+	}
+
+	@POST
+	@Path("/{shopCode}/products")
+	@PreAuthorize("isAuthenticated()")
+	public Goods addGoods(String shopCode, Goods goods) {
+		return shopService.addGoods(shopCode, goods);
+	}
+
+	@DELETE
+	@Path("/{shopCode}/products")
+	@PreAuthorize("isAuthenticated()")
+	public void deleteGoods(String shopCode, @QueryParam("productId") String goodsId) {
+		shopService.deleteGoods(shopCode, goodsId);
 	}
 
 	@GET
 	@Path("/speciality/{specialityCode}")
 	public List<Shop> getShopListSellSpecaility(@PathParam(value = "specialityCode") String specialityCode) {
 		List<Shop> shops = shopService.getShopListSellSpeciality(specialityCode);
+		for (Shop shop : shops) {
+			processImageLink(shop);
+		}
+		return shops;
+	}
+
+	@GET
+	@Path("/region/{regionCode}")
+	public List<Shop> getShopListInRegion(@PathParam(value = "regionCode") String regionCode, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+		if (offset < 0) {
+			offset = 0;
+		}
+		if (limit <= 0) {
+			limit = 20;
+		}
+		List<Shop> shops = shopService.getShopListInRegion(regionCode, offset, limit);
 		for (Shop shop : shops) {
 			processImageLink(shop);
 		}
@@ -123,7 +167,7 @@ public class ShopResources {
 		if (limit <= 0) {
 			limit = 20;
 		}
-		List<Shop> shops = shopService.getWaitList(offset, limit);
+		List<Shop> shops = shopService.getWaitToApproveShopList(offset, limit);
 		for (Shop shop : shops) {
 			processImageLink(shop);
 		}

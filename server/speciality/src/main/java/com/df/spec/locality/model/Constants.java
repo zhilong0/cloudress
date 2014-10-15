@@ -26,6 +26,18 @@ public class Constants {
 
 	}
 
+	public static interface GOODS {
+
+		public static final String ID = "_id";
+
+		public static final String SPECIALITY_CODE = "specialityCode";
+
+		public static final String SHOP_CODE = "shopCode";
+
+		public static final String IS_DELETED = "isDeleted";
+
+	}
+
 	public static interface SHOP extends APPROVABLE {
 
 		public static final String CODE = "_id";
@@ -36,7 +48,7 @@ public class Constants {
 
 		public static final String ADDRESS = "location.address";
 
-		public static final String GOODS_LIST = "goodsList";
+		public static final String SELLING_SPECIALITIES = "sellingSpecialities";
 
 		public static final String DESCRIPTION = "description";
 
@@ -52,9 +64,11 @@ public class Constants {
 
 		public static final String CREATED_TIME = "createdTime";
 
-		public static final String BUSINESS_HOUR = "businessHour";
+		public static final String CHANGED_TIME = "changedTime";
 
-		public static final String GOODS_SPECIALITY = "goodsList.specialityCode";
+		public static final String IS_DISABLED = "isDisabled";
+
+		public static final String BUSINESS_HOUR = "businessHour";
 
 		public static final String COMMENT_OBJECT_TYPE = "shop";
 

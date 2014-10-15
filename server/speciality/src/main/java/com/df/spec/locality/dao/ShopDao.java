@@ -2,27 +2,33 @@ package com.df.spec.locality.dao;
 
 import java.util.List;
 
-import com.df.spec.locality.model.Region;
+import com.df.spec.locality.model.Goods;
 import com.df.spec.locality.model.Shop;
 
-public interface ShopDao {
+public interface ShopDao extends DaoTemplate {
 
-	void addShop(Shop newShop, Region region);
+	boolean update(Shop shop);
 
-	void update(Shop shop);
+	boolean disable(String shopCode);
 
-	void deleteShop(String shopCode);
+	boolean enable(String shopCode);
 
-	List<Shop> getShopByRegion(String regionCode);
+	List<Shop> getShopListInRegion(String regionCode, int offset, int limit);
 
 	List<Shop> getShopListByCreatedBy(String createdBy);
 
-	Shop getShopByCode(String shopCode);
-
 	List<Shop> getShopListBySpeciality(String specialityCode);
 
-	Shop findShop(String shopName, String address);
+	Shop find(String shopName, String address);
 
-	List<Shop> getWaitList(int offset, int limit);
+	List<Shop> getWaitToApproveShopList(int offset, int limit);
+
+	Goods addGoods(String shopCode, Goods goods);
+
+	List<Goods> getGoodsList(String shopCode);
+
+	boolean updateGoods(Goods goods);
+
+	boolean markGoodsAsDelete(String goodsId);
 
 }

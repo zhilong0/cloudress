@@ -77,14 +77,14 @@ public class SpecialityResources {
 	@GET
 	@Path("/to_be_approved")
 	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
-	public List<Speciality> getWaitList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+	public List<Speciality> getWaitToApproveList(@QueryParam("offset") int offset, @QueryParam("limit") int limit) {
 		if (offset < 0) {
 			offset = 0;
 		}
 		if (limit <= 0) {
 			limit = 20;
 		}
-		List<Speciality> specialities = specialityService.getWaitList(offset, limit);
+		List<Speciality> specialities = specialityService.getWaitToApproveList(offset, limit);
 		for (Speciality speciality : specialities) {
 			processImageLink(speciality);
 		}

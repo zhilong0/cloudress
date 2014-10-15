@@ -42,6 +42,16 @@ public class ImageSet {
 		return false;
 	}
 
+	public boolean hasImageWithId(String imageId) {
+		Assert.notNull(imageId);
+		for (ImageDetails image : this.images) {
+			if (image.getImageId().equals(imageId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void clear() {
 		images.clear();
 	}

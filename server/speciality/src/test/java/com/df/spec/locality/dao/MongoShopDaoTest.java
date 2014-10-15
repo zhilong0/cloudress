@@ -18,13 +18,13 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 	private RegionDao regionDao;
 
 	protected Region createRegion() {
-		Region region = new Region("test","测试省", "测试市", "测试县");
+		Region region = new Region("test", "测试省", "测试市", "测试县");
 		regionDao.addRegion(region);
 		return region;
 	}
 
 	protected void removeRegion() {
-		regionDao.deleteRegion(new Region("test","测试省", "测试市", "测试县"));
+		regionDao.deleteRegion(new Region("test", "测试省", "测试市", "测试县"));
 	}
 
 	@Test
@@ -32,10 +32,12 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 		Shop shop = new Shop("商铺1", "address1");
 		try {
 			Region region = this.createRegion();
-			shopDao.addShop(shop, region);
+			shop.setRegionCode(region.getCode());
+			shopDao.add(shop);
 			Shop shop2 = new Shop(shop.getName(), shop.getAddress());
+			shop2.setRegionCode(region.getCode());
 			try {
-				shopDao.addShop(shop2, region);
+				shopDao.add(shop2);
 			} catch (DuplicateShopException ex) {
 				return;
 			}
@@ -43,7 +45,7 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 		} finally {
 			this.removeRegion();
 			if (shop.getCode() != null) {
-				shopDao.deleteShop(shop.getCode());
+				shopDao.deleteById(Shop.class, shop.getCode());
 			}
 		}
 	}
@@ -53,12 +55,13 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 		Shop shop = new Shop("商铺2", "address2");
 		try {
 			Region region = this.createRegion();
-			shopDao.addShop(shop, region);
-			TestCase.assertNotNull(shopDao.getShopByCode(shop.getCode()));
+			shop.setRegionCode(region.getCode());
+			shopDao.add(shop);
+			TestCase.assertNotNull(shopDao.findById(Shop.class, shop.getCode()));
 		} finally {
 			this.removeRegion();
 			if (shop.getCode() != null) {
-				shopDao.deleteShop(shop.getCode());
+				shopDao.deleteById(Shop.class, shop.getCode());
 			}
 		}
 	}

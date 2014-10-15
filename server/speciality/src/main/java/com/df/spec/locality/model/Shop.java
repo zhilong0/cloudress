@@ -9,13 +9,11 @@ import javax.validation.constraints.NotNull;
 
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.Transient;
-import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -57,11 +55,13 @@ public class Shop extends Approvable implements Serializable {
 
 	private Date changedTime;
 
+	private boolean isDisabled;
+
 	@Transient
 	private String image;
 
-	@Embedded
-	private List<Goods> goodsList = new ArrayList<Goods>();
+	@JsonIgnore
+	private List<String> sellingSpecialities = new ArrayList<String>();
 
 	Shop() {
 	}
@@ -141,15 +141,6 @@ public class Shop extends Approvable implements Serializable {
 		this.score = score;
 	}
 
-	@JsonProperty(value = "products")
-	public List<Goods> getGoodsList() {
-		return goodsList;
-	}
-
-	public void setGoodsList(List<Goods> goodsList) {
-		this.goodsList = goodsList;
-	}
-
 	public ImageSet getImageSet() {
 		return imageSet;
 	}
@@ -203,14 +194,24 @@ public class Shop extends Approvable implements Serializable {
 		}
 	}
 
-	public boolean addGoods(Goods goods) {
-		Assert.notNull(goods.getSpecialityCode());
-		for (Goods gd : goodsList) {
-			if (gd.getSpecialityCode().equals(goods.getSpecialityCode())) {
-				return false;
-			}
-		}
-		return this.goodsList.add(goods);
+	public List<String> getSellingSpecialities() {
+		return sellingSpecialities;
+	}
+
+	public boolean addSpeciality(String specialityCode) {
+		return this.sellingSpecialities.add(specialityCode);
+	}
+
+	public boolean removeGoods(String specialityCode) {
+		return this.sellingSpecialities.remove(specialityCode);
+	}
+
+	public boolean isDisabled() {
+		return isDisabled;
+	}
+
+	public void setDisabled(boolean isDisabled) {
+		this.isDisabled = isDisabled;
 	}
 
 }

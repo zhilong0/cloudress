@@ -76,7 +76,7 @@ public class SpecialityDaoImpl extends BaseDao<Speciality, ObjectId> implements 
 	@Override
 	public void addImage(String specialityCode, ImageDetails imageDetails) {
 		Assert.notNull(imageDetails);
-		Speciality found = this.getSpecialityByCode(specialityCode);
+		Speciality found = this.findById(Speciality.class, specialityCode);
 		if (found != null) {
 			found.getImageSet().addImage(imageDetails);
 			Query<Speciality> query = this.createQuery();
@@ -89,7 +89,7 @@ public class SpecialityDaoImpl extends BaseDao<Speciality, ObjectId> implements 
 
 	@Override
 	public void removeImage(String specialityCode, String imageId) {
-		Speciality found = this.getSpecialityByCode(specialityCode);
+		Speciality found = this.findById(Speciality.class, specialityCode);
 		if (found != null) {
 			found.getImageSet().removeImage(imageId);
 			Query<Speciality> query = this.createQuery();
@@ -98,15 +98,6 @@ public class SpecialityDaoImpl extends BaseDao<Speciality, ObjectId> implements 
 			updateOperations.set(Constants.SPECIALITY.IMAGE_SET, found.getImageSet());
 			this.update(query, updateOperations);
 			this.update(found);
-		}
-	}
-
-	@Override
-	public Speciality getSpecialityByCode(String specialityCode) {
-		if (ObjectId.isValid(specialityCode)) {
-			return this.get(new ObjectId(specialityCode));
-		} else {
-			return null;
 		}
 	}
 
@@ -136,7 +127,7 @@ public class SpecialityDaoImpl extends BaseDao<Speciality, ObjectId> implements 
 	}
 
 	@Override
-	public List<Speciality> getWaitList(int offset, int limit) {
+	public List<Speciality> getWaitToApproveSpecialityList(int offset, int limit) {
 		return this.getWaitList(Speciality.class, offset, limit);
 	}
 }

@@ -8,4 +8,6 @@ public abstract class ShopErrorCode {
 
 	public static final String SHOP_WITH_CODE_NOT_FOUND = "SP100003";
 
+	public static final String SPECIALITY_ALREADY_IN_SELLING_LIST = "SP100004";
+
 }

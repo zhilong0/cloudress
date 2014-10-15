@@ -57,7 +57,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
 	@Override
 	public void addSpeciality(Speciality speciality, Region region) {
-		speciality.setRegionCode(region.getCode()); 
+		speciality.setRegionCode(region.getCode());
 		Set<ConstraintViolation<Speciality>> violations = validator.validate(speciality);
 		if (violations.size() != 0) {
 			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
@@ -71,16 +71,16 @@ public class SpecialityServiceImpl implements SpecialityService {
 			}
 		}
 		if (permissionEvaluator.canAddSpeciality(speciality.getCreatedBy())) {
-			speciality.approve(speciality.getCreatedBy());
+			speciality.approved(speciality.getCreatedBy());
 		} else {
-			speciality.reset();
+			speciality.waitToApprove();
 		}
 		specialityDao.add(speciality, region);
 	}
 
 	@Override
 	public String uploadSpecialityImage(String specialityCode, byte[] imageData, String imageName) {
-		Speciality found = specialityDao.getSpecialityByCode(specialityCode);
+		Speciality found = specialityDao.findById(Speciality.class, specialityCode);
 		if (found == null) {
 			throw new SpecialityWithCodeNotFoundException(null, specialityCode);
 		}
@@ -106,7 +106,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
 	@Override
 	public Speciality getSpecialityByCode(String specialityCode, boolean throwException) {
-		Speciality found = specialityDao.getSpecialityByCode(specialityCode);
+		Speciality found = specialityDao.findById(Speciality.class, specialityCode);
 		if (found == null && throwException) {
 			throw new SpecialityWithCodeNotFoundException(null, specialityCode);
 		}
@@ -118,8 +118,13 @@ public class SpecialityServiceImpl implements SpecialityService {
 	}
 
 	@Override
-	public boolean update(Speciality spec) {
-		return specialityDao.update(spec);
+	public boolean update(Speciality speciality) {
+		Set<ConstraintViolation<Speciality>> violations = validator.validate(speciality);
+		if (violations.size() != 0) {
+			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
+		}
+		speciality.setChangedTime(new Date());
+		return specialityDao.update(speciality);
 	}
 
 	@Override
@@ -128,8 +133,8 @@ public class SpecialityServiceImpl implements SpecialityService {
 	}
 
 	@Override
-	public List<Speciality> getWaitList(int offset, int limit) {
-		return specialityDao.getWaitList(offset, limit); 
+	public List<Speciality> getWaitToApproveList(int offset, int limit) {
+		return specialityDao.getWaitToApproveSpecialityList(offset, limit);
 	}
 
 }

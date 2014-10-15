@@ -23,6 +23,6 @@ public interface SpecialityService {
 
 	boolean update(Speciality spec);
 
-	List<Speciality> getWaitList(int offset, int limit);
+	List<Speciality> getWaitToApproveList(int offset, int limit);
 
 }
