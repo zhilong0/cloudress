@@ -2,6 +2,7 @@ package com.df.idm.authentication.oauth2;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +77,7 @@ public class DefaultOAuth2ClientAuthenticationFilter extends AbstractAuthenticat
 			this.getAuthorizationCodeFromRequest(request);
 			OAuth2AccessToken accessToken = this.resourceInterface.getAccessToken();
 			ExternalUser external = resourceInterface.getUserDetails();
-			external.setAccessToken(accessToken.getValue()); 
+			external.setAccessToken(accessToken.getValue());
 			ExternalUserReference reference = new ExternalUserReference(external.getProvider(), external.getId());
 			User mappingUser = userManagementService.getUserByExternalId(reference.getExternalId(), reference.getProvider());
 			if (mappingUser == null) {
@@ -87,9 +88,9 @@ public class DefaultOAuth2ClientAuthenticationFilter extends AbstractAuthenticat
 				} else if ("f".equals(external.getAttribute("gender"))) {
 					mappingUser.setGender(Gender.FEMALE);
 				}
-				userManagementService.updateUser(mappingUser);
 			}
-
+			mappingUser.setLastLogin(new Date());
+			userManagementService.updateUser(mappingUser);
 			UserObject uo = new UserObject(mappingUser);
 			Collection<? extends GrantedAuthority> authorities = authoritiesMapper.mapAuthorities(uo.getAuthorities());
 			UserPropertyAuthenticationToken result = new UserPropertyAuthenticationToken(uo, authorities);
