@@ -25,7 +25,7 @@ public class BasicAuthenticationProvider extends UserObjectAuthenticationProvide
 		UserObject found;
 		try {
 			found = (UserObject) this.getUserObjectService().loadUserByUsername(code);
-			if (found == null) {
+			if (found == null || (found.getExternalUserReference() != null && found.getExternalUserReference().getExternalId() != null)) {
 				throw new UserNotFoundException("Unknown user " + code);
 			}
 		} catch (UserNotFoundException userNotFound) {

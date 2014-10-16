@@ -48,7 +48,7 @@ public class User implements Serializable {
 	@Indexed(name = "user_cellphone_idx", unique = true, sparse = true)
 	private String cellphone;
 
-	private String imageId;
+	private String profileImage;
 
 	private Gender gender;
 
@@ -165,14 +165,6 @@ public class User implements Serializable {
 		this.cellphone = cellphone;
 	}
 
-	public String getImage() {
-		return imageId;
-	}
-
-	public void setImage(String image) {
-		this.imageId = image;
-	}
-
 	public int getAge() {
 		return age;
 	}
@@ -213,12 +205,12 @@ public class User implements Serializable {
 		this.isLocked = isLocked;
 	}
 
-	public String getImageId() {
-		return imageId;
+	public String getProfileImage() {
+		return profileImage;
 	}
 
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 
 	public Date getCreatedTime() {

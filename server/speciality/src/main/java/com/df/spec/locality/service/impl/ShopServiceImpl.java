@@ -86,6 +86,7 @@ public class ShopServiceImpl implements ShopService {
 		}
 		newShop.setCreatedTime(new Date());
 		newShop.setChangedTime(null);
+		newShop.setScore(5); 
 		if (permissionEvaluator.canAddShop(newShop.getCreatedBy())) {
 			newShop.approved(newShop.getCreatedBy());
 		} else {

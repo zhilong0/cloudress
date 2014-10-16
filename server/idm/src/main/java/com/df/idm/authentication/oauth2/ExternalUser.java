@@ -17,7 +17,7 @@ public class ExternalUser implements Serializable {
 
 	private Provider provider;
 
-	private Map<String, String> attibutes = new HashMap<String, String>();
+	private Map<String, Object> attibutes = new HashMap<String, Object>();
 
 	public ExternalUser(ExternalUserReference externalUserReference) {
 		this.id = externalUserReference.getExternalId();
@@ -41,7 +41,7 @@ public class ExternalUser implements Serializable {
 		return provider;
 	}
 
-	public Map<String, String> getAttibutes() {
+	public Map<String, Object> getAttibutes() {
 		return attibutes;
 	}
 
@@ -49,12 +49,17 @@ public class ExternalUser implements Serializable {
 		this.attibutes.put(attributeName, attributeValue);
 	}
 
-	public String getAttribute(String attributeName) {
+	public Object getAttribute(String attributeName) {
 		return this.attibutes.get(attributeName);
 	}
 
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
+	}
+
+	@Override
+	public String toString() {
+		return "ExternalUser [id=" + id + ", provider=" + provider + "]";
 	}
 
 }
