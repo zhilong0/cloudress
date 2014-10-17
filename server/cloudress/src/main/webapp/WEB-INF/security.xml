@@ -138,7 +138,6 @@
 				<property name="httpClientConnectionManager">
 					<bean class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" />
 				</property>
-				<property name="proxy" ref="httpsProxy"/>
 			</bean>
 		</constructor-arg>
 		<property name="connectTimeout" value="5000" />
