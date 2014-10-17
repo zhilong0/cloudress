@@ -24,7 +24,7 @@ public class DefaultEmailContextProvider implements EmailContextProvider, BeanFa
 
 	private String ip;
 
-	private int port;
+	private int port = 80;
 
 	private String contextPath;
 

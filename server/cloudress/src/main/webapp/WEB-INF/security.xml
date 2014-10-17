@@ -138,6 +138,7 @@
 				<property name="httpClientConnectionManager">
 					<bean class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" />
 				</property>
+				<property name="proxy" ref="httpsProxy"/>
 			</bean>
 		</constructor-arg>
 		<property name="connectTimeout" value="5000" />
@@ -150,13 +151,13 @@
 		<aop:scoped-proxy />
 	</bean>
 	<bean id="sinaOAuthResource" class="org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails">
-		<property name="clientId" value="1318036310" />
-		<property name="clientSecret" value="1bd12cbd47c392ebf8e49fbe88782d1a" />
+		<property name="clientId" value="2843288911" />
+		<property name="clientSecret" value="10c08127cd2b02fe090fe2f0b620cb8a" />
 		<property name="accessTokenUri" value="https://api.weibo.com/oauth2/access_token" />
 		<property name="userAuthorizationUri" value="https://open.weibo.cn/oauth2/authorize?display=mobile" />
 		<property name="grantType" value="authorization_code" />
 		<property name="clientAuthenticationScheme" value="query" />
-		<property name="preEstablishedRedirectUri" value="http://www.longertec.com/cloudress/sina/oauth2" />
+		<property name="preEstablishedRedirectUri" value="http://www.longtes.com/cloudress/sina/oauth2" />
 	</bean>
 	<bean id="OAUTH2_CLIENT_CONTEXT_FILTER" class="org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter" />
 	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.DefaultOAuth2ClientAuthenticationFilter">
