@@ -169,7 +169,7 @@
 		<property name="userAuthorizationUri" value="https://graph.qq.com/oauth2.0/authorize?display=mobile" />
 		<property name="grantType" value="authorization_code" />
 		<property name="clientAuthenticationScheme" value="query" />
-		<property name="preEstablishedRedirectUri" value="http://www.longertec.com/cloudress/qq/oauth2" />
+		<property name="preEstablishedRedirectUri" value="http://www.longtes.com/cloudress/qq/oauth2" />
 	</bean>
 	<bean id="OAUTH2_CLIENT_CONTEXT_FILTER" class="org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter" />
 	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.sina.SinaOauth2ClientAuthenticationFilter">
