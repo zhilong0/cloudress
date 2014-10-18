@@ -134,6 +134,7 @@
 		<property name="resourceNames">
 			<list value-type="java.lang.String">
 				<value>classpath:sh/speciality/speciality_sh.json</value>
+				<value>classpath:120000/product.json</value>
 			</list>
 		</property>
 	</bean>
