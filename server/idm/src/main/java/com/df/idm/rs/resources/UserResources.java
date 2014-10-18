@@ -165,6 +165,21 @@ public class UserResources {
 		userManagementService.enableUser(userCode);
 	}
 
+	@POST
+	@Path("/code/{userCode}/change_password")
+	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
+	public void changePassword(@PathParam("userCode") String userCode, String newPassword) {
+		userManagementService.updatePassword(userCode, newPassword);
+	}
+
+	@POST
+	@Path("/change_password")
+	@PreAuthorize("isAuthenticated()")
+	public void changeSelfPassword(String oldPassword, String newPassword) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		userManagementService.updatePassword(authentication.getName(), oldPassword, newPassword);
+	}
+
 	@GET
 	@Path("/")
 	public User getCurrentUser() {
