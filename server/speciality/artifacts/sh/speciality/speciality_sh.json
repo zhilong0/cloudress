@@ -1,5 +1,5 @@
 {
-	"regionCode":"120000",
+	"regionCode":"310000",
 	"imageBaseUri": "classpath:sh/speciality/images/",
 	"specialities": [{
 		"images": ["pic0.jpg"],
