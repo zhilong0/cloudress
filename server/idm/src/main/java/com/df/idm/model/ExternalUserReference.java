@@ -13,7 +13,7 @@ public class ExternalUserReference implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static enum Provider {
-		SINA
+		SINA, QQ
 	}
 
 	private String externalId;

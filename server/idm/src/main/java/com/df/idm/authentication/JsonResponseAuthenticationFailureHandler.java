@@ -26,6 +26,8 @@ public class JsonResponseAuthenticationFailureHandler implements AuthenticationF
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException,
 			ServletException {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setContentType("application/json;charset=UTF-8");
 		AuthenticationResponse resp = new AuthenticationResponse();
 		resp.setAuthenticated(false);
 		resp.setErrorMessage(ex.getLocalizedMessage());

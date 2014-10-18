@@ -27,6 +27,7 @@ public class JsonResponseAuthenticationSuccessHandler implements AuthenticationS
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException,
 			ServletException {
+		response.setContentType("application/json;charset=UTF-8");
 		AuthenticationResponse resp = new AuthenticationResponse();
 		resp.setAuthenticated(true);
 		response.getWriter().write(objectMapper.writeValueAsString(resp));

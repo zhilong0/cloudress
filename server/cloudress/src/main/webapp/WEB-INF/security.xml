@@ -146,6 +146,10 @@
 		<constructor-arg index="0" ref="accessTokenRequest" />
 		<aop:scoped-proxy />
 	</bean>
+	<bean id="qqOAuthClientContext" scope="session" class="org.springframework.security.oauth2.client.DefaultOAuth2ClientContext">
+		<constructor-arg index="0" ref="accessTokenRequest" />
+		<aop:scoped-proxy />
+	</bean>
 	<bean id="accessTokenRequest" scope="request" class="org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest">
 		<aop:scoped-proxy />
 	</bean>
@@ -158,8 +162,17 @@
 		<property name="clientAuthenticationScheme" value="query" />
 		<property name="preEstablishedRedirectUri" value="http://www.longtes.com/cloudress/sina/oauth2" />
 	</bean>
+	<bean id="qqOAuthResource" class="org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails">
+		<property name="clientId" value="101161945" />
+		<property name="clientSecret" value="5790d218650d62495b9e769f92dc4a73" />
+		<property name="accessTokenUri" value="https://graph.qq.com/oauth2.0/token" />
+		<property name="userAuthorizationUri" value="https://graph.qq.com/oauth2.0/authorize?display=mobile" />
+		<property name="grantType" value="authorization_code" />
+		<property name="clientAuthenticationScheme" value="query" />
+		<property name="preEstablishedRedirectUri" value="http://www.longertec.com/cloudress/qq/oauth2" />
+	</bean>
 	<bean id="OAUTH2_CLIENT_CONTEXT_FILTER" class="org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter" />
-	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.DefaultOAuth2ClientAuthenticationFilter">
+	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.sina.SinaOauth2ClientAuthenticationFilter">
 		<constructor-arg index="0" value="/sina/oauth2" />
 		<property name="userManagementService" ref="userManagementService" />
 		<property name="resourceInterface">
@@ -168,6 +181,25 @@
 				<constructor-arg index="1" ref="sinaOAuthClientContext" />
 				<constructor-arg index="2" ref="oauth2RequestFactory" />
 				<property name="userDetailsUri" value="https://api.weibo.com/2/users/show.json" />
+			</bean>
+		</property>
+		<property name="authenticationSuccessHandler">
+			<bean class="com.df.idm.authentication.JsonResponseAuthenticationSuccessHandler" />
+		</property>
+		<property name="authenticationFailureHandler">
+			<bean class="com.df.idm.authentication.JsonResponseAuthenticationFailureHandler" />
+		</property>
+	</bean>
+	<bean id="QQ_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.qq.QQOAuth2ClientAuthenticationFilter">
+		<constructor-arg index="0" value="/qq/oauth2" />
+		<property name="userManagementService" ref="userManagementService" />
+		<property name="resourceInterface">
+			<bean class="com.df.idm.authentication.oauth2.qq.QQOAuth2ResourceInterface">
+				<constructor-arg index="0" ref="qqOAuthResource" />
+				<constructor-arg index="1" ref="qqOAuthClientContext" />
+				<constructor-arg index="2" ref="oauth2RequestFactory" />
+				<property name="userDetailsUri" value="https://graph.qq.com/user/get_user_info" />
+				<property name="openIdUri" value="https://graph.qq.com/oauth2.0/me" />
 			</bean>
 		</property>
 		<property name="authenticationSuccessHandler">
@@ -201,6 +233,8 @@
 			<sec:filter-chain pattern="/**/*.css" filters="none" />
 			<sec:filter-chain pattern="/sina/oauth2"
 				filters="SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,OAUTH2_CLIENT_CONTEXT_FILTER,SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" />
+			<sec:filter-chain pattern="/qq/oauth2"
+				filters="SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,OAUTH2_CLIENT_CONTEXT_FILTER,QQ_OAUTH2_CLIENT_AUTHENTICATION_FILTER" />
 			<sec:filter-chain pattern="/rs/auth/**"
 				filters="CHANNEL_FILTER,SECURITY_CONTEXT_FILTER,LOCALE_CONTEXT_FILTER,LOGOUT_FILTER" />
 			<sec:filter-chain pattern="/rs/**"

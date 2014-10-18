@@ -1,10 +1,12 @@
 package com.df.idm.authentication.oauth2.sina;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
@@ -13,19 +15,12 @@ import org.springframework.security.oauth2.client.resource.UserRedirectRequiredE
 import org.springframework.security.oauth2.client.token.AccessTokenRequest;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.web.client.ResponseExtractor;
 
 public class SinaAuthroizationCodeAccessTokenProvider extends AuthorizationCodeAccessTokenProvider {
-
-	public SinaAuthroizationCodeAccessTokenProvider() {
-		this.setMessageConverters(new ArrayList<HttpMessageConverter<?>>());
-	}
-
-	@Override
-	public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
-		messageConverters.add(new SinaOAuth2AccessTokenMessageConverter());
-		super.setMessageConverters(messageConverters);
-	}
 
 	@Override
 	public String obtainAuthorizationCode(OAuth2ProtectedResourceDetails details, AccessTokenRequest request) throws UserRedirectRequiredException,
@@ -45,4 +40,21 @@ public class SinaAuthroizationCodeAccessTokenProvider extends AuthorizationCodeA
 		}
 	}
 
+	@Override
+	protected ResponseExtractor<OAuth2AccessToken> getResponseExtractor() {
+		return new ResponseExtractor<OAuth2AccessToken>() {
+
+			@Override
+			public OAuth2AccessToken extractData(ClientHttpResponse response) throws IOException {
+				MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+				@SuppressWarnings("unchecked")
+				Map<String, String> map = (Map<String, String>) converter.read(HashMap.class, response);
+				OAuth2AccessToken token = DefaultOAuth2AccessToken.valueOf(map);
+				SinaOAuth2AccessToken sinaToken = new SinaOAuth2AccessToken(token);
+				sinaToken.setUid(map.get("uid"));
+				return sinaToken;
+			}
+
+		};
+	}
 }

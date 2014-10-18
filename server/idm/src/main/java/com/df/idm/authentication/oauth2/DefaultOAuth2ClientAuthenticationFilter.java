@@ -26,7 +26,6 @@ import com.df.idm.authentication.UserPropertyAuthenticationToken;
 import com.df.idm.authentication.adapter.UserObject;
 import com.df.idm.model.ExternalUserReference;
 import com.df.idm.model.User;
-import com.df.idm.model.User.Gender;
 import com.df.idm.service.contract.UserManagementService;
 
 public class DefaultOAuth2ClientAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -82,12 +81,7 @@ public class DefaultOAuth2ClientAuthenticationFilter extends AbstractAuthenticat
 			User mappingUser = userManagementService.getUserByExternalId(reference.getExternalId(), reference.getProvider());
 			if (mappingUser == null) {
 				mappingUser = userManagementService.createUserByExternalUser(reference);
-				mappingUser.setNickName((String) external.getAttribute("name"));
-				if ("m".equals(external.getAttribute("gender"))) {
-					mappingUser.setGender(Gender.MALE);
-				} else if ("f".equals(external.getAttribute("gender"))) {
-					mappingUser.setGender(Gender.FEMALE);
-				}
+				mappingUserDetails(external, mappingUser); 
 			}
 			mappingUser.setLastLogin(new Date());
 			userManagementService.updateUser(mappingUser);
@@ -99,6 +93,9 @@ public class DefaultOAuth2ClientAuthenticationFilter extends AbstractAuthenticat
 		} catch (InvalidTokenException e) {
 			throw new BadCredentialsException("Could not obtain user details from token", e);
 		}
+	}
+
+	protected void mappingUserDetails(ExternalUser externalUser, User mappingUser) {
 	}
 
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException,
