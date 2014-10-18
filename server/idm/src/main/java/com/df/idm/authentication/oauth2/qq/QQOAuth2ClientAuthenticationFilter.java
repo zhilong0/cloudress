@@ -13,7 +13,7 @@ public class QQOAuth2ClientAuthenticationFilter extends DefaultOAuth2ClientAuthe
 
 	@Override
 	protected void mappingUserDetails(ExternalUser externalUser, User mappingUser) {
-		mappingUser.setNickName((String) externalUser.getAttribute("name"));
+		mappingUser.setNickName((String) externalUser.getAttribute("nickName"));
 		if ("男".equals(externalUser.getAttribute("gender"))) {
 			mappingUser.setGender(Gender.MALE);
 		} else if ("女".equals(externalUser.getAttribute("gender"))) {
