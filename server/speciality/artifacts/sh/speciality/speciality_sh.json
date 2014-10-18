@@ -1,5 +1,5 @@
 {
-	"regionCode":"sh",
+	"regionCode":"120000",
 	"imageBaseUri": "classpath:sh/speciality/images/",
 	"specialities": [{
 		"images": ["pic0.jpg"],
@@ -46,6 +46,24 @@
 		"name": "奉贤黄桃",
 		"rank":5,
 		"description": "奉贤黄桃，上海市奉贤区特产，中国地理标志产品。该区黄桃以“锦香、锦园、锦绣、锦花”等四个优质品种为主，具有“果大、味甜、汁多”的特点，荣获“上海市安全优质卫生食品”、“国家绿色食品”、“世博特供果品（2010年）”、国家 “地理标志保护认定产品”、“国家级标准化农业示范项目”等荣誉。"
+	},
+	{
+		"images": ["崇明香芋.jpg"],
+		"name": "崇明香芋",
+		"rank":5,
+		"description": ""
+	},
+	{
+		"images": ["枫泾猪.jpg"],
+		"name": "枫泾猪",
+		"rank":5,
+		"description": ""
+	},	
+	{
+		"images": ["金山蟠桃.jpg"],
+		"name": "金山蟠桃",
+		"rank":5,
+		"description": ""
 	},
 	{
 		"images": ["pic7.jpg"],

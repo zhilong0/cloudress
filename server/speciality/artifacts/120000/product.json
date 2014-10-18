@@ -1,0 +1,56 @@
+{
+	"regionCode":"120000",
+	"imageBaseUri": "classpath:images/",
+	"specialities": [{
+		"images": ["耳朵眼炸糕.jpg"],
+		"name": "耳朵眼炸糕",
+		"rank":5,
+		"startMonth":7,
+		"endMonth":11,
+		"description": ""
+	},
+	{
+		"images": ["狗不理包子.jpg"],
+		"name": "狗不理包子",
+		"rank":5,
+		"description": ""
+	},
+	{
+		"images": ["十八街麻花.jpg"],
+		"name": "十八街麻花",
+		"rank":5,
+		"description": ""
+	},
+	{
+		"images": ["天津风筝.jpg"],
+		"name": "天津风筝",
+		"rank":5,
+		"startMonth":7,
+		"endMonth":8,
+		"description": ""
+	},
+	{
+		"images": ["小李烧鸡.jpg"],
+		"name": "小李烧鸡",
+		"rank":5,
+		"description": ""
+	},
+	{
+		"images": ["杨柳青年画.jpg"],
+		"name": "杨柳青年画",
+		"rank":5,
+		"description": ""
+	},
+	{
+		"images": ["锅巴菜.jpg"],
+		"name": "锅巴菜",
+		"rank":5,
+		"description": ""
+	},
+	{
+		"images": ["泥人张彩塑.jpg"],
+		"name": "泥人张彩塑",
+		"rank":5,
+		"description": ""
+	}]
+}
