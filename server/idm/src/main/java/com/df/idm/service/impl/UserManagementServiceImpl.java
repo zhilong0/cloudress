@@ -116,9 +116,13 @@ public class UserManagementServiceImpl implements UserManagementService {
 		if (user == null) {
 			throw UserException.userCodeNotFound(userCode);
 		}
-
-		String encodedOldPassword = passwordEncoder.encode(oldPassword);
-		if (!user.getPassword().equals(encodedOldPassword)) {
+		User fakeUser = new User();
+		fakeUser.setPassword(newPassword);
+		Set<ConstraintViolation<User>> violations = validator.validateProperty(fakeUser, "password", CreateUser.class);
+		if (violations.size() != 0) {
+			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
+		}
+		if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
 			throw UserException.userPasswordNotMatch(userCode);
 		}
 		String encodedPassword = passwordEncoder.encode(newPassword);
@@ -129,6 +133,13 @@ public class UserManagementServiceImpl implements UserManagementService {
 		User user = userDao.getUserByCode(userCode);
 		if (user == null) {
 			throw UserException.userCodeNotFound(userCode);
+		}
+
+		User fakeUser = new User();
+		fakeUser.setPassword(newPassword);
+		Set<ConstraintViolation<User>> violations = validator.validateProperty(fakeUser, "password", CreateUser.class);
+		if (violations.size() != 0) {
+			throw new ValidationException(violations.toArray(new ConstraintViolation[0]));
 		}
 
 		String encodedPassword = passwordEncoder.encode(newPassword);

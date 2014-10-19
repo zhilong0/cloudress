@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 
+import com.df.blobstore.image.ImageKey;
+import com.df.blobstore.image.ImageService;
 import com.df.common.provision.AbstractImporterBean;
 import com.df.common.provision.ProvisionContext;
 import com.df.idm.authentication.UserPropertyAuthenticationToken;
@@ -34,6 +36,9 @@ public class SpecialityImporter extends AbstractImporterBean implements Initiali
 
 	@Autowired
 	private SpecialityService specialityService;
+
+	@Autowired
+	private ImageService imageService;
 
 	@Autowired
 	private RegionService regionService;
@@ -135,7 +140,8 @@ public class SpecialityImporter extends AbstractImporterBean implements Initiali
 					if (imageSet.hasImageWithName(imageName)) {
 						continue;
 					}
-					specialityService.uploadSpecialityImage(spec.getCode(), imageSource.readToBytes(), imageName);
+					ImageKey key = imageService.uploadImage(imageSource.read(), createdBy, imageName);
+					specialityService.updateImageSet(spec.getCode(), new String[] { key.getKey() }, true);
 				} catch (IOException ex) {
 					String msg = "Cannot import image %s for speciality %s";
 					logger.warn(String.format(msg, image, spec.getName()), ex);
@@ -153,8 +159,11 @@ public class SpecialityImporter extends AbstractImporterBean implements Initiali
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(regionService, "regionServie must be set");
 		Assert.notNull(specialityService, "specialityService must be set");
-		Assert.notNull(objectMapper, "objectMapper must be set");
+		Assert.notNull(imageService, "imageService must be set");
 		Assert.notNull(resourceLoader, "resourceLoader must be set");
+		if (objectMapper == null) {
+			objectMapper = new ObjectMapper();
+		}
 	}
 
 }

@@ -20,6 +20,8 @@ public interface ShopService {
 	Shop find(String shopName, String address);
 
 	void update(Shop shop);
+	
+	boolean updateImageSet(String shopCode, String[] imageIds, boolean isAdd);
 
 	void disable(String shopCode);
 

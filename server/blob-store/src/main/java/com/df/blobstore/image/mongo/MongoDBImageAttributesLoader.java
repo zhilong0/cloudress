@@ -37,6 +37,9 @@ public class MongoDBImageAttributesLoader implements ImageAttributesLoader {
 
 	@Override
 	public ImageAttributes loadImageAttributes(ImageKey imageKey) {
+		if(!ObjectId.isValid(imageKey.getKey())){
+			return null;
+		}
 		ObjectId objectId = new ObjectId(imageKey.getKey());
 		BasicDBObject query = new BasicDBObject();
 		query.append("_id", objectId);

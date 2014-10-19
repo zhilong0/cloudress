@@ -37,6 +37,9 @@ public class MongoDBImageServiceRoute implements ImageServiceRoute {
 
 	@Override
 	public BundleKey resolveBundleKey(ImageKey imageKey) {
+		if (!ObjectId.isValid(imageKey.getKey())) {
+			return null;
+		}
 		return new MongoDBBundleKey(new ObjectId(imageKey.getKey()));
 	}
 

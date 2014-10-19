@@ -11,7 +11,10 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
+import org.mongodb.morphia.query.UpdateOperations;
+import org.springframework.util.Assert;
 
+import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.dao.ShopDao;
 import com.df.spec.locality.model.Approvable.Status;
 import com.df.spec.locality.model.Constants;
@@ -134,6 +137,44 @@ public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 		Query<Goods> query = this.getDatastore().createQuery(Goods.class);
 		query.filter(Constants.GOODS.SHOP_CODE + " =", shopCode);
 		return query.asList();
+	}
+
+	@Override
+	public boolean addImages(String shopCode, ImageDetails[] images) {
+		Assert.notNull(images);
+		Shop found = this.findById(Shop.class, shopCode);
+		if (found != null) {
+			for (ImageDetails image : images) {
+				if(!found.getImageSet().hasImageWithId(image.getImageId())){
+					found.getImageSet().addImage(image);
+				}
+			}
+			Query<Shop> query = this.createQuery();
+			query.filter(Constants.SHOP.CODE, new ObjectId(shopCode));
+			UpdateOperations<Shop> updateOperations = this.createUpdateOperations();
+			updateOperations.set(Constants.SHOP.IMAGESET, found.getImageSet());
+			return this.update(query, updateOperations).getUpdatedCount() >= 1;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean removeImages(String shopCode, String[] imageIds) {
+		Assert.notNull(imageIds);
+		Shop found = this.findById(Shop.class, shopCode);
+		if (found != null) {
+			for (String imageId : imageIds) {
+				found.getImageSet().removeImage(imageId);
+			}
+			Query<Shop> query = this.createQuery();
+			query.filter(Constants.SHOP.CODE, new ObjectId(shopCode));
+			UpdateOperations<Shop> updateOperations = this.createUpdateOperations();
+			updateOperations.set(Constants.SHOP.IMAGESET, found.getImageSet());
+			return this.update(query, updateOperations).getUpdatedCount() >= 1;
+		} else {
+			return false;
+		}
 	}
 
 }

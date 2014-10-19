@@ -1,5 +1,6 @@
 package com.df.spec.locality.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +10,9 @@ import javax.validation.Validator;
 
 import org.springframework.util.Assert;
 
+import com.df.blobstore.image.ImageAttributes;
+import com.df.blobstore.image.ImageKey;
+import com.df.blobstore.image.ImageService;
 import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.dao.ShopDao;
 import com.df.spec.locality.exception.DuplicateShopException;
@@ -35,6 +39,8 @@ public class ShopServiceImpl implements ShopService {
 
 	private Validator validator;
 
+	private ImageService imageService;
+
 	private OperationPermissionEvaluator permissionEvaluator;
 
 	public ShopServiceImpl(ShopDao shopDao, RegionService regionService, GeoService geoService, OperationPermissionEvaluator permissionEvaluator,
@@ -44,6 +50,10 @@ public class ShopServiceImpl implements ShopService {
 		this.geoService = geoService;
 		this.validator = validator;
 		this.permissionEvaluator = permissionEvaluator;
+	}
+
+	public void setImageService(ImageService imageService) {
+		this.imageService = imageService;
 	}
 
 	public void setServiceOperationPermissionEvaluator(OperationPermissionEvaluator serviceOperationPermissionEvaluator) {
@@ -86,7 +96,7 @@ public class ShopServiceImpl implements ShopService {
 		}
 		newShop.setCreatedTime(new Date());
 		newShop.setChangedTime(null);
-		newShop.setScore(5); 
+		newShop.setScore(5);
 		if (permissionEvaluator.canAddShop(newShop.getCreatedBy())) {
 			newShop.approved(newShop.getCreatedBy());
 		} else {
@@ -198,5 +208,22 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public List<Shop> getShopListInRegion(String regionCode, int offset, int limit) {
 		return shopDao.getShopListInRegion(regionCode, offset, limit);
+	}
+
+	@Override
+	public boolean updateImageSet(String shopCode, String[] imageIds, boolean isAdd) {
+		if (isAdd) {
+			List<ImageDetails> images = new ArrayList<ImageDetails>();
+			for (String imageId : imageIds) {
+				ImageAttributes imageAttributes = null;
+				if (imageService != null) {
+					imageAttributes = imageService.getImageAttributes(new ImageKey(imageId));
+				}
+				images.add(new ImageDetails(imageId, imageAttributes));
+			}
+			return shopDao.addImages(shopCode, images.toArray(new ImageDetails[0]));
+		} else {
+			return shopDao.removeImages(shopCode, imageIds);
+		}
 	}
 }

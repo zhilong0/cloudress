@@ -13,9 +13,7 @@ public interface SpecialityService {
 
 	List<Speciality> getMySpecialities(String userCode);
 
-	String uploadSpecialityImage(String specialityCode, byte[] imageData, String imageName);
-
-	void deleteSpecialityImage(String specialityCode, String imageId);
+	boolean updateImageSet(String specialityCode, String[] imageIds, boolean isAdd);
 
 	Speciality getSpecialityByCode(String specialityCode, boolean throwException);
 

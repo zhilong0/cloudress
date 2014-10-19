@@ -74,30 +74,40 @@ public class SpecialityDaoImpl extends BaseDao<Speciality, ObjectId> implements 
 	}
 
 	@Override
-	public void addImage(String specialityCode, ImageDetails imageDetails) {
-		Assert.notNull(imageDetails);
+	public boolean addImages(String specialityCode, ImageDetails[] images) {
+		Assert.notNull(images);
 		Speciality found = this.findById(Speciality.class, specialityCode);
 		if (found != null) {
-			found.getImageSet().addImage(imageDetails);
+			for (ImageDetails image : images) {
+				if(!found.getImageSet().hasImageWithId(image.getImageId())){
+					found.getImageSet().addImage(image);
+				}
+			}
 			Query<Speciality> query = this.createQuery();
 			query.filter(Constants.SPECIALITY.CODE, new ObjectId(specialityCode));
 			UpdateOperations<Speciality> updateOperations = this.createUpdateOperations();
 			updateOperations.set(Constants.SPECIALITY.IMAGE_SET, found.getImageSet());
-			this.update(query, updateOperations);
+			return this.update(query, updateOperations).getUpdatedCount() >= 1;
+		} else {
+			return false;
 		}
 	}
 
 	@Override
-	public void removeImage(String specialityCode, String imageId) {
+	public boolean removeImages(String specialityCode, String[] imageIds) {
+		Assert.notNull(imageIds);
 		Speciality found = this.findById(Speciality.class, specialityCode);
 		if (found != null) {
-			found.getImageSet().removeImage(imageId);
+			for (String imageId : imageIds) {
+				found.getImageSet().removeImage(imageId);
+			}
 			Query<Speciality> query = this.createQuery();
 			query.filter(Constants.SPECIALITY.CODE, new ObjectId(specialityCode));
 			UpdateOperations<Speciality> updateOperations = this.createUpdateOperations();
 			updateOperations.set(Constants.SPECIALITY.IMAGE_SET, found.getImageSet());
-			this.update(query, updateOperations);
-			this.update(found);
+			return this.update(query, updateOperations).getUpdatedCount() >= 1;
+		} else {
+			return false;
 		}
 	}
 

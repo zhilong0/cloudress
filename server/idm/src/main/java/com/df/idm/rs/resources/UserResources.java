@@ -166,18 +166,19 @@ public class UserResources {
 	}
 
 	@POST
+	@PUT 
 	@Path("/code/{userCode}/change_password")
 	@PreAuthorize("hasPermission('SYS','USER_ACCOUNT_EDIT')")
-	public void changePassword(@PathParam("userCode") String userCode, String newPassword) {
-		userManagementService.updatePassword(userCode, newPassword);
+	public void changePassword(@PathParam("userCode") String userCode, PasswordChange passwordChange) {
+		userManagementService.updatePassword(userCode, passwordChange.getNewPassword());
 	}
 
 	@POST
 	@Path("/change_password")
 	@PreAuthorize("isAuthenticated()")
-	public void changeSelfPassword(String oldPassword, String newPassword) {
+	public void changeSelfPassword(PasswordChange passwordChange) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		userManagementService.updatePassword(authentication.getName(), oldPassword, newPassword);
+		userManagementService.updatePassword(authentication.getName(), passwordChange.getOldPassword(), passwordChange.getNewPassword());
 	}
 
 	@GET

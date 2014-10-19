@@ -1,6 +1,6 @@
 package com.df.spec.locality.service.impl;
 
-import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -79,24 +79,6 @@ public class SpecialityServiceImpl implements SpecialityService {
 	}
 
 	@Override
-	public String uploadSpecialityImage(String specialityCode, byte[] imageData, String imageName) {
-		Speciality found = specialityDao.findById(Speciality.class, specialityCode);
-		if (found == null) {
-			throw new SpecialityWithCodeNotFoundException(null, specialityCode);
-		}
-		ImageKey key = imageService.uploadImage(new ByteArrayInputStream(imageData), null, imageName);
-		ImageAttributes imageAttributes = imageService.getImageAttributes(key);
-		specialityDao.addImage(specialityCode, new ImageDetails(key.getKey(), imageAttributes));
-		return key.getKey();
-	}
-
-	@Override
-	public void deleteSpecialityImage(String specialityCode, String imageId) {
-		specialityDao.removeImage(specialityCode, imageId);
-		imageService.deleteImage(new ImageKey(imageId));
-	}
-
-	@Override
 	public List<Speciality> getSpecialityListByRegionCode(String regionCode) {
 		SpecialitySeasonalComparator comparator = new SpecialitySeasonalComparator();
 		List<Speciality> result = specialityDao.getSpecialityListByRegionCode(regionCode);
@@ -135,6 +117,23 @@ public class SpecialityServiceImpl implements SpecialityService {
 	@Override
 	public List<Speciality> getWaitToApproveList(int offset, int limit) {
 		return specialityDao.getWaitToApproveSpecialityList(offset, limit);
+	}
+
+	@Override
+	public boolean updateImageSet(String specialityCode, String[] imageIds, boolean isAdd) {
+		if (isAdd) {
+			List<ImageDetails> images = new ArrayList<ImageDetails>();
+			for (String imageId : imageIds) {
+				ImageAttributes imageAttributes = null;
+				if (imageService != null) {
+					imageAttributes = imageService.getImageAttributes(new ImageKey(imageId));
+				}
+				images.add(new ImageDetails(imageId, imageAttributes));
+			}
+			return specialityDao.addImages(specialityCode, images.toArray(new ImageDetails[0]));
+		} else {
+			return specialityDao.removeImages(specialityCode, imageIds);
+		}
 	}
 
 }

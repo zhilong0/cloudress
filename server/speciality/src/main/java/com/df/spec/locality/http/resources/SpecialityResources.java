@@ -2,6 +2,7 @@ package com.df.spec.locality.http.resources;
 
 import java.util.List;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -72,6 +73,27 @@ public class SpecialityResources {
 	public List<Speciality> getMySpecialities() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return specialityService.getMySpecialities(authentication.getName());
+	}
+
+	@POST
+	@Path("/code/{specialityCode}/images")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_EDIT')")
+	public boolean addImages(@PathParam("specialityCode") String specialityCode, String[] imageIds) {
+		if (imageIds == null) {
+			return true;
+		} else {
+			return specialityService.updateImageSet(specialityCode, imageIds, true);
+		}
+	}
+
+	@DELETE
+	@Path("/code/{specialityCode}/images")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_EDIT')")
+	public boolean deleteImages(@PathParam("specialityCode") String specialityCode, List<String> imageIds) {
+		if (imageIds == null) {
+			return true;
+		}
+		return specialityService.updateImageSet(specialityCode, imageIds.toArray(new String[0]), false);
 	}
 
 	@GET

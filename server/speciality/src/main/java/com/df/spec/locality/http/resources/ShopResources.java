@@ -190,6 +190,20 @@ public class ShopResources {
 	}
 
 	@POST
+	@Path("/{shopCode}/images")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_EDIT')")
+	public boolean addImages(@PathParam("shopCode") String shopCode, String[] imageIds) {
+		return shopService.updateImageSet(shopCode, imageIds, true);
+	}
+
+	@DELETE
+	@Path("/{shopCode}/images")
+	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_EDIT')")
+	public boolean deleteImages(@PathParam("shopCode") String shopCode, String[] imageIds) {
+		return shopService.updateImageSet(shopCode, imageIds, false);
+	}
+
+	@POST
 	@Path("/{shopCode}/reject")
 	@PreAuthorize("isAuthenticated() and hasPermission('SPECIALITY','MASTER_DATA_APPROVAL')")
 	public boolean rejectShop(@PathParam("shopCode") String shopCode, String rejectReason) {

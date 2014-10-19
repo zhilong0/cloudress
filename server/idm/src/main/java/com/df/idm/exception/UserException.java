@@ -60,7 +60,7 @@ public class UserException extends IdmException {
 	}
 
 	public static UserException userPasswordNotMatch(String account) {
-		String msg = "User %s password not match";
+		String msg = "Old password does not match";
 		return new UserException(USER_PASSWORD_NOT_MATCH, msg, account);
 	}
 

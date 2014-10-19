@@ -12,9 +12,9 @@ public interface SpecialityDao extends DaoTemplate {
 
 	boolean update(Speciality speciality);
 
-	void addImage(String specialityCode, ImageDetails image);
+	boolean addImages(String specialityCode, ImageDetails[] images);
 
-	void removeImage(String specialityCode, String imageId);
+	boolean removeImages(String specialityCode, String[] imageIds);
 
 	void delete(String specialityCode);
 

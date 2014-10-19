@@ -88,6 +88,9 @@ public class ImageServiceImpl implements ImageService {
 	public Image fetchImage(ImageKey imageKey) {
 		Image image = new Image();
 		BundleKey bundleKey = serviceRoute.resolveBundleKey(imageKey);
+		if (bundleKey == null) {
+			return null;
+		}
 		BundleService bundleService = serviceRoute.getBundleService(imageKey);
 		boolean succeed = bundleService.fetchBlob(image, bundleKey);
 		if (succeed && image.getImageAttributes() == null) {

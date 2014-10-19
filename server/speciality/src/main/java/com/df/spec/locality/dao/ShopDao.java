@@ -2,6 +2,7 @@ package com.df.spec.locality.dao;
 
 import java.util.List;
 
+import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.model.Goods;
 import com.df.spec.locality.model.Shop;
 
@@ -30,5 +31,9 @@ public interface ShopDao extends DaoTemplate {
 	boolean updateGoods(Goods goods);
 
 	boolean markGoodsAsDelete(String goodsId);
+	
+	boolean addImages(String shopCode, ImageDetails[] images);
+
+	boolean removeImages(String shopCode, String[] imageIds);
 
 }
