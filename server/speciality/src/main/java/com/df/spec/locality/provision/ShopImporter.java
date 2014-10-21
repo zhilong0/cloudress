@@ -27,12 +27,12 @@ import com.df.idm.model.Permission;
 import com.df.idm.model.Role;
 import com.df.spec.locality.exception.RegionErrorCode;
 import com.df.spec.locality.exception.SpecialityBaseException;
-import com.df.spec.locality.model.Goods;
+import com.df.spec.locality.model.Product;
 import com.df.spec.locality.model.ImageSet;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
 import com.df.spec.locality.model.Speciality;
-import com.df.spec.locality.provision.ShopSource.GoodsInfo;
+import com.df.spec.locality.provision.ShopSource.ProductInfo;
 import com.df.spec.locality.provision.ShopSource.ShopInfo;
 import com.df.spec.locality.service.RegionService;
 import com.df.spec.locality.service.ShopService;
@@ -147,26 +147,17 @@ public class ShopImporter extends AbstractImporterBean implements ResourceLoader
 				shop.setContact(shopInfo.getContact());
 				shop.setTelephone(shopInfo.getTelephone());
 				shop.setBusinessHour(shopInfo.getBusinessHour());
-				shopService.update(shop);
 			}
-
-			List<GoodsInfo> goodsList = shopInfo.getGoodsList();
-			if (goodsList != null) {
-				for (GoodsInfo goodsInfo : goodsList) {
-					Speciality speciality = specialityService.findSpeciality(region.getCode(), goodsInfo.getSpecialityName());
+			List<ProductInfo> products = shopInfo.getProducts();
+			if (products != null) {
+				for (ProductInfo product : products) {
+					Speciality speciality = specialityService.findSpeciality(region.getCode(), product.getSpecialityName());
 					if (speciality != null) {
-						if (!shop.getSellingSpecialities().contains(speciality.getCode())) {
-							Goods goods = new Goods(speciality.getCode());
-							shopService.addGoods(shop.getCode(), goods);
-						} else {
-							logger.debug("speciality {} is already in shop {} selling list", speciality.getName(), shop.getName());
-						}
-					} else {
-						logger.warn("Specaility {} does not exist in region {}", goodsInfo.getSpecialityName(), region);
+						shop.addProduct(new Product(speciality.getCode()));
 					}
 				}
 			}
-
+			shopService.update(shop);
 			String[] images = shopInfo.getImages();
 			ImageSet imageSet = shop.getImageSet();
 			for (String image : images) {

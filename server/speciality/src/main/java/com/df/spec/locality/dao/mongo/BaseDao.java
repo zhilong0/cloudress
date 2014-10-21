@@ -1,5 +1,7 @@
 package com.df.spec.locality.dao.mongo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,11 +30,10 @@ public class BaseDao<T, K> extends BasicDAO<T, K> implements DaoTemplate {
 		super(mongoClient, morphia, dbName);
 	}
 
-	public <V> int update(Class<V> type, Query<V> filter, Map<String, Object> properties) {
+	public <V> int update(Class<V> type, Query<V> filterQuery, Map<String, Object> properties) {
 		if (properties.size() == 0) {
 			return 0;
 		}
-		Query<V> query = this.getDatastore().createQuery(type);
 		UpdateOperations<V> updateOperations = this.getDatastore().createUpdateOperations(type);
 		for (Object key : properties.keySet()) {
 			Object value = properties.get(key);
@@ -42,7 +43,7 @@ public class BaseDao<T, K> extends BasicDAO<T, K> implements DaoTemplate {
 				updateOperations.set(key.toString(), value);
 			}
 		}
-		return this.getDatastore().update(query, updateOperations).getUpdatedCount();
+		return this.getDatastore().update(filterQuery, updateOperations).getUpdatedCount();
 	}
 
 	public <AT extends Approvable> List<AT> getWaitList(Class<AT> type, int offset, int limit) {
@@ -59,8 +60,17 @@ public class BaseDao<T, K> extends BasicDAO<T, K> implements DaoTemplate {
 		return entity;
 	}
 
+	protected <V> void beforeAddCallback(V entity) {
+	}
+
+	protected <V> void beforeUpdateCallback(V entity) {
+	}
+
 	@Override
 	public <V> boolean deleteById(Class<V> type, Object entityId) {
+		if (entityId == null) {
+			return true;
+		}
 		Query<V> query = this.getDatastore().createQuery(type);
 		MappedField mapperField = this.getDs().getMapper().getMappedClass(type).getMappedIdField();
 		if (mapperField.getType() == ObjectId.class && entityId instanceof String) {
@@ -78,8 +88,8 @@ public class BaseDao<T, K> extends BasicDAO<T, K> implements DaoTemplate {
 
 	@Override
 	public <V> boolean update(Class<V> type, Object entityId, Map<String, Object> properties) {
-		Query<V> filter = this.getDatastore().createQuery(type).filter(Mapper.ID_KEY, entityId);
-		return this.update(type, filter, properties) >= 1;
+		Query<V> filterQuery = this.getDatastore().createQuery(type).filter(Mapper.ID_KEY, entityId);
+		return this.update(type, filterQuery, properties) >= 1;
 	}
 
 	@Override
@@ -88,7 +98,7 @@ public class BaseDao<T, K> extends BasicDAO<T, K> implements DaoTemplate {
 		MappedField mapperField = this.getDs().getMapper().getMappedClass(type).getMappedIdField();
 		if (mapperField.getType() == ObjectId.class && entityId instanceof String) {
 			if (ObjectId.isValid(entityId.toString())) {
-				query.filter("_id", new ObjectId((String) entityId));
+				query.filter(Mapper.ID_KEY, new ObjectId((String) entityId));
 			} else {
 				return null;
 			}
@@ -97,5 +107,26 @@ public class BaseDao<T, K> extends BasicDAO<T, K> implements DaoTemplate {
 			query.filter("_id", entityId);
 		}
 		return query.get();
+	}
+
+	@Override
+	public <V> boolean deleteByIds(Class<V> type, Object[] entityIds) {
+		if (entityIds == null || entityIds.length == 0) {
+			return true;
+		}
+		Query<V> query = this.getDatastore().createQuery(type);
+		List<Object> idList = new ArrayList<Object>();
+		MappedField mapperField = this.getDs().getMapper().getMappedClass(type).getMappedIdField();
+		if (mapperField.getType() == ObjectId.class && entityIds[0] instanceof String) {
+			for (Object entityId : entityIds) {
+				if (ObjectId.isValid(entityId.toString())) {
+					idList.add(new ObjectId(entityId.toString()));
+				}
+			}
+		} else {
+			idList = Arrays.asList(entityIds);
+		}
+		query.field("_id").in(idList);
+		return this.getDatastore().delete(query).getN() >= entityIds.length;
 	}
 }

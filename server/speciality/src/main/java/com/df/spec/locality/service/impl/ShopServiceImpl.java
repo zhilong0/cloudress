@@ -2,6 +2,7 @@ package com.df.spec.locality.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +22,8 @@ import com.df.spec.locality.exception.SpecialityBaseException;
 import com.df.spec.locality.exception.validation.ValidationException;
 import com.df.spec.locality.geo.Coordinate;
 import com.df.spec.locality.geo.GeoService;
-import com.df.spec.locality.model.Goods;
+import com.df.spec.locality.model.Constants;
+import com.df.spec.locality.model.Product;
 import com.df.spec.locality.model.ImageSet;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
@@ -85,6 +87,7 @@ public class ShopServiceImpl implements ShopService {
 		if (shopDao.find(newShop.getName(), newShop.getAddress()) != null) {
 			throw new DuplicateShopException(null, newShop.getName(), newShop.getAddress());
 		}
+
 		Region region = regionService.getRegionByCode(newShop.getRegionCode(), true);
 		if (newShop.getLocation().getCoordinate() == null) {
 			String address = newShop.getLocation().getAddress();
@@ -97,12 +100,26 @@ public class ShopServiceImpl implements ShopService {
 		newShop.setCreatedTime(new Date());
 		newShop.setChangedTime(null);
 		newShop.setScore(5);
+		if (newShop.getImage() != null) {
+			if (imageService != null) {
+				ImageAttributes imageAttributes = imageService.getImageAttributes(new ImageKey(newShop.getImage()));
+				if (imageAttributes != null) {
+					newShop.getImageSet().addImage(0, newShop.getImage(), imageAttributes);
+				}
+			} else {
+				newShop.getImageSet().addImage(0, newShop.getImage(), null);
+			}
+		}
 		if (permissionEvaluator.canAddShop(newShop.getCreatedBy())) {
 			newShop.approved(newShop.getCreatedBy());
 		} else {
 			newShop.waitToApprove();
 		}
 		shopDao.add(newShop);
+		List<Product> products = newShop.getProducts();
+		for (Product product : products) {
+			shopDao.addProduct(newShop.getCode(), product);
+		}
 		return newShop;
 	}
 
@@ -117,7 +134,8 @@ public class ShopServiceImpl implements ShopService {
 
 	@Override
 	public List<Shop> getShopListSellSpeciality(String specialityCode) {
-		return shopDao.getShopListBySpeciality(specialityCode);
+		List<String> shopCodeList = shopDao.getShopCodeListBySpeciality(specialityCode, 0, -1);
+		return shopDao.getShopList(shopCodeList, true);
 	}
 
 	@Override
@@ -145,6 +163,30 @@ public class ShopServiceImpl implements ShopService {
 			found.getImageSet().addImage(img);
 		}
 		shopDao.update(found);
+		List<Product> products = shopDao.getProductList(shop.getCode());
+		List<Product> newProducts = shop.getProducts();
+		for (Product product : products) {
+			boolean shouldDelete = true;
+			for (Product newProduct : newProducts) {
+				if (product.getSpecialityCode().equals(newProduct.getSpecialityCode())) {
+					shouldDelete = false;
+				}
+			}
+			if (shouldDelete) {
+				shopDao.deleteById(Product.class, product.getId());
+			}
+		}
+		for (Product newProduct : newProducts) {
+			boolean shouldAdd = true;
+			for (Product product : products) {
+				if (product.getSpecialityCode().equals(newProduct.getSpecialityCode())) {
+					shouldAdd = false;
+				}
+			}
+			if (shouldAdd) {
+				shopDao.addProduct(shop.getCode(), newProduct);
+			}
+		}
 	}
 
 	@Override
@@ -170,39 +212,39 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public Goods addGoods(String shopCode, Goods goods) {
-		Shop shop = this.getShopByCode(shopCode, true);
-		if (shop.getSellingSpecialities().contains(goods.getSpecialityCode())) {
-			String msg = "speciality %s is already in selling list";
-			throw new SpecialityBaseException(ShopErrorCode.SPECIALITY_ALREADY_IN_SELLING_LIST, msg, goods.getSpecialityCode());
+	public Product addProduct(String shopCode, Product product) {
+		this.getShopByCode(shopCode, true);
+		Product found = shopDao.getProduct(shopCode, product.getSpecialityCode());
+		if (found != null) {
+			if (!found.isDeleted()) {
+				String msg = "speciality %s is already in selling list";
+				throw new SpecialityBaseException(ShopErrorCode.SPECIALITY_ALREADY_IN_SELLING_LIST, msg, product.getSpecialityCode());
+			} else {
+				HashMap<String, Object> updates = new HashMap<String, Object>();
+				updates.put(Constants.PRODUCT.IS_DELETED, false);
+				shopDao.update(Product.class, product.getId(), updates);
+			}
 		}
-		shop.addSpeciality(goods.getSpecialityCode());
-		goods = shopDao.addGoods(shopCode, goods);
-		shopDao.update(shop);
-		return goods;
+		product = shopDao.addProduct(shopCode, product);
+		return product;
 	}
 
 	@Override
-	public boolean deleteGoods(String shopCode, String goodsId) {
-		Goods found = shopDao.findById(Goods.class, goodsId);
+	public boolean deleteProduct(String shopCode, String productId) {
+		Product found = shopDao.findById(Product.class, productId);
 		Shop shop = this.getShopByCode(shopCode, true);
 		if (found != null && !found.isDeleted()) {
 			if (shop != null) {
-				shopDao.markGoodsAsDelete(goodsId);
-				if (shop.getSellingSpecialities().contains(found.getSpecialityCode())) {
-					shop.getSellingSpecialities().remove(found.getSpecialityCode());
-					shopDao.update(shop);
-				}
+				shopDao.markProductAsDelete(productId);
 				return true;
 			}
 		}
 		return false;
-
 	}
 
 	@Override
-	public List<Goods> getGoodsList(String shopCode) {
-		return shopDao.getGoodsList(shopCode);
+	public List<Product> getProductList(String shopCode) {
+		return shopDao.getProductList(shopCode);
 	}
 
 	@Override
@@ -223,7 +265,7 @@ public class ShopServiceImpl implements ShopService {
 			}
 			return shopDao.addImages(shopCode, images.toArray(new ImageDetails[0]));
 		} else {
-			return shopDao.removeImages(shopCode, imageIds);
+			return shopDao.deleteImages(shopCode, imageIds);
 		}
 	}
 }

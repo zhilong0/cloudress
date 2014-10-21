@@ -18,6 +18,14 @@ public class ImageSet {
 		images.add(new ImageDetails(imageId, imageAttributes));
 	}
 
+	public void addImage(int index, String imageId, ImageAttributes imageAttributes) {
+		if (index < 0 || index > images.size()) {
+			addImage(imageId, imageAttributes);
+		} else {
+			images.add(0, new ImageDetails(imageId, imageAttributes));
+		}
+	}
+
 	public void addImage(ImageDetails imageDetails) {
 		images.add(imageDetails);
 	}

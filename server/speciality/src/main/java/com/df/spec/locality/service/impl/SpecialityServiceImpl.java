@@ -65,9 +65,13 @@ public class SpecialityServiceImpl implements SpecialityService {
 		speciality.setCreatedTime(new Date());
 		speciality.setChangedTime(null);
 		if (speciality.getImage() != null) {
-			ImageAttributes imageAttributes = imageService.getImageAttributes(new ImageKey(speciality.getImage()));
-			if (imageAttributes != null) {
-				speciality.getImageSet().addImage(speciality.getImage(), imageAttributes);
+			if (imageService != null) {
+				ImageAttributes imageAttributes = imageService.getImageAttributes(new ImageKey(speciality.getImage()));
+				if (imageAttributes != null) {
+					speciality.getImageSet().addImage(0, speciality.getImage(), imageAttributes);
+				}
+			} else {
+				speciality.getImageSet().addImage(0, speciality.getImage(), null);
 			}
 		}
 		if (permissionEvaluator.canAddSpeciality(speciality.getCreatedBy())) {

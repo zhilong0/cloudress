@@ -10,6 +10,8 @@ public interface DaoTemplate {
 
 	<T> boolean deleteById(Class<T> type, Object entityId);
 
+	<T> boolean deleteByIds(Class<T> type, Object[] entityIds);
+
 	<T> T findById(Class<T> type, Object entityId);
 
 }

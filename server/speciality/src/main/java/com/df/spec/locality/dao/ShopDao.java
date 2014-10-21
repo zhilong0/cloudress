@@ -3,7 +3,7 @@ package com.df.spec.locality.dao;
 import java.util.List;
 
 import com.df.blobstore.image.http.ImageDetails;
-import com.df.spec.locality.model.Goods;
+import com.df.spec.locality.model.Product;
 import com.df.spec.locality.model.Shop;
 
 public interface ShopDao extends DaoTemplate {
@@ -18,22 +18,26 @@ public interface ShopDao extends DaoTemplate {
 
 	List<Shop> getShopListByCreatedBy(String createdBy);
 
-	List<Shop> getShopListBySpeciality(String specialityCode);
+	List<String> getShopCodeListBySpeciality(String specialityCode, int offset, int limit);
+
+	List<Shop> getShopList(List<String> shopCodeList, boolean filterDisabled);
 
 	Shop find(String shopName, String address);
 
 	List<Shop> getWaitToApproveShopList(int offset, int limit);
 
-	Goods addGoods(String shopCode, Goods goods);
+	Product addProduct(String shopCode, Product product);
 
-	List<Goods> getGoodsList(String shopCode);
+	Product getProduct(String shopCode, String specialityCode);
 
-	boolean updateGoods(Goods goods);
+	List<Product> getProductList(String shopCode);
 
-	boolean markGoodsAsDelete(String goodsId);
-	
+	boolean updateProduct(Product product);
+
+	boolean markProductAsDelete(String productId);
+
 	boolean addImages(String shopCode, ImageDetails[] images);
 
-	boolean removeImages(String shopCode, String[] imageIds);
+	boolean deleteImages(String shopCode, String[] imageIds);
 
 }

@@ -25,7 +25,7 @@ import com.df.spec.locality.geo.GeoService;
 import com.df.spec.locality.model.Comment;
 import com.df.spec.locality.model.CommentObject;
 import com.df.spec.locality.model.Constants;
-import com.df.spec.locality.model.Goods;
+import com.df.spec.locality.model.Product;
 import com.df.spec.locality.model.ImageSet;
 import com.df.spec.locality.model.Region;
 import com.df.spec.locality.model.Shop;
@@ -120,18 +120,18 @@ public class ShopResources {
 	@POST
 	@Path("/{shopCode}/products")
 	@PreAuthorize("isAuthenticated()")
-	public Goods addGoods(String shopCode, Goods goods) {
-		return shopService.addGoods(shopCode, goods);
+	public Product addProduct(String shopCode, Product product) {
+		return shopService.addProduct(shopCode, product);
 	}
 
 	@DELETE
 	@Path("/{shopCode}/products")
 	@PreAuthorize("isAuthenticated()")
-	public void deleteGoods(String shopCode, @QueryParam("productId") String goodsId) {
-		if (goodsId == null) {
+	public void deleteGoods(String shopCode, @QueryParam("productId") String productId) {
+		if (productId == null) {
 			return;
 		}
-		shopService.deleteGoods(shopCode, goodsId);
+		shopService.deleteProduct(shopCode, productId);
 	}
 
 	@GET

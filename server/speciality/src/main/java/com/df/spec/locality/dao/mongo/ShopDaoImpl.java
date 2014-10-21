@@ -1,13 +1,14 @@
 package com.df.spec.locality.dao.mongo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
@@ -18,9 +19,8 @@ import com.df.blobstore.image.http.ImageDetails;
 import com.df.spec.locality.dao.ShopDao;
 import com.df.spec.locality.model.Approvable.Status;
 import com.df.spec.locality.model.Constants;
-import com.df.spec.locality.model.Goods;
+import com.df.spec.locality.model.Product;
 import com.df.spec.locality.model.Shop;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
@@ -47,13 +47,22 @@ public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 	}
 
 	@Override
-	public List<Shop> getShopListBySpeciality(String specialityCode) {
-		Query<Shop> query = this.createQuery();
-		query.filter(Constants.SHOP.IS_DISABLED, false);
-		query = query.field(Constants.SHOP.SELLING_SPECIALITIES).contains(specialityCode);
-		QueryResults<Shop> result = this.find(query);
-		Iterator<Shop> iter = result.iterator();
-		return ImmutableList.copyOf(iter);
+	public List<String> getShopCodeListBySpeciality(String specialityCode, int offset, int limit) {
+		Query<Product> query = this.getDatastore().createQuery(Product.class);
+		query.filter(Constants.PRODUCT.SPECIALITY_CODE + " =", specialityCode);
+		query.filter(Constants.PRODUCT.IS_DELETED + " =", false);
+		if (offset >= 0) {
+			query.offset(offset);
+		}
+		if (limit > 0) {
+			query.limit(limit);
+		}
+		List<Key<Product>> keyList = query.asKeyList();
+		ArrayList<String> keys = new ArrayList<String>();
+		for (Key<Product> key : keyList) {
+			keys.add(((ObjectId) key.getId()).toHexString());
+		}
+		return keys;
 	}
 
 	@Override
@@ -75,7 +84,6 @@ public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 			p.put(Constants.SHOP.TEL, shop.getTelephone());
 			p.put(Constants.SHOP.IMAGESET, shop.getImageSet());
 			p.put(Constants.SHOP.CHANGED_TIME, new Date());
-			p.put(Constants.SHOP.SELLING_SPECIALITIES, shop.getSellingSpecialities());
 			return this.update(Shop.class, new ObjectId(shop.getCode()), p);
 		} else {
 			return false;
@@ -110,32 +118,33 @@ public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 	}
 
 	@Override
-	public Goods addGoods(String shopCode, Goods goods) {
-		goods.setShopCode(shopCode);
-		this.getDatastore().save(goods, WriteConcern.JOURNALED);
-		return goods;
+	public Product addProduct(String shopCode, Product product) {
+		product.setShopCode(shopCode);
+		this.getDatastore().save(product, WriteConcern.JOURNALED);
+		return product;
 	}
 
 	@Override
-	public boolean updateGoods(Goods goods) {
+	public boolean updateProduct(Product product) {
 		return false;
 	}
 
 	@Override
-	public boolean markGoodsAsDelete(String goodsId) {
-		if (ObjectId.isValid(goodsId)) {
+	public boolean markProductAsDelete(String productId) {
+		if (ObjectId.isValid(productId)) {
 			Map<String, Object> p = new HashMap<String, Object>();
-			p.put(Constants.GOODS.IS_DELETED, true);
-			return this.update(Goods.class, new ObjectId(goodsId), p);
+			p.put(Constants.PRODUCT.IS_DELETED, true);
+			return this.update(Product.class, new ObjectId(productId), p);
 		} else {
 			return false;
 		}
 	}
 
 	@Override
-	public List<Goods> getGoodsList(String shopCode) {
-		Query<Goods> query = this.getDatastore().createQuery(Goods.class);
-		query.filter(Constants.GOODS.SHOP_CODE + " =", shopCode);
+	public List<Product> getProductList(String shopCode) {
+		Query<Product> query = this.getDatastore().createQuery(Product.class);
+		query.filter(Constants.PRODUCT.SHOP_CODE + " =", shopCode);
+		query.filter(Constants.PRODUCT.IS_DELETED + " =", false);
 		return query.asList();
 	}
 
@@ -145,7 +154,7 @@ public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 		Shop found = this.findById(Shop.class, shopCode);
 		if (found != null) {
 			for (ImageDetails image : images) {
-				if(!found.getImageSet().hasImageWithId(image.getImageId())){
+				if (!found.getImageSet().hasImageWithId(image.getImageId())) {
 					found.getImageSet().addImage(image);
 				}
 			}
@@ -160,7 +169,7 @@ public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 	}
 
 	@Override
-	public boolean removeImages(String shopCode, String[] imageIds) {
+	public boolean deleteImages(String shopCode, String[] imageIds) {
 		Assert.notNull(imageIds);
 		Shop found = this.findById(Shop.class, shopCode);
 		if (found != null) {
@@ -175,6 +184,28 @@ public class ShopDaoImpl extends BaseDao<Shop, ObjectId> implements ShopDao {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public List<Shop> getShopList(List<String> shopCodeList, boolean filterDisabled) {
+		if (shopCodeList == null || shopCodeList.size() == 0) {
+			return new ArrayList<Shop>();
+		}
+		Query<Shop> query = this.createQuery();
+		if (filterDisabled) {
+			query.filter(Constants.SHOP.IS_DISABLED, false);
+		}
+		query = query.field(Constants.SHOP.CODE).in(shopCodeList);
+		QueryResults<Shop> result = this.find(query);
+		return result.asList();
+	}
+
+	@Override
+	public Product getProduct(String shopCode, String specialityCode) {
+		Query<Product> query = this.getDatastore().createQuery(Product.class);
+		query.filter(Constants.PRODUCT.SHOP_CODE, shopCode);
+		query.filter(Constants.PRODUCT.SPECIALITY_CODE, specialityCode);
+		return query.get();
 	}
 
 }

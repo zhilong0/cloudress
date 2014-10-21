@@ -53,7 +53,7 @@ public class ShopSource {
 
 		private String businessHour;
 
-		private List<GoodsInfo> goodsList = new ArrayList<GoodsInfo>();
+		private List<ProductInfo> products = new ArrayList<ProductInfo>();
 
 		ShopInfo() {
 		}
@@ -111,12 +111,12 @@ public class ShopSource {
 			this.description = description;
 		}
 
-		public List<GoodsInfo> getGoodsList() {
-			return goodsList;
+		public List<ProductInfo> getProducts() {
+			return products;
 		}
 
-		public void setGoodsList(List<GoodsInfo> goodsList) {
-			this.goodsList = goodsList;
+		public void setProducts(List<ProductInfo> products) {
+			this.products = products;
 		}
 
 		public String[] getImages() {
@@ -128,7 +128,7 @@ public class ShopSource {
 		}
 	}
 
-	public static class GoodsInfo {
+	public static class ProductInfo {
 
 		private String specialityName;
 

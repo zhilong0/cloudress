@@ -26,7 +26,7 @@ public class Constants {
 
 	}
 
-	public static interface GOODS {
+	public static interface PRODUCT {
 
 		public static final String ID = "_id";
 
@@ -47,8 +47,6 @@ public class Constants {
 		public static final String REGION_CODE = "regionCode";
 
 		public static final String ADDRESS = "location.address";
-
-		public static final String SELLING_SPECIALITIES = "sellingSpecialities";
 
 		public static final String DESCRIPTION = "description";
 

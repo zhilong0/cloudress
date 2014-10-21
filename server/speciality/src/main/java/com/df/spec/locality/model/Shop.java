@@ -60,8 +60,8 @@ public class Shop extends Approvable implements Serializable {
 	@Transient
 	private String image;
 
-	@JsonIgnore
-	private List<String> sellingSpecialities = new ArrayList<String>();
+	@Transient
+	private List<Product> products = new ArrayList<Product>();
 
 	Shop() {
 	}
@@ -194,16 +194,32 @@ public class Shop extends Approvable implements Serializable {
 		}
 	}
 
-	public List<String> getSellingSpecialities() {
-		return sellingSpecialities;
+	public List<Product> getProducts() {
+		return products;
 	}
 
-	public boolean addSpeciality(String specialityCode) {
-		return this.sellingSpecialities.add(specialityCode);
+	public void setProducts(List<Product> products) {
+		if (products != null) {
+			this.products = products;
+		}
 	}
 
-	public boolean removeGoods(String specialityCode) {
-		return this.sellingSpecialities.remove(specialityCode);
+	public boolean addProduct(Product product) {
+		for (Product it : products) {
+			if (it.getSpecialityCode().equals(product.getSpecialityCode())) {
+				return false;
+			}
+		}
+		return products.add(product);
+	}
+
+	public boolean removeProduct(String specialityCode) {
+		for (Product product : products) {
+			if (product.getSpecialityCode().equals(specialityCode)) {
+				return products.remove(product);
+			}
+		}
+		return false;
 	}
 
 	public boolean isDisabled() {

@@ -34,14 +34,7 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 			Region region = this.createRegion();
 			shop.setRegionCode(region.getCode());
 			shopDao.add(shop);
-			Shop shop2 = new Shop(shop.getName(), shop.getAddress());
-			shop2.setRegionCode(region.getCode());
-			try {
-				shopDao.add(shop2);
-			} catch (DuplicateShopException ex) {
-				return;
-			}
-			TestCase.fail();
+			TestCase.assertNotNull(shopDao.findById(Shop.class, shop.getCode()));
 		} finally {
 			this.removeRegion();
 			if (shop.getCode() != null) {
@@ -65,4 +58,5 @@ public class MongoShopDaoTest extends SpecialityBaseTest {
 			}
 		}
 	}
+
 }

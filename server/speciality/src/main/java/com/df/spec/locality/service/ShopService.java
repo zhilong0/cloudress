@@ -2,7 +2,7 @@ package com.df.spec.locality.service;
 
 import java.util.List;
 
-import com.df.spec.locality.model.Goods;
+import com.df.spec.locality.model.Product;
 import com.df.spec.locality.model.Shop;
 
 public interface ShopService {
@@ -29,10 +29,10 @@ public interface ShopService {
 
 	List<Shop> getWaitToApproveShopList(int offset, int limit);
 
-	Goods addGoods(String shopCode, Goods goods);
+	Product addProduct(String shopCode, Product product);
 
-	boolean deleteGoods(String shopCode, String goodsId);
+	boolean deleteProduct(String shopCode, String productId);
 
-	List<Goods> getGoodsList(String shopCode);
+	List<Product> getProductList(String shopCode);
 
 }
