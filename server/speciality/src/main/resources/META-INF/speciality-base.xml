@@ -3,13 +3,13 @@
 	xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean id="mongoCredentials" class="com.df.common.morphia.MongoCredentialsFactoryBean">
+	<bean id="mongoCredentials" class="com.tt.common.morphia.MongoCredentialsFactoryBean">
 	</bean>
-	<bean id="mongoClientOptions" class="com.df.common.morphia.MongoClientOptionsFactoryBean">
+	<bean id="mongoClientOptions" class="com.tt.common.morphia.MongoClientOptionsFactoryBean">
 		<property name="socketTimeout" value="10000" />
 		<property name="readSecondary" value="true" />
 	</bean>
-	<bean id="mongoClient" class="com.df.common.morphia.MongoClientFactoryBean">
+	<bean id="mongoClient" class="com.tt.common.morphia.MongoClientFactoryBean">
 		<property name="addresses">
 			<list>
 				<value>127.0.0.1:27017</value>
@@ -18,8 +18,8 @@
 		<property name="credentials" ref="mongoCredentials" />
 		<property name="mongoClientOptions" ref="mongoClientOptions" />
 	</bean>
-	<bean id="specialityMorphia" class="com.df.common.morphia.MorphiaFactoryBean" />
-	<bean id="specialityDataStore" class="com.df.common.morphia.DataStoreFactoryBean">
+	<bean id="specialityMorphia" class="com.tt.common.morphia.MorphiaFactoryBean" />
+	<bean id="specialityDataStore" class="com.tt.common.morphia.DataStoreFactoryBean">
 		<property name="mongoClient" ref="mongoClient" />
 		<property name="morphia" ref="specialityMorphia" />
 		<property name="dbName" value="speciality" />

@@ -3,11 +3,11 @@
 	xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean id="mongoClientOptions" class="com.df.common.morphia.MongoClientOptionsFactoryBean">
+	<bean id="mongoClientOptions" class="com.tt.common.morphia.MongoClientOptionsFactoryBean">
 		<property name="socketTimeout" value="10000" />
 		<property name="readSecondary" value="true" />
 	</bean>
-	<bean id="mongoClient" class="com.df.common.morphia.MongoClientFactoryBean">
+	<bean id="mongoClient" class="com.tt.common.morphia.MongoClientFactoryBean">
 		<property name="addresses">
 			<list>
 				<value>127.0.0.1:27017</value>
@@ -16,27 +16,27 @@
 		<property name="credentials" ref="mongoCredentials" />
 		<property name="mongoClientOptions" ref="mongoClientOptions" />
 	</bean>
-	<bean id="mongoDB" class="com.df.blobstore.mongo.MongoDBFactoryBean">
+	<bean id="mongoDB" class="com.tt.blobstore.mongo.MongoDBFactoryBean">
 		<property name="dbName" value="blob_store" />
 		<property name="mongoClient" ref="mongoClient" />
 	</bean>
-	<bean id="imageService" class="com.df.blobstore.image.ImageServiceImpl">
+	<bean id="imageService" class="com.tt.blobstore.image.ImageServiceImpl">
 		<constructor-arg index="0" ref="imageServiceRoute" />
 	</bean>
-	<bean id="imageServiceRoute" class="com.df.blobstore.image.mongo.MongoDBImageServiceRoute">
+	<bean id="imageServiceRoute" class="com.tt.blobstore.image.mongo.MongoDBImageServiceRoute">
 		<constructor-arg index="0" ref="mongoDB" />
 		<constructor-arg index="1" value="image_store" />
 	</bean>
-	<bean id="imageLinkCreator" class="com.df.blobstore.image.http.DefaultImageLinkCreator">
+	<bean id="imageLinkCreator" class="com.tt.blobstore.image.http.DefaultImageLinkCreator">
 		<property name="imageRequestPrefix" value="/images" />
 	</bean>
-	<bean id="imageDetailsFactory" class="com.df.blobstore.image.http.DefaultImageDetailsFactory">
+	<bean id="imageDetailsFactory" class="com.tt.blobstore.image.http.DefaultImageDetailsFactory">
 		<constructor-arg index="0" ref="imageLinkCreator" />
 		<constructor-arg index="1" ref="imageService" />
 	</bean>
-	<bean id="imageAttributesLoader" class="com.df.blobstore.image.mongo.MongoDBImageAttributesLoader">
+	<bean id="imageAttributesLoader" class="com.tt.blobstore.image.mongo.MongoDBImageAttributesLoader">
 		<constructor-arg index="0" ref="mongoDB" />
 		<constructor-arg index="1" value="images_store" />
 	</bean>
-	<bean id="objectMapper" class="com.df.common.json.ObjectMapperFactoryBean" />
+	<bean id="objectMapper" class="com.tt.common.json.ObjectMapperFactoryBean" />
 </beans>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd ">
+	<import resource="classpath:META-INF/idm-beans.xml" />
+	<import resource="classpath:META-INF/blob-store-beans.xml" />
+	<import resource="classpath:META-INF/speciality-beans.xml" />
+	<import resource="security.xml" />
+	<bean id="imageService" class="com.tt.blobstore.image.ImageServiceImpl">
+		<constructor-arg index="0" ref="imageServiceRoute" />
+		<constructor-arg index="1">
+			<bean class="com.tt.spec.image.config.ImageServiceConfigFactoryBean" />
+		</constructor-arg>
+	</bean>
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+	<bean id="registrationMessageNotifier" class="com.tt.idm.registration.message.DefaultRegistrationMessageNotifier">
+		<property name="emailContextProvider" ref="emailContextProvider" />
+		<property name="richMailSender" ref="richMailSender" />
+		<property name="taskExecutor" ref="asyncTaskExecutor" />
+		<property name="verifyUrlPrefix" value="/rs/users/email/verify" />
+		<property name="shortMessageSender" ref="shortMessageSender" />
+		<property name="emailSubject" value="礼尚往来注册确认邮件" />
+		<property name="shortMessageTemplateId" value="Csc5EEEcCkYu" />
+	</bean>
+	<bean id="emailVerificationResultHandler" class="com.tt.idm.registration.ForwardVerificationResultHandler">
+		<property name="succeedUrl" value="/verify/success" />
+		<property name="failedUrl" value="/verify/failure" />
+	</bean>
+	<bean id="objectMapper" class="com.tt.common.json.ObjectMapperFactoryBean" />
+	<bean id="jacksonContextResolver" class="com.tt.http.rs.provider.JacksonContextResolver">
+		<property name="objectMapper" ref="objectMapper" />
+	</bean>
+	<bean id="idmExceptionMapper" class="com.tt.http.rs.provider.idm.IdmExceptionMapper" />
+	<bean id="idmValidationExceptionMapper" class="com.tt.http.rs.provider.idm.ValidationExceptionMapper">
+		<constructor-arg index="0" ref="objectMapper" />
+	</bean>
+	<bean id="specialityExceptionMapper" class="com.tt.http.rs.provider.speciality.SpecialityExceptionMapper" />
+	<bean id="specialityvalidationExceptionMapper" class="com.tt.http.rs.provider.speciality.ValidationExceptionMapper">
+		<constructor-arg index="0" ref="objectMapper" />
+	</bean>
+	<bean id="imageServiceExceptionMapper" class="com.tt.http.rs.provider.image.ImageServiceExceptionMapper" />
+	<context:component-scan base-package="com.tt.idm.rs.resources" />
+	<bean id="imageResource" class="com.tt.blobstore.image.http.resources.ImageResources">
+		<constructor-arg index="0" ref="imageService" />
+	</bean>
+	<bean id="regionResource" class="com.tt.spec.locality.http.resources.RegionResources">
+		<property name="regionService" ref="regionService" />
+	</bean>
+	<bean id="specialityResource" class="com.tt.spec.locality.http.resources.SpecialityResources">
+		<property name="specialityService" ref="specialityService" />
+		<property name="regionService" ref="regionService" />
+		<property name="approvableService" ref="approvableService" />
+		<property name="imageLinkCreator" ref="imageLinkCreator" />
+	</bean>
+	<bean id="geoResource" class="com.tt.spec.locality.http.resources.GeoResources">
+		<property name="regionService" ref="regionService" />
+		<property name="geoService" ref="geoService" />
+	</bean>
+	<bean id="shopResource" class="com.tt.spec.locality.http.resources.ShopResources">
+		<property name="shopService" ref="shopService" />
+		<property name="commentService" ref="commentService" />
+		<property name="imageLinkCreator" ref="imageLinkCreator" />
+	</bean>
+	<bean id="commentResource" class="com.tt.spec.locality.http.resources.CommentResources">
+		<property name="commentService" ref="commentService" />
+	</bean>
+	<bean id="supplierResource" class="com.tt.spec.locality.http.resources.SupplierResources">
+		<constructor-arg index="0" ref="geoService" />
+		<constructor-arg index="1" ref="supplierService" />
+	</bean>
+	<bean id="campaignResource" class="com.tt.spec.locality.http.resources.CampaignResources">
+		<constructor-arg index="0" ref="campaignService" />
+	</bean>
+	<bean id="provisionService" class="com.tt.common.provision.ProvisionService" />
+	<bean id="permissionImporter" class="com.tt.idm.provision.PermissionImporter">
+		<constructor-arg index="0" value="1" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="securityModelRepository" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_permissions.csv</value>
+				<value>classpath:speciality_permissions.csv</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="roleImporter" class="com.tt.idm.provision.RoleImporter">
+		<constructor-arg index="0" value="2" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="objectMapper" />
+		<constructor-arg index="3" ref="securityModelRepository" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_roles.json</value>
+				<value>classpath:speciality_roles.json</value>
+				<value>classpath:c_roles.json</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="userImporter" class="com.tt.idm.provision.UserImporter">
+		<constructor-arg index="0" value="3" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="objectMapper" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_users.json</value>
+				<value>classpath:speciality_users.json</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="authorityAssignmentImporter" class="com.tt.idm.provision.AuthorityAssignmentImporter">
+		<constructor-arg index="0" value="4" />
+		<constructor-arg index="1" value="idm" />
+		<constructor-arg index="2" ref="objectMapper" />
+		<constructor-arg index="3" ref="userAuthorityService" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:idm_assignments.json</value>
+				<value>classpath:speciality_assignments.json</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="regionImporter" class="com.tt.spec.locality.provision.RegionImporter">
+		<constructor-arg index="0" value="1" />
+		<constructor-arg index="1" value="speciality" />
+		<constructor-arg index="2" ref="regionService" />
+	</bean>
+	<bean id="specialityImporter" class="com.tt.spec.locality.provision.SpecialityImporter">
+		<constructor-arg index="0" value="2" />
+		<constructor-arg index="1" value="speciality" />
+		<property name="objectMapper" ref="objectMapper" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:sh/speciality/speciality_sh.json</value>
+				<value>classpath:120000/product.json</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="shopImporter" class="com.tt.spec.locality.provision.ShopImporter">
+		<constructor-arg index="0" value="3" />
+		<constructor-arg index="1" value="speciality" />
+		<property name="objectMapper" ref="objectMapper" />
+		<property name="resourceNames">
+			<list value-type="java.lang.String">
+				<value>classpath:sh/shop/shop_sh.json</value>
+			</list>
+		</property>
+	</bean>
+</beans>

@@ -8,7 +8,7 @@
 	http://www.springframework.org/schema/aop/spring-aop.xsd
 	">
 	<bean id="OAUTH2_CLIENT_CONTEXT_FILTER" class="org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter" />
-	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.df.idm.authentication.oauth2.DefaultOAuth2ClientAuthenticationFilter">
+	<bean id="SINA_OAUTH2_CLIENT_AUTHENTICATION_FILTER" class="com.tt.idm.authentication.oauth2.DefaultOAuth2ClientAuthenticationFilter">
 		<constructor-arg index="0" value="/sina/oauth2" />
 		<property name="resourceInterface" ref="sinaOAuth2ResourceInterface" />
 		<property name="userManagementService" ref="userManagementService" />
@@ -22,7 +22,7 @@
 	<bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
 		<property name="defaultTargetUrl" value="/" />
 	</bean>
-	<bean id="sinaOAuth2ResourceInterface" class="com.df.idm.authentication.oauth2.sina.SinaOAuth2ResourceInterface">
+	<bean id="sinaOAuth2ResourceInterface" class="com.tt.idm.authentication.oauth2.sina.SinaOAuth2ResourceInterface">
 		<constructor-arg index="0" ref="sinaOAuthResource" />
 		<constructor-arg index="1" ref="sinaOAuthClientContext" />
 	</bean>

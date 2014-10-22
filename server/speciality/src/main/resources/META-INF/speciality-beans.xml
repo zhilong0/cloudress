@@ -4,19 +4,19 @@
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<import resource="classpath:META-INF/speciality-base.xml" />
-	<bean id="regionDao" class="com.df.spec.locality.dao.mongo.RegionDaoImpl">
+	<bean id="regionDao" class="com.tt.spec.locality.dao.mongo.RegionDaoImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 	</bean>
-	<bean id="shopDao" class="com.df.spec.locality.dao.mongo.ShopDaoImpl">
+	<bean id="shopDao" class="com.tt.spec.locality.dao.mongo.ShopDaoImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 	</bean>
-	<bean id="specialityDao" class="com.df.spec.locality.dao.mongo.SpecialityDaoImpl">
+	<bean id="specialityDao" class="com.tt.spec.locality.dao.mongo.SpecialityDaoImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 	</bean>
-	<bean id="commentDao" class="com.df.spec.locality.dao.mongo.CommentDaoImpl">
+	<bean id="commentDao" class="com.tt.spec.locality.dao.mongo.CommentDaoImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 	</bean>
-	<bean id="campaignDao" class="com.df.spec.locality.dao.mongo.CampaignDaoImpl">
+	<bean id="campaignDao" class="com.tt.spec.locality.dao.mongo.CampaignDaoImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 	</bean>
 	<bean id="proxy" class="org.apache.http.HttpHost">
@@ -26,7 +26,7 @@
 	</bean>
 	<bean id="requestFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
 		<constructor-arg>
-			<bean class="com.df.common.http.client.HttpClientBeanFactory">
+			<bean class="com.tt.common.http.client.HttpClientBeanFactory">
 				<property name="httpClientConnectionManager">
 					<bean class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" />
 				</property>
@@ -34,8 +34,8 @@
 		</constructor-arg>
 		<property name="connectTimeout" value="5000" />
 	</bean>
-	<bean id="objectMapper" class="com.df.common.json.ObjectMapperFactoryBean" />
-	<bean id="baiduMessageConverter" class="com.df.spec.locality.http.converter.BaiduMessageConverter">
+	<bean id="objectMapper" class="com.tt.common.json.ObjectMapperFactoryBean" />
+	<bean id="baiduMessageConverter" class="com.tt.spec.locality.http.converter.BaiduMessageConverter">
 		<property name="objectMapper" ref="objectMapper" />
 	</bean>
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
@@ -46,45 +46,45 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="permissionEvaluator" class="com.df.idm.authorization.RoleBasePermissionEvaluator" />
-	<bean id="operationPermissionEvaluator" class="com.df.spec.locality.service.impl.OperationPermissionEvaluatorImpl">
+	<bean id="permissionEvaluator" class="com.tt.idm.authorization.RoleBasePermissionEvaluator" />
+	<bean id="operationPermissionEvaluator" class="com.tt.spec.locality.service.impl.OperationPermissionEvaluatorImpl">
 		<constructor-arg index="0" ref="permissionEvaluator" />
 	</bean>
 
-	<bean id="geoService" class="com.df.spec.locality.geo.baidu.BaiduGeoServiceImpl">
+	<bean id="geoService" class="com.tt.spec.locality.geo.baidu.BaiduGeoServiceImpl">
 		<constructor-arg index="0" ref="restTemplate" />
 		<constructor-arg index="1" value="pCPMbjiAzVcWs26VqGw9PUQr" />
 	</bean>
-	<bean id="regionService" class="com.df.spec.locality.service.impl.RegionServiceImpl">
+	<bean id="regionService" class="com.tt.spec.locality.service.impl.RegionServiceImpl">
 		<constructor-arg index="0" ref="regionDao" />
 		<constructor-arg index="1" ref="geoService" />
 	</bean>
-	<bean id="specialityService" class="com.df.spec.locality.service.impl.SpecialityServiceImpl">
+	<bean id="specialityService" class="com.tt.spec.locality.service.impl.SpecialityServiceImpl">
 		<constructor-arg index="0" ref="specialityDao" />
 		<constructor-arg index="1" ref="imageService" />
 		<constructor-arg index="2" ref="operationPermissionEvaluator" />
 		<constructor-arg index="3" ref="specValidator" />
 	</bean>
-	<bean id="shopService" class="com.df.spec.locality.service.impl.ShopServiceImpl">
+	<bean id="shopService" class="com.tt.spec.locality.service.impl.ShopServiceImpl">
 		<constructor-arg index="0" ref="shopDao" />
 		<constructor-arg index="1" ref="regionService" />
 		<constructor-arg index="2" ref="geoService" />
 		<constructor-arg index="3" ref="operationPermissionEvaluator" />
 		<constructor-arg index="4" ref="specValidator" />
 	</bean>
-	<bean id="supplierService" class="com.df.spec.locality.service.impl.SupplierServiceImpl">
+	<bean id="supplierService" class="com.tt.spec.locality.service.impl.SupplierServiceImpl">
 		<constructor-arg index="0" ref="shopService" />
 	</bean>
-	<bean id="commentService" class="com.df.spec.locality.service.impl.CommentServiceImpl">
+	<bean id="commentService" class="com.tt.spec.locality.service.impl.CommentServiceImpl">
 		<constructor-arg index="0" ref="commentDao" />
 	</bean>
-	<bean id="campaignService" class="com.df.spec.locality.service.impl.CampaignServiceImpl">
+	<bean id="campaignService" class="com.tt.spec.locality.service.impl.CampaignServiceImpl">
 		<constructor-arg index="0" ref="campaignDao" />
 		<constructor-arg index="1" ref="specValidator" />
 		<constructor-arg index="2" ref="regionService" />
 		<constructor-arg index="3" ref="geoService" />
 	</bean>
-	<bean id="approvableService" class="com.df.spec.locality.service.impl.ApprovableServiceImpl">
+	<bean id="approvableService" class="com.tt.spec.locality.service.impl.ApprovableServiceImpl">
 		<constructor-arg index="0" ref="specialityDataStore" />
 		<constructor-arg index="1" ref="operationPermissionEvaluator" />
 	</bean>

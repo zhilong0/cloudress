@@ -6,7 +6,5 @@ include ':idm'
 project(':idm').projectDir = new File(settingsDir, './idm')
 include ':speciality'
 project(':speciality').projectDir = new File(settingsDir, './speciality')
-include ':cloudress'
-project(':cloudress').projectDir = new File(settingsDir, './cloudress')
-include ':configuration'
-project(':configuration').projectDir = new File(settingsDir, './configuration')
+include ':tt-front'
+project(':tt-front').projectDir = new File(settingsDir, './tt-front')

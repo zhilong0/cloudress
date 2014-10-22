@@ -4,56 +4,56 @@
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<import resource="classpath:META-INF/idm-base.xml" />
-	<bean id="tokenStore" class="com.df.idm.registration.TokenStoreImpl">
+	<bean id="tokenStore" class="com.tt.idm.registration.TokenStoreImpl">
 		<constructor-arg index="0" ref="idmDataStore" />
 	</bean>
-	<bean id="userDao" class="com.df.idm.dao.mongodb.UserDaoImpl">
+	<bean id="userDao" class="com.tt.idm.dao.mongodb.UserDaoImpl">
 		<constructor-arg index="0" ref="idmDataStore" />
 	</bean>
-	<bean id="roleDao" class="com.df.idm.dao.mongodb.RoleDaoImpl">
+	<bean id="roleDao" class="com.tt.idm.dao.mongodb.RoleDaoImpl">
 		<constructor-arg index="0" ref="permissionDao" />
 		<constructor-arg index="1" ref="idmDataStore" />
 	</bean>
-	<bean id="permissionDao" class="com.df.idm.dao.mongodb.PermissionDaoImpl">
+	<bean id="permissionDao" class="com.tt.idm.dao.mongodb.PermissionDaoImpl">
 		<constructor-arg index="0" ref="idmDataStore" />
 	</bean>
-	<bean id="securityModelRepository" class="com.df.idm.service.impl.SecurityModelRepositoryImpl">
+	<bean id="securityModelRepository" class="com.tt.idm.service.impl.SecurityModelRepositoryImpl">
 		<constructor-arg index="0" ref="idmValidator" />
 		<constructor-arg index="1" ref="roleDao" />
 		<constructor-arg index="2" ref="permissionDao" />
 	</bean>
 	<bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder" />
-	<bean id="registrationVerifier" class="com.df.idm.registration.UserRegistrationTokenVerifierImpl">
+	<bean id="registrationVerifier" class="com.tt.idm.registration.UserRegistrationTokenVerifierImpl">
 		<constructor-arg index="0" ref="tokenStore" />
 	</bean>
-	<bean id="emailContextProvider" class="com.df.common.mail.DefaultEmailContextProvider">
+	<bean id="emailContextProvider" class="com.tt.common.mail.DefaultEmailContextProvider">
 		<property name="sentFrom" value="delicacy_fusion@163.com" />
 	</bean>
-	<bean id="richMailSender" class="com.df.common.mail.FreeMarkerMailSender">
+	<bean id="richMailSender" class="com.tt.common.mail.FreeMarkerMailSender">
 		<constructor-arg index="0" ref="freemarkerConfiguration" />
 		<constructor-arg index="1" ref="mailSender" />
 	</bean>
-	<bean id="registrationMessageNotifier" class="com.df.idm.registration.message.DefaultRegistrationMessageNotifier">
+	<bean id="registrationMessageNotifier" class="com.tt.idm.registration.message.DefaultRegistrationMessageNotifier">
 		<property name="emailContextProvider" ref="emailContextProvider" />
 		<property name="richMailSender" ref="richMailSender" />
 		<property name="taskExecutor" ref="asyncTaskExecutor" />
 		<property name="shortMessageSender" ref="shortMessageSender" />
 	</bean>
-	<bean id="userManagementService" class="com.df.idm.service.impl.UserManagementServiceImpl">
+	<bean id="userManagementService" class="com.tt.idm.service.impl.UserManagementServiceImpl">
 		<constructor-arg index="0" ref="userDao" />
 		<constructor-arg index="1" ref="passwordEncoder" />
 		<property name="registrationVerifier" ref="registrationVerifier" />
 		<property name="registrationMessageNotifier" ref="registrationMessageNotifier" />
 		<property name="validator" ref="idmValidator" />
 	</bean>
-	<bean id="userAuthorityService" class="com.df.idm.service.impl.UserAuthorityServiceImpl">
+	<bean id="userAuthorityService" class="com.tt.idm.service.impl.UserAuthorityServiceImpl">
 		<constructor-arg index="0" ref="userManagementService" />
 		<constructor-arg index="1" ref="securityModelRepository" />
 	</bean>
-	<bean id="userObjectService" class="com.df.idm.authentication.adapter.UserObjectServiceImpl">
+	<bean id="userObjectService" class="com.tt.idm.authentication.adapter.UserObjectServiceImpl">
 		<constructor-arg index="0" ref="userManagementService" />
 	</bean>
-	<bean id="basicAuthenticationProvider" class="com.df.idm.authentication.BasicAuthenticationProvider">
+	<bean id="basicAuthenticationProvider" class="com.tt.idm.authentication.BasicAuthenticationProvider">
 		<constructor-arg index="0" ref="userObjectService" />
 		<property name="passwordEncoder" ref="passwordEncoder" />
 	</bean>
